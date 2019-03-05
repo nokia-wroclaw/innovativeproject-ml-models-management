@@ -9,6 +9,8 @@ ML Models Management System
 Features
 ========
 
+TODO
+
 Installing
 ==========
 
@@ -16,21 +18,21 @@ You can get the most current package from `PyPI <https://test.pypi.org/>`_
 
 .. code-block:: bash
 
-	$ pip install mlmm-TODO
+    $ pip install mlmm-TODO
 
 Using it in your training environment is fairly straightforward:
 
 .. code-block:: python
 
-	import mlmm-TODO
+    import mlmm-TODO
 
-	mlmm = MLMM_TODO(token="")
+    mlmm = MLMM_TODO(token="")
 
-	with mlmm(example=example) as models_management:
-		# something
-		models_management.upload(
-			project=project, workspace=workspace, version=2
-		)
+    with mlmm(example=example) as models_management:
+        # something
+        models_management.upload(
+            project=project, workspace=workspace, version=2
+        )
 
 Deploying
 =========
@@ -46,13 +48,13 @@ To start up all services, run:
 
 .. code-block:: bash
 
-	$ docker-compose up
+    $ docker-compose up
 
-To stop your services, you can press Ctrl+C/Ctrl+D. If you started the services in the background using  ``docker-compose up -d``, the correct way is:
+To stop your services, you can press Ctrl+C/Ctrl+D. If you started the services in the background using  ``docker-compose up -d``, the correct way to do this would be:
 
 .. code-block:: bash
 
-	$ docker-compose stop
+    $ docker-compose stop
 
 You can learn more about Docker Compose by `clicking here <https://docs.docker.com/compose/>`_.
 
@@ -65,6 +67,9 @@ Links
 
 - `Frontend image on Docker Hub <https://hub.docker.com>`_
 - `Backend image on Docker Hub <https://hub.docker.com>`_
+- ...other services
+
+For reference, you can look at the `sample Ansible playbook <#>`_ that deploys all containers to a specified host using the locally configured ``.env`` file.
 
 Contributing
 ============
@@ -76,23 +81,23 @@ Getting started
 
 .. code-block:: bash
 
-	$ git clone -b develop git@github.com:nokia-wroclaw/innovativeproject-ml-models-management.git
+    $ git clone -b develop git@github.com:nokia-wroclaw/innovativeproject-ml-models-management.git
 
 2. Install `pre-commit <https://pre-commit.com/#install>`_
 
-3. Inside the project's root directory install all required githooks
+3. Inside the project's root directory install all required githooks:
 
 .. code-block:: bash
 
-	$ pre-commit install
+    $ pre-commit install
 
-4. Fire up required containers for local development
+4. To start all required services for local development, run:
 
 .. code-block:: bash
 
-	$ docker-compose up
+    $ docker-compose up
 
-5. You're ready to go!
+5. You're all set up!
 
 Fixing existing issues
 ----------------------
@@ -103,24 +108,32 @@ Fixing existing issues
 
 .. code-block:: bash
 
-	$ git branch -b issue-42-project-removal-permissions develop
+    $ git checkout -b issue-42-project-removal-permissions develop
 
 3. Make sure your implementation fixes the actual problem and is well tested. 
-
-  In the final commit message you can use keywords such as *Resolves #42*, *Fixes #42* or *Closes #42* to automatically mark the issue closed)
-
-4. After commiting the changes, create a pull request with the ``develop`` branch.
 
 Implementing new features
 -------------------------
 
-1. Create a new branch named ``feature-[short description]`` derived from the ``develop`` branch, for example
+When implementing new features, you should start by creating a new branch named ``feature-[short description]`` derived from the ``develop`` branch, for example
 
 .. code-block:: bash
 
-	$ git branch -b feature-new-user-profile develop
+    $ git checkout -b feature-new-user-profile develop
 
-2. After commiting the changes, create a pull request with the ``develop`` branch.
+
+Commiting the changes
+---------------------
+
+To run all tests and check whether all required pre-commit githooks are satisfied, run 
+
+.. code-block:: bash
+
+    $ pre-commit run --all-files
+
+Your commit message should briefly summarize the changes (if possible) in plain English. To learn how to write a proper commit message, check out `this article <https://juffalow.com/other/write-good-git-commit-message>`_.
+
+When ready, create a new pull request compared with the ``develop`` branch set as a base branch.
 
 Documentation
 =============
