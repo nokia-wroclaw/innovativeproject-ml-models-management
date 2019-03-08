@@ -24,7 +24,7 @@ def download(workspace, project, version, model):
 )
 @click.option("--project", prompt="Project name", help="Name of the model to upload")
 @click.option("--version", prompt="Model version", help="Version of the model to upload")
-@click.option("--model", prompt="Model filename", help="Filename of model to upload")
+@click.option("--model", prompt="Model filename", help="Filename of the model to upload")
 def upload(workspace, project, version, model):
     """Uploads a given model."""
     print("Uploading model...")
