@@ -5,8 +5,6 @@ COPY . /app
 WORKDIR /app
 RUN pipenv install --dev --system --deploy --ignore-pipfile
 
-ENV FLASK_APP app.py
-ENV FLASK_ENV development
-
 EXPOSE 5000
-CMD ["flask", "run"]
+ENTRYPOINT [ "python" ]
+CMD [ "run.py" ]
