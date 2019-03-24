@@ -1,8 +1,9 @@
-version: '3'
+version: "3"
 services:
   backend:
     build:
       context: ./backend/
+    command: "python run.py"
     restart: always
     env_file:
       - .env
@@ -10,7 +11,7 @@ services:
       - "5000:5000"
     volumes:
       - ./backend:/app
-    depends_on: 
+    depends_on:
       - postgresdb
 
   postgresdb:
@@ -24,4 +25,4 @@ services:
       - pgdata:/var/lib/postgresql/data
 
 volumes:
-  pgdata: 
+  pgdata:
