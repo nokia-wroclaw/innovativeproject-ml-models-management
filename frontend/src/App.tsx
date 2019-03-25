@@ -1,24 +1,43 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Button from '@material-ui/core/Button';
+import * as React from 'react';
+import {
+	Button, Dialog, DialogActions,
+	DialogContent, DialogContentText,
+	DialogTitle, Typography, Divider, TextField, CssBaseline
+} from '@material-ui/core';
+import { Theme } from '@material-ui/core/styles/createMuiTheme';
+import createStyles from '@material-ui/core/styles/createStyles';
+import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
+import withRoot from './withRoot';
+import { Login } from './pages/login';
+import { Account } from './pages/account';
+import { Home } from './pages/home';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p> 
-          <Button variant="contained" color="primary">
-            Hello World
-          </Button>
-        </header>
-      </div>
-    );
-  }
+const styles = (theme: Theme) =>
+	createStyles({
+		root: {
+			textAlign: 'center',
+		},
+	});
+
+type State = {
+};
+
+class App extends React.Component<WithStyles<typeof styles>, State> {
+
+	render() {
+		const classes = this.props.classes;
+		return (
+			<div className={classes.root}>
+				<CssBaseline />		
+				<Router>
+					<Route exact path="/" component={Home} />
+					<Route path="/login" component={Login} />
+					<Route path="/account" component={Account} />
+				</Router>		
+			</div>
+		);
+	}
 }
 
-export default App;
+export default withRoot(withStyles(styles)(App));
