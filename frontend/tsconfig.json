@@ -18,7 +18,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    "allowUnusedLabels": true
+    "allowUnusedLabels": true,
+    "inlineSourceMap": true
   },
   "include": [
     "src"

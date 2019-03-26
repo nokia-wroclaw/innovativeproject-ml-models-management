@@ -11,6 +11,7 @@ import withRoot from './withRoot';
 import { Login } from './pages/login';
 import { Account } from './pages/account';
 import { Home } from './pages/home';
+import { Project } from './pages/project';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 const styles = (theme: Theme) =>
@@ -31,9 +32,13 @@ class App extends React.Component<WithStyles<typeof styles>, State> {
 			<div className={classes.root}>
 				<CssBaseline />		
 				<Router>
-					<Route exact path="/" component={Home} />
 					<Route path="/login" component={Login} />
 					<Route path="/account" component={Account} />
+					<Route
+						path="/project/:projectId"
+						component={Project}
+					/>
+					<Route exact path="/" component={Home} />
 				</Router>		
 			</div>
 		);
