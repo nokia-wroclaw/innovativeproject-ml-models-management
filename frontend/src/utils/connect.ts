@@ -29,3 +29,64 @@ export const Auth = {
 		}
 	}
 }
+interface Parameter{
+	id:string;
+	value:number;
+}
+interface Model{
+	parameters?:Parameter[];
+	hiperParameters?:Parameter[];
+	dataset?:string;
+	commitUrl?:string;
+}
+interface Project{
+	id?:string;
+	name?:string;
+}
+interface ProjectDetails extends Project{
+	repoUrl?:string;
+	allParameters?:string[];
+	allHiperParameters?:string[];
+}
+interface GetProjectResponse extends Response, ProjectDetails{
+}
+interface GetProjectsResponse extends Response {
+	projects?:Project[];
+}
+export const Project = {
+	getProject: async (projectId:string): Promise<GetProjectResponse> => {
+		return {
+			successful: false,
+			errorCode: "not-implemented",
+			errorDescription: "getProject has not been implemented"
+		}
+	},
+	getProjects: async (): Promise<GetProjectsResponse> => {
+		return {
+			successful: false,
+			errorCode: "not-implemented",
+			errorDescription: "getProjects has not been implemented"
+		}
+	}
+}
+interface GetModelResponse extends Response, Model{
+}
+interface GetModelsResponse extends Response {
+	Models?:Model[];
+}
+export const Model = {
+	getModel: async (modelId:string): Promise<GetModelResponse> => {
+		return {
+			successful: false,
+			errorCode: "not-implemented",
+			errorDescription: "getModel has not been implemented"
+		}
+	},
+	getModels: async (projectId:string): Promise<GetModelsResponse> => {
+		return {
+			successful: false,
+			errorCode: "not-implemented",
+			errorDescription: "getModels has not been implemented"
+		}
+	}
+}
