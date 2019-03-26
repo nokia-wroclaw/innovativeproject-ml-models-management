@@ -9,7 +9,30 @@ ML Models Management System
 Features
 ========
 
-TODO
+TODO: next milestone
+--------------------
+
+- basic web ui
+    - login/register
+    - browse/filter/sort projects
+    - browse/filter/sort models in project
+    - connect/create project
+- CLI
+- REST API
+- project
+    - every project is conncted with exactly one repo if any
+        - if project is connected to repo every model is attached to exactly one commit
+    - gitlab integration
+        - project might be connected to gitlab repo
+            - read/write permisions are imported form repo
+- model
+    - every model consists of
+        - dataset name
+        - model name (useful if multiple models are being developed simultaneously in one project)
+        - commit id (optional)
+        - parameters (float, string or json)
+        - hiperparameters (float, string or json)
+        - results (always float, results such as accuracy)
 
 Installing
 ==========
