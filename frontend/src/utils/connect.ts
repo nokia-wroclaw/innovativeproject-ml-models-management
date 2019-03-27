@@ -30,18 +30,30 @@ export const Auth = {
 	}
 }
 interface Parameter{
-	id:string;
+	id:number;
+	value:number|string;
+}
+interface Metric{
+	id:number;
 	value:number;
 }
 interface Model{
-	parameters?:Parameter[];
-	hiperParameters?:Parameter[];
+	id?:number;
+	name?:string;
+	description?:string;
+
 	dataset?:string;
 	commitUrl?:string;
+
+	parameters?:Parameter[];
+	hiperParameters?:Parameter[];
+	metrics?:Metric[];
 }
 interface Project{
 	id?:string;
 	name?:string;
+	description?:string;
+	repoUrl?:string;
 }
 interface ProjectDetails extends Project{
 	repoUrl?:string;
