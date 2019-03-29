@@ -10,6 +10,9 @@ class WorkspaceAPI(Resource):
     def get(self, id: int) -> dict:
         workspace = Workspace.query.filter_by(id=id).first()
 
+        if not workspace:
+            abort(404)
+
         return WorkspaceSchema().dump(workspace)
 
     def delete(self, id: int) -> dict:
