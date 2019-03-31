@@ -5,7 +5,6 @@ from sqlalchemy.dialects.postgresql import JSONB
 
 from app import db, ma
 
-
 users_workspaces = db.Table(
     "users_workspaces",
     db.Column("user_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
@@ -35,6 +34,26 @@ class User(db.Model):
     #     self.password = password
     #     self.email = email
 
+    @property
+    def rolenames(self):
+        roles = "admin,test"
+        try:
+            return roles.split(",")
+        except Exception:
+            return []
+
+    @classmethod
+    def lookup(cls, login):
+        return cls.query.filter_by(login=login).one_or_none()
+
+    @classmethod
+    def identify(cls, id):
+        return cls.query.get(id)
+
+    @property
+    def identity(self):
+        return self.id
+
     def __str__(self) -> str:
         return self.login
 
@@ -45,7 +64,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     class Meta:
         model = User
-        fields = ("id", "login", "full_name", "email", "models", "updated", "created")
+        fields = ("id", "login", "full_name", "email", "updated", "created")
         ordered = True
 
 
@@ -87,15 +106,7 @@ class Workspace(db.Model):
 class WorkspaceSchema(ma.Schema):
     class Meta:
         model = Workspace
-        fields = (
-            "id",
-            "name",
-            "description",
-            "projects",
-            "users",
-            "updated",
-            "created",
-        )
+        fields = ("id", "name", "description", "updated", "created")
         ordered = True
 
 
@@ -118,17 +129,10 @@ class Project(db.Model):
 
 
 class ProjectSchema(ma.Schema):
+    # models = ma.Nested('ModelSchema', many=True)
     class Meta:
         model = Project
-        fields = (
-            "id",
-            "name",
-            "description",
-            "workspace_id",
-            "models",
-            "updated",
-            "created",
-        )
+        fields = ("id", "workspace_id", "name", "description", "updated", "created")
         ordered = True
 
 
@@ -149,6 +153,7 @@ class Model(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
     hyperparameters = db.Column(JSONB)
     parameters = db.Column(JSONB)
+    metrics = db.Column(JSONB)
     name = db.Column(db.String(40), default=None)
     path = db.Column(db.Text, default=None)
     dataset_name = db.Column(db.String(120), default=None)
@@ -160,10 +165,8 @@ class Model(db.Model):
     __table_args__ = (
         db.Index("ix_model_hyperparameters", hyperparameters, postgresql_using="gin"),
         db.Index("ix_model_parameters", parameters, postgresql_using="gin"),
+        db.Index("ix_model_metrics", metrics, postgresql_using="gin"),
     )
-
-    def __init__(self) -> object:
-        pass
 
     def __str__(self) -> str:
         return self.name
@@ -182,12 +185,14 @@ class ModelSchema(ma.Schema):
         model = Model
         fields = (
             "id",
+            "user",
+            "project_id",
             "name",
-            "path",
             "visibility",
             "dataset",
             "hyperparameters",
             "parameters",
+            "metrics",
             "created",
             "updated",
             "_links",
@@ -196,7 +201,15 @@ class ModelSchema(ma.Schema):
 
     visibility = ma.Function(lambda obj: "private" if obj.private else "public")
     dataset = ma.Method("get_dataset_information")
-    _links = ma.Hyperlinks({"self": ma.URLFor("api.model", id="<id>", _external=True)})
+    user = ma.Nested(UserSchema(exclude=("created", "updated", "email")))
+    _links = ma.Hyperlinks(
+        {
+            "self": ma.URLFor("api.model", id="<id>", _external=True),
+            "user": ma.URLFor("api.user", id="<user_id>", _external=True),
+            "project": ma.URLFor("api.project", id="<project_id>", _external=True),
+            "download": ma.URLFor("storage.download_model", id="<id>", _external=True),
+        }
+    )
 
     def get_dataset_information(self, obj):
         return {"name": obj.dataset_name, "description": obj.dataset_description}
