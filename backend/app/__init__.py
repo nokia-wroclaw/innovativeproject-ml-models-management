@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
-from flask_uploads import UploadSet, configure_uploads, ALL
+from flask_uploads import UploadSet, configure_uploads, patch_request_class, ALL
 from flask_praetorian import Praetorian
 from flask_cors import CORS
 
@@ -28,7 +28,10 @@ def create_app(config_object: str = "Production") -> object:
     migrate.init_app(app, db)
     ma.init_app(app)
     cors.init_app(app)
+
     configure_uploads(app, (models_uploadset,))
+    # Set maximum accepted file size to 16 MiB
+    patch_request_class(app)
 
     from app.models import User
 
