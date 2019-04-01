@@ -1,4 +1,4 @@
-"""empty message
+"""Add metrics to base model entry
 
 Revision ID: 75933cf6bdb9
 Revises: c266818dcfa1

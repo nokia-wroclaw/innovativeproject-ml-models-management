@@ -136,15 +136,6 @@ class ProjectSchema(ma.Schema):
         ordered = True
 
 
-# class SessionToken(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-#     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-#     def __repr__(self) -> str:
-#         return f"<SessionToken({self.id}) {self.name}>"
-
-
 class Model(db.Model):
     __tablename__ = "models"
 
@@ -158,6 +149,8 @@ class Model(db.Model):
     path = db.Column(db.Text, default=None)
     dataset_name = db.Column(db.String(120), default=None)
     dataset_description = db.Column(db.Text, default=None)
+    git_active_branch = db.Column(db.String, nullable=True)
+    git_commit_hash = db.Column(db.String, nullable=True)
     private = db.Column(db.Boolean, default=False)
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -193,6 +186,7 @@ class ModelSchema(ma.Schema):
             "hyperparameters",
             "parameters",
             "metrics",
+            "git",
             "created",
             "updated",
             "_links",
@@ -200,7 +194,8 @@ class ModelSchema(ma.Schema):
         ordered = True
 
     visibility = ma.Function(lambda obj: "private" if obj.private else "public")
-    dataset = ma.Method("get_dataset_information")
+    dataset = ma.Method("get_dataset_details")
+    git = ma.Method("get_version_control_details")
     user = ma.Nested(UserSchema(exclude=("created", "updated", "email")))
     _links = ma.Hyperlinks(
         {
@@ -211,5 +206,14 @@ class ModelSchema(ma.Schema):
         }
     )
 
-    def get_dataset_information(self, obj):
-        return {"name": obj.dataset_name, "description": obj.dataset_description}
+    def get_dataset_details(self, obj):
+        return {
+            "name": obj.dataset_name, 
+            "description": obj.dataset_description
+        }
+
+    def get_version_control_details(self, obj):
+        return {
+            "active_branch": obj.git_active_branch,
+            "description": obj.git_commit_hash,
+        }
