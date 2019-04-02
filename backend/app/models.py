@@ -215,5 +215,5 @@ class ModelSchema(ma.Schema):
     def get_version_control_details(self, obj):
         return {
             "active_branch": obj.git_active_branch,
-            "description": obj.git_commit_hash,
+            "commit_hash": obj.git_commit_hash,
         }
