@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import current_app, url_for
 from sqlalchemy.dialects.postgresql import JSONB
 
-from app import db, ma
+from app import db, ma, praetorian
 
 users_workspaces = db.Table(
     "users_workspaces",
@@ -26,13 +26,11 @@ class User(db.Model):
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    # def __init__(self, **kwargs, login=None, full_name=None,
-    # password=None, email=None, ):
-    #     super(User, self).__init__(**kwargs)
-    #     self.login = login
-    #     self.full_name = full_name
-    #     self.password = password
-    #     self.email = email
+    def __init__(self, login, password, full_name=None, email=None):
+        self.login = login
+        self.password = praetorian.encrypt_password(password)
+        self.full_name = full_name
+        self.email = email
 
     @property
     def rolenames(self):
@@ -118,6 +116,7 @@ class Project(db.Model):
     description = db.Column(db.Text, nullable=True)
     workspace_id = db.Column(db.Integer, db.ForeignKey("workspaces.id"), nullable=False)
     models = db.relationship("Model", backref="project", lazy=True)
+    git_url = db.Column(db.String, nullable=True)
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -132,7 +131,15 @@ class ProjectSchema(ma.Schema):
     # models = ma.Nested('ModelSchema', many=True)
     class Meta:
         model = Project
-        fields = ("id", "workspace_id", "name", "description", "updated", "created")
+        fields = (
+            "id",
+            "workspace_id",
+            "name",
+            "description",
+            "git_url",
+            "updated",
+            "created",
+        )
         ordered = True
 
 
@@ -207,10 +214,7 @@ class ModelSchema(ma.Schema):
     )
 
     def get_dataset_details(self, obj):
-        return {
-            "name": obj.dataset_name, 
-            "description": obj.dataset_description
-        }
+        return {"name": obj.dataset_name, "description": obj.dataset_description}
 
     def get_version_control_details(self, obj):
         return {
