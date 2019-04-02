@@ -1,6 +1,5 @@
 import click, requests
-
-url = "http://nokia-projekt:5000"
+from mlmm import upload_model
 
 
 @click.group()
@@ -30,25 +29,47 @@ def download(workspace, project, version, model):
 
 @click.command()
 @click.option(
-    "--workspace", prompt="Workspace name", help="Name of the model to upload"
+    "--name", prompt="Model (human-readable) name", help="Name of the model to upload"
 )
-@click.option("--project", prompt="Project name", help="Name of the model to upload")
+@click.option("--model", prompt="Model (file)", help="Filename of the model to upload")
+# @click.option(
+#     "--workspace", prompt="Workspace name", help="Name of the model to upload"
+# )
+# @click.option("--project", prompt="Project name", help="Name of the model to upload")
+# @click.option(
+#     "--version", prompt="Model version", help="Version of the model to upload"
+# )
 @click.option(
-    "--version", prompt="Model version", help="Version of the model to upload"
+    "--hyperparameters",
+    prompt="Hyperparameters (file)",
+    help="Filename of the hyperparameters bound to model",
 )
 @click.option(
-    "--model", prompt="Model filename", help="Filename of the model to upload"
+    "--parameters",
+    prompt="Parameters (file)",
+    help="Filename of the parameters bound to model",
 )
-def upload(workspace, project, version, model):
+@click.option(
+    "--metrics", prompt="Metrics (file)", help="Filename of the metrics bound to model"
+)
+@click.option(
+    "--dataset_name", prompt="Dataset name", help="Name of the dataset udes in model"
+)
+def upload(name, model, hyperparameters, parameters, metrics, dataset_name):
     """Uploads a given model."""
-    # print("Uploading model...")
-    payload = {
-        "workspace": workspace,
-        "project": project,
-        "model": model,
-        "version": version,
-    }
-    r = requests.post(url, data=payload)
+    status = upload_model(
+        name=name,
+        model=model,
+        hyperparameters=hyperparameters,
+        parameters=parameters,
+        metrics=metrics,
+        dataset_name=dataset_name,
+        dataset_description="default opis",
+        user_id=1,
+        project_id=1
+    )
+    if status:
+        click.echo("Model sent successfuly")
 
 
 @click.command()
