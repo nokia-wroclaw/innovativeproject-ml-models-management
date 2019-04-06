@@ -3,8 +3,7 @@ from datetime import datetime
 from flask import current_app, url_for
 from sqlalchemy.dialects.postgresql import JSONB
 
-from app import db, ma
-
+from app import db, ma, praetorian
 
 users_workspaces = db.Table(
     "users_workspaces",
@@ -27,13 +26,31 @@ class User(db.Model):
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
-    # def __init__(self, **kwargs, login=None, full_name=None,
-    # password=None, email=None, ):
-    #     super(User, self).__init__(**kwargs)
-    #     self.login = login
-    #     self.full_name = full_name
-    #     self.password = password
-    #     self.email = email
+    def __init__(self, login, password, full_name=None, email=None):
+        self.login = login
+        self.password = praetorian.encrypt_password(password)
+        self.full_name = full_name
+        self.email = email
+
+    @property
+    def rolenames(self):
+        roles = "admin,test"
+        try:
+            return roles.split(",")
+        except Exception:
+            return []
+
+    @classmethod
+    def lookup(cls, login):
+        return cls.query.filter_by(login=login).one_or_none()
+
+    @classmethod
+    def identify(cls, id):
+        return cls.query.get(id)
+
+    @property
+    def identity(self):
+        return self.id
 
     def __str__(self) -> str:
         return self.login
@@ -45,7 +62,7 @@ class User(db.Model):
 class UserSchema(ma.Schema):
     class Meta:
         model = User
-        fields = ("id", "login", "full_name", "email", "models", "updated", "created")
+        fields = ("id", "login", "full_name", "email", "updated", "created")
         ordered = True
 
 
@@ -87,15 +104,7 @@ class Workspace(db.Model):
 class WorkspaceSchema(ma.Schema):
     class Meta:
         model = Workspace
-        fields = (
-            "id",
-            "name",
-            "description",
-            "projects",
-            "users",
-            "updated",
-            "created",
-        )
+        fields = ("id", "name", "description", "updated", "created")
         ordered = True
 
 
@@ -107,6 +116,7 @@ class Project(db.Model):
     description = db.Column(db.Text, nullable=True)
     workspace_id = db.Column(db.Integer, db.ForeignKey("workspaces.id"), nullable=False)
     models = db.relationship("Model", backref="project", lazy=True)
+    git_url = db.Column(db.String, nullable=True)
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
@@ -118,27 +128,19 @@ class Project(db.Model):
 
 
 class ProjectSchema(ma.Schema):
+    # models = ma.Nested('ModelSchema', many=True)
     class Meta:
         model = Project
         fields = (
             "id",
+            "workspace_id",
             "name",
             "description",
-            "workspace_id",
-            "models",
+            "git_url",
             "updated",
             "created",
         )
         ordered = True
-
-
-# class SessionToken(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-#     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-#     def __repr__(self) -> str:
-#         return f"<SessionToken({self.id}) {self.name}>"
 
 
 class Model(db.Model):
@@ -149,10 +151,13 @@ class Model(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey("projects.id"), nullable=False)
     hyperparameters = db.Column(JSONB)
     parameters = db.Column(JSONB)
+    metrics = db.Column(JSONB)
     name = db.Column(db.String(40), default=None)
     path = db.Column(db.Text, default=None)
     dataset_name = db.Column(db.String(120), default=None)
     dataset_description = db.Column(db.Text, default=None)
+    git_active_branch = db.Column(db.String, nullable=True)
+    git_commit_hash = db.Column(db.String, nullable=True)
     private = db.Column(db.Boolean, default=False)
     updated = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -160,10 +165,8 @@ class Model(db.Model):
     __table_args__ = (
         db.Index("ix_model_hyperparameters", hyperparameters, postgresql_using="gin"),
         db.Index("ix_model_parameters", parameters, postgresql_using="gin"),
+        db.Index("ix_model_metrics", metrics, postgresql_using="gin"),
     )
-
-    def __init__(self) -> object:
-        pass
 
     def __str__(self) -> str:
         return self.name
@@ -182,12 +185,15 @@ class ModelSchema(ma.Schema):
         model = Model
         fields = (
             "id",
+            "user",
+            "project_id",
             "name",
-            "path",
             "visibility",
             "dataset",
             "hyperparameters",
             "parameters",
+            "metrics",
+            "git",
             "created",
             "updated",
             "_links",
@@ -195,8 +201,23 @@ class ModelSchema(ma.Schema):
         ordered = True
 
     visibility = ma.Function(lambda obj: "private" if obj.private else "public")
-    dataset = ma.Method("get_dataset_information")
-    _links = ma.Hyperlinks({"self": ma.URLFor("api.model", id="<id>", _external=True)})
+    dataset = ma.Method("get_dataset_details")
+    git = ma.Method("get_version_control_details")
+    user = ma.Nested(UserSchema(exclude=("created", "updated", "email")))
+    _links = ma.Hyperlinks(
+        {
+            "self": ma.URLFor("api.model", id="<id>", _external=True),
+            "user": ma.URLFor("api.user", id="<user_id>", _external=True),
+            "project": ma.URLFor("api.project", id="<project_id>", _external=True),
+            "download": ma.URLFor("storage.download_model", id="<id>", _external=True),
+        }
+    )
 
-    def get_dataset_information(self, obj):
+    def get_dataset_details(self, obj):
         return {"name": obj.dataset_name, "description": obj.dataset_description}
+
+    def get_version_control_details(self, obj):
+        return {
+            "active_branch": obj.git_active_branch,
+            "commit_hash": obj.git_commit_hash,
+        }
