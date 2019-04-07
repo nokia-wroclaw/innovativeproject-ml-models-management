@@ -1,5 +1,10 @@
-import click, requests
-from mlmm import upload_model
+import ago
+import click
+import dateutil.parser
+from datetime import datetime, timezone
+from terminaltables import SingleTable
+
+from mlmm import Models
 
 
 @click.group()
@@ -16,15 +21,8 @@ def cli():
 @click.option("--model", prompt="Model filename", help="Filename of the selected model")
 def download(workspace, project, version, model):
     """Downloads requested model."""
-    # print("Downloading model...")
-    payload = {
-        "workspace": workspace,
-        "project": project,
-        "model": model,
-        "version": version,
-    }
-    r = requests.get(url, params=payload)
-    model = r.text
+    models = Models()
+    models.download(model)
 
 
 @click.command()
@@ -32,13 +30,6 @@ def download(workspace, project, version, model):
     "--name", prompt="Model (human-readable) name", help="Name of the model to upload"
 )
 @click.option("--model", prompt="Model (file)", help="Filename of the model to upload")
-# @click.option(
-#     "--workspace", prompt="Workspace name", help="Name of the model to upload"
-# )
-# @click.option("--project", prompt="Project name", help="Name of the model to upload")
-# @click.option(
-#     "--version", prompt="Model version", help="Version of the model to upload"
-# )
 @click.option(
     "--hyperparameters",
     prompt="Hyperparameters (file)",
@@ -66,7 +57,7 @@ def upload(name, model, hyperparameters, parameters, metrics, dataset_name):
         dataset_name=dataset_name,
         dataset_description="default opis",
         user_id=1,
-        project_id=1
+        project_id=1,
     )
     if status:
         click.echo("Model sent successfuly")
@@ -107,11 +98,78 @@ def models():
     click.echo(f"Models of project {project}: \n {r.dict['form']}")
 
 
+@click.command()
+def debug():
+    models = Models(
+        {
+            "api_url": "https://ml.kochanowski.dev/api/v1",
+            "auth_user_login": "Nokia",
+            "auth_user_password": "Nokiademo2019",
+        }
+    ).get_all()
+    table = SingleTable(
+        transform_to_terminatables(
+            models, include=["id", "user", "visibility", "created", "hyperparameters", "parameters", "metrics"]
+        )
+    )
+    table.title = "Most recently uploaded models (1 to 20)"
+    click.echo(table.table)
+
+def transform_single_value(obj):
+    if isinstance(obj, dict):
+        return dict_to_multiline_string(obj)
+    if isinstance(obj, str) and is_date(obj):
+        return timestamp_to_human_readable(obj)
+    return obj
+
+def is_date(string, fuzzy=False):
+    try: 
+        dateutil.parser.parse(string, fuzzy=fuzzy)
+        return True
+
+    except ValueError:
+        return False
+
+def timestamp_to_human_readable(obj: str) -> str:
+    delta = datetime.now(timezone.utc) - dateutil.parser.parse(obj)
+    print()
+    return ago.human(delta)
+
+
+def dict_to_multiline_string(obj: dict) -> str:
+    result = []
+
+    for key, value in obj.items():
+        result.append(f"{key}: {value}")
+
+    return "\n".join(result)
+
+
+def transform_to_terminatables(obj: list, include=None):
+    """Assuming every element of the list contains the same keys."""
+    result = []
+    for index, entry in enumerate(obj):
+        filtered_dict = {key: entry[key] for key in entry if key in include}
+        if index == 0:
+            result.append(filtered_dict.keys())
+        values = filtered_dict.values()
+        values = list(
+            map(
+                lambda x: transform_single_value(x),
+                values,
+            )
+        )
+        result.append(values)
+
+    return result
+
+
 cli.add_command(upload)
 cli.add_command(download)
 cli.add_command(projects)
 cli.add_command(models)
 cli.add_command(graph)
+cli.add_command(debug)
 
 if __name__ == "__main__":
     cli()
