@@ -14,6 +14,9 @@ flask-restful = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 marshmallow = "*"
+flask-uploads = "*"
+flask-praetorian = "*"
+flask-cors = "*"
 
 [dev-packages]
 black = "*"
