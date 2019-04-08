@@ -127,7 +127,7 @@ class Config:
 
         logger.debug(
             f"Loaded {len(dictionary)} settings, omitted: {len(omitted)} "
-            + (omitted if omitted else "")
+            + (str(omitted) if omitted else "")
         )
 
     def _fetch_from_env_variables(self) -> None:
@@ -143,7 +143,7 @@ class Config:
                 setattr(self, key, env_value)
                 changed.append(env_key)
 
-        logger.debug(f"Loaded {len(changed)} settings " + (changed if changed else ""))
+        logger.debug(f"Loaded {len(changed)} settings " + (str(changed) if changed else ""))
 
 
 class BaseAction:
