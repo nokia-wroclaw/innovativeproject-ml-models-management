@@ -4,6 +4,7 @@ from flask_restful import Resource, reqparse
 from app import db
 from app.models import Workspace, WorkspaceSchema
 from app.api import paginated_parser
+from app.api.utils import NestedResponse
 
 
 class WorkspaceAPI(Resource):
@@ -13,7 +14,7 @@ class WorkspaceAPI(Resource):
         if not workspace:
             abort(404)
 
-        return WorkspaceSchema().dump(workspace)
+        return NestedResponse(schema=WorkspaceSchema).dump(workspace)
 
     def delete(self, id: int) -> dict:
         pass
@@ -26,10 +27,13 @@ class WorkspaceListAPI(Resource):
     def get(self) -> list:
         parser = paginated_parser.copy()
         args = parser.parse_args()
-
-        return WorkspaceSchema(many=True).dump(
-            Workspace.query.paginate(args["page"], args["per_page"], False).items
+        paginated_query = Workspace.query.paginate(
+            args["page"], args["per_page"], False
         )
+
+        return NestedResponse(
+            schema=WorkspaceSchema, many=True, pagination=paginated_query
+        ).dump(paginated_query.items)
 
     def post(self) -> dict:
         parser = reqparse.RequestParser()
@@ -42,4 +46,5 @@ class WorkspaceListAPI(Resource):
         db.session.add(workspace)
         db.session.commit()
 
-        return WorkspaceSchema().dump(workspace)
+        return NestedResponse(schema=WorkspaceSchema).dump(workspace)
+

@@ -4,6 +4,7 @@ from flask_restful import Resource, reqparse
 from app import db
 from app.models import Project, ProjectSchema, Workspace
 from app.api import paginated_parser
+from app.api.utils import NestedResponse
 
 
 class ProjectAPI(Resource):
@@ -13,7 +14,7 @@ class ProjectAPI(Resource):
         if not project:
             abort(404)
 
-        return ProjectSchema().dump(project)
+        return NestedResponse(schema=ProjectSchema).dump(project)
 
     def delete(self, id: int) -> dict:
         project = Project.query.filter_by(id=id).first()
@@ -34,9 +35,11 @@ class ProjectListAPI(Resource):
     def get(self) -> list:
         parser = paginated_parser.copy()
         args = parser.parse_args()
-        projects = Project.query.paginate(args["page"], args["per_page"], False).items
+        paginated_query = Project.query.paginate(args["page"], args["per_page"], False)
 
-        return ProjectSchema(many=True).dump(projects)
+        return NestedResponse(
+            schema=ProjectSchema, many=True, pagination=paginated_query
+        ).dump(paginated_query.items)
 
     def post(self) -> dict:
         parser = reqparse.RequestParser()
@@ -55,5 +58,5 @@ class ProjectListAPI(Resource):
             db.session.add(project)
             db.session.commit()
 
-            return ProjectSchema().dump(project)
+            return NestedResponse(schema=ProjectSchema).dump(project)
         return {"error": f"Workspace {args['workspace_id']} does not exist."}, 400
