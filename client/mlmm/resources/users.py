@@ -1,7 +1,7 @@
 from mlmm import BaseAction
 
 
-class Projects(BaseAction):
+class Users(BaseAction):
     def create(self):
         pass
 

@@ -1,15 +1,57 @@
+import json
 import logging
+
+from typing import Union
 from mlmm import BaseAction
+from mlmm.utils.git import GitProvider
 
 logger = logging.getLogger(__name__)
 
 
 class Models(BaseAction):
-    def upload(self):
+    def upload(
+        self,
+        name: str,
+        filename: str,
+        hyperparameters: Union[str, dict],
+        parameters: Union[str, dict],
+        metrics: Union[str, dict],
+        private: bool = False,
+        dataset_name: str = "",
+        dataset_description: str = "",
+    ):
+        hyperparameters = self._determine_input(hyperparameters)
+        parameters = self._determine_input(parameters)
+        metrics = self._determine_input(metrics)
+
         with self.config.session as session:
-            files = []
-            payload = {}
-            session.post(f"{self.config.api_url}/models/", files=files, data=payload)
+            files = {}
+            try:
+                files["file"] = open(filename, "rb")
+            except FileNotFoundError:
+                logger.error(f"Model `{filename}` could not be found.")
+
+            git = GitProvider(self.config.git_local_repo)
+            payload = {
+                "name": name,
+                "hyperparameters": hyperparameters,
+                "parameters": parameters,
+                "metrics": metrics,
+                "private": private,
+                "user_id": 1,
+                "project_id": self.config.selected_project,
+                "git_active_branch": git.active_branch,
+                "git_commit_hash": git.latest_commit,
+            }
+            request = session.post(f"{self.config.api_url}/models/", files=files, data=payload)
+            
+            results = []
+            print(payload)
+            print(request.text)
+            if "data" in request.json():
+                results = request.json()["data"]
+            
+            return results
 
     def update(self, id: int, data: dict):
         with self.config.session as session:
@@ -39,3 +81,17 @@ class Models(BaseAction):
             logger.debug(f"Response body: {results}")
 
         return results
+    
+    def _determine_input(self, value: Union[str, dict]) -> dict:
+        if isinstance(value, str):
+            value = self._file_into_dict(value)
+
+        return value
+
+    def _file_into_dict(self, filename: str) -> dict:
+        try:
+            with open(filename, "rb") as filename:
+                output = json.load(filename) 
+        except FileNotFoundError:
+            logger.error(f"JSON File `{filename}` could not be found.")
+        return output
