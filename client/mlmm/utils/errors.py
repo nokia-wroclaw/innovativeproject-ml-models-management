@@ -7,5 +7,5 @@ class AuthInitializationError(Exception):
 
 
 class AuthenticationError(Exception):
-    """Provided credentials could not satisfy requirements for the purpose 
+    """Provided credentials could not satisfy the requirements for the purpose 
     of authentication."""
