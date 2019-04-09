@@ -94,7 +94,15 @@ class Config:
         """Traverses the local directory tree in search of compatible 
         configuration files."""
 
-        # TODO: Implement traversing through user's directory tree
+        name = ".maisie"
+
+        for root, dirs, files in os.walk(os.getcwd()):
+            if name in files:
+                filename = os.path.join(root, name)
+                logging.debug(f"Found configuration file: {filename}")
+                self._fetch_from_file(os.path.join(root, name))
+                break
+        
         logger.debug("No configuration files found")
 
     def _fetch_from_file(self, filename: str) -> None:
@@ -104,10 +112,27 @@ class Config:
         :param filename: path to the configuration file. Use of an absolute 
             instead of a relative path is recommended.
         """
+        logger.debug("Fetching configuration from a given file")
+        omitted = []
+        loaded = 0
         try:
             file_config = configparser.ConfigParser()
             file_config.read(filename)
-            # TODO: Populate local attributes with values from file_config
+            sections = file_config.sections()
+            for section in sections:
+                for setting in file_config[section]:
+                    key = f"{section}_{setting}"
+                    value = file_config[section][setting]
+                    if key.lower() in PERMITTED_SETTINGS:
+                        setattr(self, key, value)
+                        loaded += 1
+                    else:
+                        omitted.append(key)
+            
+            logger.debug(
+                f"Loaded {loaded} settings, omitted: {len(omitted)} "
+                + (str(omitted) if omitted else "")
+            )
         except FileNotFoundError:
             logger.error(
                 f"Provided configuration file ({filename}) could not be found."
