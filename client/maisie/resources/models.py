@@ -34,9 +34,9 @@ class Models(BaseAction):
             git = GitProvider(self.config.git_local_repo)
             payload = {
                 "name": name,
-                "hyperparameters": hyperparameters,
-                "parameters": parameters,
-                "metrics": metrics,
+                "hyperparameters": json.dumps(hyperparameters),
+                "parameters": json.dumps(parameters),
+                "metrics": json.dumps(metrics),
                 "private": private,
                 "user_id": 1,
                 "project_id": self.config.selected_project,
@@ -46,11 +46,13 @@ class Models(BaseAction):
             request = session.post(f"{self.config.api_url}/models/", files=files, data=payload)
             
             results = []
-            print(payload)
-            print(request.text)
+            # print(payload)
+            # print(request.text)
             if "data" in request.json():
-                results = request.json()["data"]
-            
+                results.append(request.json()["data"])
+            else:
+                logger.error("Could not upload selected model.")
+
             return results
 
     def update(self, id: int, data: dict):
@@ -64,7 +66,13 @@ class Models(BaseAction):
     def get(self, id: int):
         with self.config.session as session:
             request = session.get(f"{self.config.api_url}/models/{id}/")
-            logger.debug(f"Response data: {request.json()}")
+            results = []
+            if "data" in request.json():
+                results.append(request.json()["data"])
+            else:
+                logger.error("Could not fetch any models.")
+
+        return results
 
     def get_all(self, page=None, per_page=None):
         results = []
@@ -82,7 +90,7 @@ class Models(BaseAction):
                 logger.debug(f"Response body: {results}")
             else:
                 logger.error("Could not fetch any models.")
-                
+
         return results
     
     def _determine_input(self, value: Union[str, dict]) -> dict:
