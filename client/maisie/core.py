@@ -4,10 +4,14 @@ import json
 import os
 import logging
 
-from mlmm import APP_ENV_PREFIX, DEFAULT_SETTINGS, PERMITTED_SETTINGS
-from mlmm.utils.auth import AuthManager
-from mlmm.utils.git import GitProvider
-from mlmm.utils.errors import AuthenticationError, ConfigInitializationError, AuthInitializationError
+from maisie import APP_ENV_PREFIX, DEFAULT_SETTINGS, PERMITTED_SETTINGS
+from maisie.utils.auth import AuthManager
+from maisie.utils.git import GitProvider
+from maisie.utils.errors import (
+    AuthenticationError,
+    ConfigInitializationError,
+    AuthInitializationError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +34,7 @@ class Config:
         """Returns HTTP Headers present in all requests sent to the 
         specified target url."""
         return {"Authorization": f"Bearer {self.auth.token}"}
-    
+
     @property
     def auth(self):
         if self.__auth == None:
@@ -50,7 +54,6 @@ class Config:
                 raise ConfigInitializationError
 
         return self.__auth
-
 
     def fetch(
         self, filename: str = None, dictionary: dict = None, disable_env: bool = False
@@ -143,11 +146,13 @@ class Config:
                 setattr(self, key, env_value)
                 changed.append(env_key)
 
-        logger.debug(f"Loaded {len(changed)} settings " + (str(changed) if changed else ""))
+        logger.debug(
+            f"Loaded {len(changed)} settings " + (str(changed) if changed else "")
+        )
 
 
 class BaseAction:
-    def __init__(self, config = None):
+    def __init__(self, config=None):
         self.config = self.__check_config(config)
 
     def __check_config(self, config):

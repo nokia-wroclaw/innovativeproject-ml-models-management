@@ -1,9 +1,9 @@
 import click
 
-from mlmm.cli.models import models
-from mlmm.cli.projects import projects
-from mlmm.cli.users import users
-from mlmm.cli.workspaces import workspaces
+from maisie.cli.models import models
+from maisie.cli.projects import projects
+from maisie.cli.users import users
+from maisie.cli.workspaces import workspaces
 
 
 @click.group()

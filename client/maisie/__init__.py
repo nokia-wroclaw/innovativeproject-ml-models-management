@@ -37,10 +37,10 @@ DEFAULT_SETTINGS = {
     "auth_ssh_key": None,
 }
 
-APP_ENV_PREFIX = "MLMM"
+APP_ENV_PREFIX = "MAISIE"
 
-from mlmm.core import Config, BaseAction
-from mlmm.resources.models import Models
-from mlmm.resources.projects import Projects
-from mlmm.resources.workspaces import Workspaces
-from mlmm.resources.users import Users
+from maisie.core import Config, BaseAction
+from maisie.resources.models import Models
+from maisie.resources.projects import Projects
+from maisie.resources.workspaces import Workspaces
+from maisie.resources.users import Users

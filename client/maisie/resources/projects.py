@@ -1,7 +1,11 @@
-from mlmm import BaseAction
+from maisie import BaseAction
 
 
-class Users(BaseAction):
+class Projects(BaseAction):
+    @property
+    def selected(self):
+        return self.config.selected_project
+
     def create(self):
         pass
 

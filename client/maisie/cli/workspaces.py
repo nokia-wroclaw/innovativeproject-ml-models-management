@@ -2,11 +2,11 @@ import click
 
 from terminaltables import SingleTable
 
-from mlmm import Users
-from mlmm.utils.misc import Transform
+from maisie import Workspaces
+from maisie.utils.misc import Transform
 
 @click.group()
-def users():
+def workspaces():
     pass
 
 @click.command()
@@ -21,6 +21,6 @@ def rm():
 def ls():
     pass
 
-users.add_command(add)
-users.add_command(rm)
-users.add_command(ls)
+workspaces.add_command(add)
+workspaces.add_command(rm)
+workspaces.add_command(ls)

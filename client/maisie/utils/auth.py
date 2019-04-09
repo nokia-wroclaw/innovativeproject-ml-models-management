@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from mlmm.utils.errors import AuthInitializationError, AuthenticationError
+from maisie.utils.errors import AuthInitializationError, AuthenticationError
 
 logger = logging.getLogger(__name__)
 

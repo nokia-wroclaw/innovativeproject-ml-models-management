@@ -1,4 +1,4 @@
-from mlmm import BaseAction
+from maisie import BaseAction
 
 
 class Workspaces(BaseAction):

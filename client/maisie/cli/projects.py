@@ -2,8 +2,8 @@ import click
 
 from terminaltables import SingleTable
 
-from mlmm import Projects
-from mlmm.utils.misc import Transform
+from maisie import Projects
+from maisie.utils.misc import Transform
 
 @click.group()
 def projects():

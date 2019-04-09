@@ -2,8 +2,8 @@ import json
 import logging
 
 from typing import Union
-from mlmm import BaseAction
-from mlmm.utils.git import GitProvider
+from maisie import BaseAction
+from maisie.utils.git import GitProvider
 
 logger = logging.getLogger(__name__)
 
