@@ -77,9 +77,12 @@ class Models(BaseAction):
                 f"{self.config.api_url}/models/",
                 params={"page": page, "per_page": per_page},
             )
-            results = request.json()["data"]
-            logger.debug(f"Response body: {results}")
-
+            if "data" in request.json():
+                results = request.json()["data"]
+                logger.debug(f"Response body: {results}")
+            else:
+                logger.error("Could not fetch any models.")
+                
         return results
     
     def _determine_input(self, value: Union[str, dict]) -> dict:

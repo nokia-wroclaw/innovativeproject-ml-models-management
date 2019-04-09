@@ -90,10 +90,13 @@ class AuthManager:
             f"{self.api_url}/auth/login/",
             data={"login": self.login, "password": self.password},
         )
-        data = request.json()["data"]
-        logger.debug(data)
+        if "data" not in request.json():
+            logger.error("Could not authenticate. Is the login and password correct?")
+        else:
+            data = request.json()["data"]
+            logger.debug(data)
 
-        self.__access_token = data["access_token"]
+            self.__access_token = data["access_token"]
 
     def _auth_via_app_token(self):
         logger.debug("Attempting authentication via app token")

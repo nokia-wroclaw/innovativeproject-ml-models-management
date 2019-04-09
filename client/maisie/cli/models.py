@@ -12,16 +12,29 @@ def models():
 
 
 @click.command()
+@click.option(
+    "--name", prompt="Model name", help="Name of the model to upload"
+)
+@click.option("--model", prompt="Model (file)", help="Filename of the model to upload")
+@click.option(
+    "--hyperparameters",
+    prompt="Hyperparameters (file)",
+    help="Filename of the hyperparameters bound to the model",
+)
+@click.option(
+    "--parameters",
+    prompt="Parameters (file)",
+    help="Filename of the parameters bound to the model",
+)
+@click.option(
+    "--metrics", prompt="Metrics (file)", help="Filename of the metrics bound to model"
+)
+@click.option(
+    "--dataset_name", prompt="Dataset name", help="Name of the dataset used in model"
+)
 def upload(name, model, hyperparameters, parameters, metrics, dataset_name):
     """Uploads a given model."""
-    models = Models(
-        {
-            "api_url": "https://ml.kochanowski.dev/api/v1",
-            "auth_user_login": "Nokia",
-            "auth_user_password": "Nokiademo2019",
-            "selected_project": 1,
-        }
-    )
+    models = Models()
     models.upload(
         name=name,
         filename=model,
@@ -39,30 +52,25 @@ def download():
 
 @click.command()
 def ls():
-    models = Models(
-        {
-            "api_url": "https://ml.kochanowski.dev/api/v1",
-            "auth_user_login": "Nokia",
-            "auth_user_password": "Nokiademo2019",
-        }
-    )
-    table = SingleTable(
-        Transform().api_response_to_terminaltables(
-            models.get_all(),
-            include=[
-                "id",
-                "user",
-                "visibility",
-                "created",
-                "hyperparameters",
-                "parameters",
-                "metrics",
-            ],
+    models = Models().get_all()
+    if models:
+        table = SingleTable(
+            Transform().api_response_to_terminaltables(
+                models,
+                include=[
+                    "id",
+                    "user",
+                    "visibility",
+                    "created",
+                    "hyperparameters",
+                    "parameters",
+                    "metrics",
+                ],
+            )
         )
-    )
-    table.inner_row_border = True
-    table.title = "Most recently uploaded models (1 to 20)"
-    click.echo(table.table)
+        table.inner_row_border = True
+        table.title = "Most recently uploaded models (1 to 20)"
+        click.echo(table.table)
 
 
 models.add_command(upload)
