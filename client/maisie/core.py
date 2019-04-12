@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 class Config:
+    """Manages and pre-loads configuration from all available sources."""
+
     def __init__(self, filename=None, dictionary=None):
         self._fetch_from_dict(dictionary=DEFAULT_SETTINGS)
         self.fetch(filename=filename, dictionary=dictionary)
@@ -36,7 +38,8 @@ class Config:
         return {"Authorization": f"Bearer {self.auth.token}"}
 
     @property
-    def auth(self):
+    def auth(self) -> AuthManager:
+        """Authenticates and returns an instance of AuthManager."""
         if self.__auth == None:
             logging.debug("Performing AuthManager class initalization")
             try:
@@ -102,7 +105,7 @@ class Config:
                 logging.debug(f"Found configuration file: {filename}")
                 self._fetch_from_file(os.path.join(root, name))
                 break
-        
+
         logger.debug("No configuration files found")
 
     def _fetch_from_file(self, filename: str) -> None:
@@ -128,7 +131,7 @@ class Config:
                         loaded += 1
                     else:
                         omitted.append(key)
-            
+
             logger.debug(
                 f"Loaded {loaded} settings, omitted: {len(omitted)} "
                 + (str(omitted) if omitted else "")
@@ -177,6 +180,8 @@ class Config:
 
 
 class BaseAction:
+    """Base class for actions exposed both in package and for CLI."""
+
     def __init__(self, config=None):
         self.config = self.__check_config(config)
 
