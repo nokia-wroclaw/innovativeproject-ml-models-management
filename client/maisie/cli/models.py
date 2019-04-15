@@ -6,14 +6,7 @@ from maisie import Models
 from maisie.utils.misc import Transform
 
 
-DEFAULT_DISPLAY_ATTRIBUTES = [
-    "id",
-    "user",
-    "name",
-    "created",
-    "metrics",
-    "visibility",
-]
+DEFAULT_DISPLAY_ATTRIBUTES = ["id", "user", "name", "created", "metrics", "visibility"]
 
 
 @click.group()
@@ -84,7 +77,7 @@ def download():
 @click.option("-hp", "--hyperparameter", default=None, help="")
 @click.option("-p", "--parameter", default=None, help="")
 @click.option("-s", "--sort", default=None, help="Sorts by given key : *key:desc*")
-def ls(id):
+def ls(id, hyperparameter, parameter, sort):
     if id:
         models = Models().get(id)
         include = [

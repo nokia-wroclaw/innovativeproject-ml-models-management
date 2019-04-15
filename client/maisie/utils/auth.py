@@ -86,7 +86,7 @@ class AuthManager:
 
     def _auth_via_password(self):
         logger.debug("Attempting authentication via password")
-        request = requests.get(
+        request = requests.post(
             f"{self.api_url}/auth/login/",
             data={"login": self.login, "password": self.password},
         )
