@@ -56,35 +56,20 @@ def rm():
     "-id", "--id", default=None, type=int, help="Returns project with a specified id"
 )
 def ls(id):
-    projects = Projects().get_all()
+    if id:
+        projects = Projects().get(id)
+    else:
+        projects = Projects().get_all()
 
-    table = SingleTable(
-        Transform().api_response_to_terminaltables(
-            projects, include=DEFAULT_DISPLAY_ATTRIBUTES
+    if projects:
+        table = SingleTable(
+            Transform().api_response_to_terminaltables(
+                projects, include=DEFAULT_DISPLAY_ATTRIBUTES
+            )
         )
-    )
-    table.inner_row_border = True
-    table.title = "List of projects"
-    click.echo(table.table)
-
-
-#     if id:
-#         projects = Projects().get(id)
-#         include = [
-#             "id"
-#         ]
-#     else:
-#         projects = Projects().get_all()
-#         include = DEFAULT_DISPLAY_ATTRIBUTES
-#     if projects:
-#         table = SingleTable(
-#             Transform().api_response_to_terminaltables(
-#                 projects, include=DEFAULT_DISPLAY_ATTRIBUTES
-#             )
-#         )
-#         table.inner_row_border = True
-#         table.title = "Most recently uploaded models"
-#         click.echo(table.table)
+        table.inner_row_border = True
+        table.title = "List of projects"
+        click.echo(table.table)
 
 
 projects.add_command(add)

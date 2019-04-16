@@ -39,7 +39,14 @@ class Projects(BaseAction):
         pass
 
     def get(self, id: int):
-        pass
+        with self.config.session as session:
+            request = session.get(f"{self.config.api_url}/projects/{id}/")
+            result = []
+            if "data" in request.json():
+                result.append(request.json()["data"])
+            else:
+                logger.error("Could not fetch requested project.")
+        return result
 
     def get_all(self, page=None, per_page=None):
         results = []
