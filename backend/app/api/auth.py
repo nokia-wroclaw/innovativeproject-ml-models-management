@@ -8,13 +8,13 @@ from app.api.utils import NestedResponse
 
 
 class LoginAuthAPI(Resource):
-    def get(self):
+    def post(self):
         """Logs a user in by parsing a POST request containing user credentials and
         issuing a JWT token.
         
         .. example::
         
-            $ curl http://localhost:5000/login -X POST \
+            $ curl http://localhost:5000/api/v1/auth/login/ -X POST \
                 -d '{"login":"zofiakochutek","password":"clechay"}'
         """
         parser = reqparse.RequestParser()
@@ -35,7 +35,7 @@ class RefreshTokenAuthAPI(Resource):
         
         .. example::
         
-        $ curl http://localhost:5000/refresh -X GET \
+        $ curl http://localhost:5000/api/v1/auth/token/ -X GET \
             -H "Authorization: Bearer <your_token>"
         """
         old_token = praetorian.read_token_from_header()
