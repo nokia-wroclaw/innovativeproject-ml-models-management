@@ -14,7 +14,7 @@ export const Auth = {
 			errorDescription: "log-in has not been implemented"
 		}
 	},
-	register: async (firstname: string, lastname:string, email:string, password: string): Promise<Response> => {
+	register: async (firstname: string, lastname: string, email: string, password: string): Promise<Response> => {
 		return {
 			successful: false,
 			errorCode: "not-implemented",
@@ -29,76 +29,145 @@ export const Auth = {
 		}
 	}
 }
-interface Parameter{
-	id:number;
-	value:number|string;
+export interface Parameter {
+	id: string;
+	value: number | string;
 }
-interface Metric{
-	id:number;
-	value:number;
+export interface Metric {
+	id: string;
+	value: number;
 }
-interface Model{
-	id?:number;
-	name?:string;
-	description?:string;
+export interface Author{
+	nick:string;
+	name:string;
+	url:string;
+}
+export interface Model {
+	id: number;
+	name: string;
+	description: string;
 
-	dataset?:string;
-	commitUrl?:string;
+	dataset: string;
+	commitUrl: string;
 
-	parameters?:Parameter[];
-	hiperParameters?:Parameter[];
-	metrics?:Metric[];
+	parameters: Parameter[];
+	hiperParameters: Parameter[];
+	metrics: Metric[];
+	tags: string[];
+
+	author: Author;
 }
-interface Project{
-	id?:string;
-	name?:string;
-	description?:string;
-	repoUrl?:string;
+export interface Project {
+	id: number;
+	name: string;
+	description: string;
 }
-interface ProjectDetails extends Project{
-	repoUrl?:string;
-	allParameters?:string[];
-	allHiperParameters?:string[];
+export interface ProjectDetails extends Project {
+	repoUrl: string;
+	allParameters: string[];
+	allHiperParameters: string[];
+	allModelNames: string[];
+	allModelTags: string[];
+	allMetrics: string[];
 }
-interface GetProjectResponse extends Response, ProjectDetails{
+export interface GetProjectResponse extends Response, ProjectDetails {
 }
-interface GetProjectsResponse extends Response {
-	projects?:Project[];
+export interface GetProjectsResponse extends Response {
+	projects?: Project[];
 }
 export const Project = {
-	getProject: async (projectId:string): Promise<GetProjectResponse> => {
+	getProject: async (projectId: number): Promise<GetProjectResponse> => {
 		return {
-			successful: false,
-			errorCode: "not-implemented",
-			errorDescription: "getProject has not been implemented"
+			successful: true,
+			id: 1,
+			name: "string",
+			description: "string",
+			repoUrl: "string",
+			allParameters: ["string"],
+			allHiperParameters: ["string"],
+			allModelNames: ["name"],
+			allModelTags: ["tag"],
+			allMetrics: ["acc"]
 		}
 	},
 	getProjects: async (): Promise<GetProjectsResponse> => {
 		return {
-			successful: false,
-			errorCode: "not-implemented",
-			errorDescription: "getProjects has not been implemented"
+			successful: true,
+			projects:[
+				{
+					id: 1,
+					name: "string",
+					description: "string",
+				}
+			]
 		}
 	}
 }
-interface GetModelResponse extends Response, Model{
+export interface GetModelResponse extends Response, Model {
 }
-interface GetModelsResponse extends Response {
-	Models?:Model[];
+export interface GetModelsResponse extends Response {
+	models?: Model[];
+}
+export interface GetModelsQuery {
+	filter?:{
+		projectId:string,
+		tags:string[],
+		name:string,
+		hiperParameters:string[],
+		parameters:string[],
+		metrics:string,
+	},
+	sort?:{
+		order:"asc"|"desc",
+		type:"field"|"metric"|"parameter"|"hiperParameter",
+		id:string|number,
+	},
+	pagination?:{
+		pageSize:number;
+		startWithId?:number; // by default don't skip any
+	}
 }
 export const Model = {
-	getModel: async (modelId:string): Promise<GetModelResponse> => {
+	getModel: async (modelId: string): Promise<GetModelResponse> => {
 		return {
-			successful: false,
-			errorCode: "not-implemented",
-			errorDescription: "getModel has not been implemented"
+			successful: true,
+			id: 1,
+			name: "string",
+			description: "string",
+			dataset: "string",
+			commitUrl: "string",
+			parameters: [{ id: "11", value: 22 }],
+			hiperParameters: [{ id: "11", value: 22 }],
+			metrics: [{ id: "11", value: 22 }],
+			tags: ["tag"],
+			author:{
+				name:"name",
+				nick:"nick",
+				url:"url.example.com/aurhor/17"
+			}
 		}
 	},
-	getModels: async (projectId:string): Promise<GetModelsResponse> => {
+	getModels: async (projectId: number): Promise<GetModelsResponse> => {
 		return {
-			successful: false,
-			errorCode: "not-implemented",
-			errorDescription: "getModels has not been implemented"
+			successful: true,
+			models: [ 
+				{
+					id: 1,
+					name: "string",
+					description: "string",
+					dataset: "string",
+					commitUrl: "string",
+					parameters: [{ id: "11", value: 22 }],
+					hiperParameters: [{ id: "11", value: 22 }],
+					metrics: [{ id: "11", value: 22 }],
+					tags: ["tag"],
+					author:{
+						name:"name",
+						nick:"nick",
+						url:"url.example.com/aurhor/17"
+					}
+				}
+			]
 		}
 	}
 }

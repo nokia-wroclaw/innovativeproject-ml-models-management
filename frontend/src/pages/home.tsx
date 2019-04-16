@@ -59,7 +59,7 @@ class HomeC extends React.Component<WithStyles<typeof styles>, State> {
 
 		return (
 			<main>
-				
+				<h3>My projects</h3>
 			</main>
 		);
 	}

@@ -11,7 +11,7 @@ import withRoot from './withRoot';
 import { Login } from './pages/login';
 import { Account } from './pages/account';
 import { Home } from './pages/home';
-import { Project } from './pages/project';
+import { ProjectView } from './pages/project';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 const styles = (theme: Theme) =>
@@ -36,7 +36,7 @@ class App extends React.Component<WithStyles<typeof styles>, State> {
 					<Route path="/account" component={Account} />
 					<Route
 						path="/project/:projectId"
-						component={Project}
+						component={ProjectView}
 					/>
 					<Route exact path="/" component={Home} />
 				</Router>		

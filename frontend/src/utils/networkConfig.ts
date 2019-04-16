@@ -1,0 +1,1 @@
+export const apiHost = 'mlmm.example.com/api/v1/'
