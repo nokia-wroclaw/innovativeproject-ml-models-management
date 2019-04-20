@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-	Button, Typography, FormControl, FormControlLabel, Paper, Checkbox, Input, InputLabel, SnackbarContent, Grid, TableBody, Table, TableRow, TableCell
+	Button, Typography, FormControl, FormControlLabel, Paper, Checkbox, Input, InputLabel, SnackbarContent, Grid, TableBody, Table, TableRow, TableCell, TextField
 } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { createStyles, WithStyles } from '@material-ui/core/styles';
@@ -8,6 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { RouteComponentProps } from 'react-router-dom';
 import { GetModelsResponse, Parameter, Metric, Model as ModelConnect, Model } from "../utils/connect"
 import { ModelsList } from "./ModelsList"
+import { SuperSelect } from './SuperSelect';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -20,6 +21,8 @@ const styles = (theme: Theme) =>
 interface State {
 	status: "loading" | "loaded" | "failed";
 	models?: Model[]
+	modelName: string;
+	tags: string[];
 };
 
 interface Props extends WithStyles<typeof styles> {
@@ -30,12 +33,15 @@ interface Props extends WithStyles<typeof styles> {
 	allModelTags: string[];
 	allModelNames: string[];
 }
+
 class ModelsSearchComp extends React.Component<Props, State> {
 	lastReq: string = "";
 	constructor(props: Props) {
 		super(props);
 		this.state = {
 			status: "loading",
+			modelName: "",
+			tags: []
 		}
 	}
 	getModels = async () => {
@@ -60,16 +66,23 @@ class ModelsSearchComp extends React.Component<Props, State> {
 		this.getModels();
 	}
 	render() {
-		console.log(this.state)
+		const state = this.state;
 		if (this.state.status === "loaded") return (
 			<div>
 				<h3>Models</h3>
 				<Grid container spacing={24}>
 					<Grid item xs={12} sm={4}>
-						name
+						<TextField
+							id="standard-with-placeholder"
+							label="model name"
+							placeholder="eg. Model Marka"
+							margin="normal"
+							value={this.state.modelName}
+							onChange={ e=>{this.setState({modelName:e.target.value})} }
+						/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
-						tags
+						<SuperSelect selected={this.state.tags} options={this.props.allModelTags} onChange={(updated)=>{this.setState({tags:updated})}}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
 						branch

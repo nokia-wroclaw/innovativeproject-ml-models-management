@@ -86,7 +86,7 @@ export const Project = {
 			allParameters: ["string"],
 			allHiperParameters: ["string"],
 			allModelNames: ["name"],
-			allModelTags: ["tag"],
+			allModelTags: ["tag","ojej","deployed","faulty","BIASED"],
 			allMetrics: ["acc"]
 		}
 	},
@@ -139,7 +139,7 @@ export const Model = {
 			parameters: [{ id: "11", value: 22 }],
 			hiperParameters: [{ id: "11", value: 22 }],
 			metrics: [{ id: "11", value: 22 }],
-			tags: ["tag"],
+			tags: ["tag","ojej","deployed","faulty","BIASED"],
 			author:{
 				name:"name",
 				nick:"nick",
@@ -160,7 +160,7 @@ export const Model = {
 					parameters: [{ id: "11", value: 22 }],
 					hiperParameters: [{ id: "11", value: 22 }],
 					metrics: [{ id: "11", value: 22 }],
-					tags: ["tag"],
+					tags: ["tag","ojej","deployed","faulty","BIASED"],
 					author:{
 						name:"name",
 						nick:"nick",
