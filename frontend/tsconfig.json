@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+	  "experimentalDecorators": true,
     "target": "es6",
     "lib": [
       "dom",
@@ -19,7 +20,8 @@
     "noEmit": true,
     "jsx": "preserve",
     "allowUnusedLabels": true,
-    "inlineSourceMap": true
+    "inlineSourceMap": true,
+    "noImplicitAny": false
   },
   "include": [
     "src"
