@@ -10,22 +10,16 @@ import classNames from 'classnames';
 import { RouteComponentProps } from 'react-router-dom';
 import { GetModelsResponse, Parameter, Metric, Model as ModelConnect, Model } from "../utils/connect"
 
-const styles = (theme: Theme) =>
+const styles = (theme) =>
 	createStyles({
 		left:{
 			textAlign:"left"
 		}
 	});
 
-interface State {
-};
-
-interface Props extends WithStyles<typeof styles> {
-	models?: Model[],
-}
-class ModelsListComp extends React.Component<Props, State> {
-	lastReq: string = "";
-	constructor(props: Props) {
+class ModelsListComp extends React.Component {
+	lastReq = "";
+	constructor(props) {
 		super(props);
 		this.state = {
 		}

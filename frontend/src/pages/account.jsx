@@ -10,15 +10,12 @@ import { createStyles, WithStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { TransformRounded as Logo , LockOutlined as LockOutlinedIcon} from '@material-ui/icons';
 
-const styles = (theme: Theme) =>
+const styles = (theme) =>
 	createStyles({
 		
 	});
 
-type State = {
-};
-
-class AccountC extends React.Component<WithStyles<typeof styles>, State> {
+class AccountC extends React.Component {
 
 	render() {
 		const { classes } = this.props;

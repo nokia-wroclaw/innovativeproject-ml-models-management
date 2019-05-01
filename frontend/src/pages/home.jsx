@@ -11,7 +11,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 
 
-const styles = (theme: Theme) =>
+const styles = (theme) =>
 	createStyles({
 		root: {
 			width: '100%',
@@ -49,10 +49,8 @@ const styles = (theme: Theme) =>
 
 
 
-type State = {
-};
 
-class HomeC extends React.Component<WithStyles<typeof styles>, State> {
+class HomeC extends React.Component{
 
 	render() {
 		const { classes } = this.props;

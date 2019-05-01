@@ -11,24 +11,14 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Project, GetProjectResponse, ProjectDetails } from "../utils/connect"
 import { ModelsSearchComponent } from '../components/ModelsSearch'
 
-const styles = (theme: Theme) =>
+const styles = (theme) =>
 	createStyles({
 
 	});
 
-interface State extends ProjectDetails {
-	status: "loading" | "loaded" | "failed";
-};
-
-interface ProjectRouterProps {
-	projectId: string;   // This one is coming from the router
-}
-interface Props extends WithStyles<typeof styles>, RouteComponentProps<ProjectRouterProps> {
-
-}
-class ProjectComponent extends React.Component<Props, State> {
-	lastReq: string = "";
-	constructor(props: Props) {
+class ProjectComponent extends React.Component {
+	lastReq = "";
+	constructor(props) {
 		super(props);
 		this.state = {
 			status: "loading",
@@ -66,7 +56,7 @@ class ProjectComponent extends React.Component<Props, State> {
 			status: "loaded"
 		})
 	}
-	componentDidUpdate(prevProps: Props, prevState: State) {
+	componentDidUpdate(prevProps, prevState) {
 		const urlId = this.props.match.params.projectId;
 		const prevUrlId = prevProps.match.params.projectId;
 		if (urlId !== prevUrlId) this.getProject();
@@ -86,9 +76,10 @@ class ProjectComponent extends React.Component<Props, State> {
 						projectId={project.id}
 						allHiperParameters={project.allHiperParameters}
 						allMetrics={project.allMetrics}
-						allModelNames={project.allModelNames}
-						allModelTags={project.allModelTags}
+						allNames={project.allModelNames}
+						allTags={project.allModelTags}
 						allParameters={project.allParameters}
+						allBranches={project.allBranches}
 					/>
 				</div> 
 			) 

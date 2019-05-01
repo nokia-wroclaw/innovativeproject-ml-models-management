@@ -8,7 +8,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { TransformRounded as Logo, LockOutlined as LockOutlinedIcon, Error as Icon } from '@material-ui/icons';
 import {Auth, LoginResponse, Response} from "../utils/connect"
 
-const styles = (theme: Theme) =>
+const styles = (theme) =>
 	createStyles({
 		main: {
 			width: 'auto',
@@ -59,17 +59,8 @@ const styles = (theme: Theme) =>
 		},
 	});
 
-type State = {
-	username: string,
-	password: string,
-	reamember: boolean,
-	error: string
-};
-interface Props extends WithStyles<typeof styles> {
-
-}
-class LoginComponent extends React.Component<Props, State> {
-	constructor(props: Props) {
+class LoginComponent extends React.Component {
+	constructor(props) {
 		super(props);
 		this.state = {
 			username: "",
@@ -78,13 +69,13 @@ class LoginComponent extends React.Component<Props, State> {
 			error: ""
 		}
 	}
-	handle = (event:any) => {
+	handle = (event) => {
 		const target = event.target;
 		const value = target.type === 'checkbox' ? target.checked : target.value;
 		const name = target.name;
 		this.setState({
 		  [name]: value
-		} as any);
+		});
 	}
 	send = async () => {
 		const { username, password, reamember } = this.state
@@ -96,7 +87,7 @@ class LoginComponent extends React.Component<Props, State> {
 	}
 	render() {
 		const { classes } = this.props;
-		let alert:any = "";
+		let alert = "";
 		if(this.state.error){
 			alert = (<SnackbarContent
 			className={classes.snackbar}

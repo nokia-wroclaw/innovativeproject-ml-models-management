@@ -1,16 +1,14 @@
 import * as React from 'react';
 import {
-	Button, Typography, FormControl, FormControlLabel, Paper, Checkbox, Input, InputLabel, SnackbarContent, Grid, TableBody, Table, TableRow, TableCell, TextField
+	Grid, TextField
 } from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles} from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { RouteComponentProps } from 'react-router-dom';
-import { GetModelsResponse, Parameter, Metric, Model as ModelConnect, Model } from "../utils/connect"
+import { Model as ModelConnect} from "../utils/connect"
 import { ModelsList } from "./ModelsList"
 import { SuperSelect } from './SuperSelect';
 
-const styles = (theme: Theme) =>
+const styles = (theme) =>
 	createStyles({
 		flexRow:{
 			display:"flex",
@@ -18,30 +16,19 @@ const styles = (theme: Theme) =>
 		}
 	});
 
-interface State {
-	status: "loading" | "loaded" | "failed";
-	models?: Model[]
-	modelName: string;
-	tags: string[];
-};
 
-interface Props extends WithStyles<typeof styles> {
-	projectId:number;
-	allMetrics: string[],
-	allParameters: string[],
-	allHiperParameters: string[],
-	allModelTags: string[];
-	allModelNames: string[];
-}
-
-class ModelsSearchComp extends React.Component<Props, State> {
-	lastReq: string = "";
-	constructor(props: Props) {
+class ModelsSearchComp extends React.Component{
+	lastReq = "";
+	constructor(props) {
 		super(props);
 		this.state = {
 			status: "loading",
 			modelName: "",
-			tags: []
+			tags: [],
+			parameters: [],
+			hiperParameters: [],
+			metrics: [],
+			branches: []
 		}
 	}
 	getModels = async () => {
@@ -59,7 +46,7 @@ class ModelsSearchComp extends React.Component<Props, State> {
 			status: "loaded"
 		})
 	}
-	componentDidUpdate(prevProps: Props, prevState: State) {
+	componentDidUpdate(prevProps, prevState) {
 		if (prevProps.projectId !== this.props.projectId) this.getModels();
 	}
 	componentDidMount() {
@@ -82,21 +69,25 @@ class ModelsSearchComp extends React.Component<Props, State> {
 						/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
-						<SuperSelect selected={this.state.tags} options={this.props.allModelTags} onChange={(updated)=>{this.setState({tags:updated})}}/>
+						<SuperSelect name="branches" selected={["not implemented"]} options={["not implemented"]} onChange={updated=>null}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
-						branch
+
+						{/*<SuperSelect name="branches" selected={this.state.branches} options={this.props.allBranches} onChange={updated=>this.setState({branches:updated})}/>*/}
 					</Grid>
 				</Grid>
 				<Grid container spacing={24}>
 					<Grid item xs={12} sm={4}>
-						hiper parameters
+
+						<SuperSelect selected={this.state.hiperParameters} options={this.props.allHiperParameters} onChange={updated=>this.setState({hiperParameters:updated})}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
-						parameters
+
+						<SuperSelect selected={this.state.parameters} options={this.props.allParameters} onChange={updated=>this.setState({parameters:updated})}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
-						metrics
+
+						<SuperSelect selected={this.state.metrics} options={this.props.allMetrics} onChange={updated=>this.setState({metrics:updated})}/>
 					</Grid>
 				</Grid>
 				<div className={this.props.classes.flexRow}>

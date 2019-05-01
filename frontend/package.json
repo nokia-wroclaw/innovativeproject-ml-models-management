@@ -5,13 +5,6 @@
   "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
-    "@types/classnames": "^2.2.7",
-    "@types/jest": "24.0.11",
-    "@types/node": "11.11.3",
-    "@types/react": "16.8.8",
-    "@types/react-dom": "16.8.2",
-    "@types/react-router-dom": "^4.3.1",
-    "@types/react-select": "^2.0.15",
     "classnames": "^2.2.6",
     "mobx": "^5.9.4",
     "mobx-react": "^5.4.3",
