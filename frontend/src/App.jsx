@@ -12,10 +12,15 @@ import { ProjectView } from './pages/project';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import NavBar from './components/NavBar'
-
+import 'typeface-roboto';
 
 const styles = () =>
    createStyles({
+      container:{
+         maxWidth:"940px",
+         marginLeft:"auto",
+         marginRight:"auto"
+      }
    });
 
 
@@ -26,19 +31,19 @@ class App extends React.Component {
       // @ts-ignore
       return (
          <div id="app">
-            <Router>
-               <CssBaseline/>
-               <NavBar></NavBar>
-               <div id="main">
-                  <Route path="/login" component={Login}/>
-                  <Route path="/account" component={Account}/>
-                  <Route
-                     path="/project/:projectId"
-                     component={ProjectView}
-                  />
-                  <Route exact path="/" component={Home}/>
-               </div>
-            </Router>
+               <Router>
+                  <CssBaseline/>
+                  <NavBar/>
+                  <div id="main" className={this.props.classes.container}>
+                     <Route path="/login" component={Login}/>
+                     <Route path="/account" component={Account}/>
+                     <Route
+                        path="/project/:projectId"
+                        component={ProjectView}
+                     />
+                     <Route exact path="/" component={Home}/>
+                  </div>
+               </Router>
          </div>
       );
    }

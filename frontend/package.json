@@ -13,6 +13,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "react-select": "^2.4.2",
+    "typeface-roboto": "^0.0.54",
     "typescript": "3.3.3333"
   },
   "scripts": {
