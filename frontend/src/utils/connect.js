@@ -80,15 +80,15 @@ export const Project = {
 		return {
 			successful: true,
 			id: 1,
-			name: "string",
-			description: "string",
-			repoUrl: "string",
-			allParameters: ["string"],
-			allHiperParameters: ["string"],
-			allModelNames: ["name"],
-			allModelTags: ["tag","ojej","deployed","faulty","BIASED"],
-			allMetrics: ["acc"],
-			allBranches: ["master","master-dev"]
+			name: "Dystopian Face Recognition",
+			description: "For Continental China ONLY",
+			repoUrl: "--",
+			allParameters: ["cert","riskFactor","psychopassImportance"],
+			allHiperParameters: ["whitesHatered","racismFactor"],
+			allModelNames: ["riskAprox","colorAssign","policePreamptiveDispatcher"],
+			allModelTags: ["deployed","wasteful","notEnoughHard","toSoft","BIASED"],
+			allMetrics: ["acc","falsePositives","falseNegatives","missedWhites"],
+			allBranches: ["master","master-dev","deplyed"]
 		}
 	},
 	getProjects: async () => {
@@ -151,7 +151,55 @@ export const Model = {
 	getModels: async (projectId) => {
 		return {
 			successful: true,
-			models: [ 
+			models: [
+				{
+					id: 1,
+					name: "string",
+					description: "string",
+					dataset: "string",
+					commitUrl: "string",
+					parameters: [{ id: "11", value: 22 }],
+					hiperParameters: [{ id: "11", value: 22 }],
+					metrics: [{ id: "11", value: 22 }],
+					tags: ["tag","ojej","deployed","faulty","BIASED"],
+					author:{
+						name:"name",
+						nick:"nick",
+						url:"url.example.com/aurhor/17"
+					}
+				},
+				{
+					id: 1,
+					name: "string",
+					description: "string",
+					dataset: "string",
+					commitUrl: "string",
+					parameters: [{ id: "11", value: 22 }],
+					hiperParameters: [{ id: "11", value: 22 }],
+					metrics: [{ id: "11", value: 22 }],
+					tags: ["tag","ojej","deployed","faulty","BIASED"],
+					author:{
+						name:"name",
+						nick:"nick",
+						url:"url.example.com/aurhor/17"
+					}
+				},
+				{
+					id: 1,
+					name: "string",
+					description: "string",
+					dataset: "string",
+					commitUrl: "string",
+					parameters: [{ id: "11", value: 22 }],
+					hiperParameters: [{ id: "11", value: 22 }],
+					metrics: [{ id: "11", value: 22 }],
+					tags: ["tag","ojej","deployed","faulty","BIASED"],
+					author:{
+						name:"name",
+						nick:"nick",
+						url:"url.example.com/aurhor/17"
+					}
+				},
 				{
 					id: 1,
 					name: "string",

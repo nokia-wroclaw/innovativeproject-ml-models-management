@@ -13,7 +13,27 @@ import { ModelsSearchComponent } from '../components/ModelsSearch'
 
 const styles = (theme) =>
 	createStyles({
-
+		cover: {
+			width: "100%",
+			padding: "40px 0",
+			display: "flex",
+			flexDirection: "column",
+			justifyContent: "space-between"
+		},
+		coverItem: {
+			marginBottom: theme.spacing.unit
+		},
+		button: {
+			margin: theme.spacing.unit,
+		},
+		row: {
+			display: "flex",
+			flexDirection: "row",
+			marginTop: "10px",
+			"& *:first-child":{
+				marginLeft:0
+			}
+		}
 	});
 
 class ProjectComponent extends React.Component {
@@ -65,13 +85,27 @@ class ProjectComponent extends React.Component {
 		this.getProject();
 	}
 	render() {
+		const {classes} = this.props;
+		const {state} = this;
 		if (this.state.status === "loaded") {
 			const project = this.state;
 			return (
 				<div>
-					<h1>This some project called {this.state.name}</h1>
-					<p>{this.state.description}</p>
-					<a href={this.state.repoUrl}>Go to code repo for some additional inside.</a>
+					<div className={classes.cover}>
+						<Typography className={classes.coverItem} variant={"h3"}>{state.name}</Typography>
+						<Typography className={classes.coverItem} variant={"h5"}>{state.description}</Typography>
+						<div className={classes.row}>
+							<Button variant="outlined" size="small" color="primary" className={classes.button}>
+								Code Repo
+							</Button>
+							<Button variant="outlined" size="small" color="primary" className={classes.button}>
+								Issue Tracker
+							</Button>
+							<Button variant="outlined" size="small" color="primary" className={classes.button}>
+								Live Demo
+							</Button>
+						</div>
+					</div>
 					<ModelsSearchComponent 
 						projectId={project.id}
 						allHiperParameters={project.allHiperParameters}
@@ -86,7 +120,7 @@ class ProjectComponent extends React.Component {
 		}
 		else if (this.state.status === "loading") return (
 			<p>loading</p>
-		)
+		);
 		return (
 			<p>failed</p>
 		)

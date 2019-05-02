@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+	Divider,
 	Grid, TextField
 } from '@material-ui/core';
 import { createStyles} from '@material-ui/core/styles';
@@ -7,12 +8,17 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { Model as ModelConnect} from "../utils/connect"
 import { ModelsList } from "./ModelsList"
 import { SuperSelect } from './SuperSelect';
+import Typography from "@material-ui/core/Typography";
 
 const styles = (theme) =>
 	createStyles({
 		flexRow:{
 			display:"flex",
 			flexDirection:"row"
+		},
+		spacer:{
+			width:"100%",
+			height:"40px"
 		}
 	});
 
@@ -53,50 +59,34 @@ class ModelsSearchComp extends React.Component{
 		this.getModels();
 	}
 	render() {
-		const state = this.state;
+		const {classes} = this.props;
 		if (this.state.status === "loaded") return (
 			<div>
-				<h3>Models</h3>
+				<Typography variant="h4">Models</Typography>
 				<Grid container spacing={24}>
-					<Grid item xs={12} sm={4}>
-						<TextField
-							id="standard-with-placeholder"
-							label="model name"
-							placeholder="eg. Model Marka"
-							margin="normal"
-							value={this.state.modelName}
-							onChange={ e=>{this.setState({modelName:e.target.value})} }
-						/>
+					<Grid item xs={12} sm={8}>
+						<SuperSelect name="name" label="Model name" placeholder="eg. Model Marka" disabled selected={[]} options={["not implemented"]} onChange={updated=>null}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
-						<SuperSelect name="branches" selected={["not implemented"]} options={["not implemented"]} onChange={updated=>null}/>
-					</Grid>
-					<Grid item xs={12} sm={4}>
-
-						{/*<SuperSelect name="branches" selected={this.state.branches} options={this.props.allBranches} onChange={updated=>this.setState({branches:updated})}/>*/}
+						<SuperSelect name="branches" label="Branches" placeholder="eg. master" disabled selected={[]} options={["not implemented"]} onChange={updated=>null}/>
 					</Grid>
 				</Grid>
 				<Grid container spacing={24}>
 					<Grid item xs={12} sm={4}>
 
-						<SuperSelect selected={this.state.hiperParameters} options={this.props.allHiperParameters} onChange={updated=>this.setState({hiperParameters:updated})}/>
+						<SuperSelect selected={this.state.hiperParameters} label="Hiper Parameters" placeholder="Hiper Parameters" options={this.props.allHiperParameters} onChange={updated=>this.setState({hiperParameters:updated})}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
 
-						<SuperSelect selected={this.state.parameters} options={this.props.allParameters} onChange={updated=>this.setState({parameters:updated})}/>
+						<SuperSelect selected={this.state.parameters} label="Parameters"  placeholder="Parameters" options={this.props.allParameters} onChange={updated=>this.setState({parameters:updated})}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
 
-						<SuperSelect selected={this.state.metrics} options={this.props.allMetrics} onChange={updated=>this.setState({metrics:updated})}/>
+						<SuperSelect selected={this.state.metrics} label="Metrics"  placeholder="Metrics" options={this.props.allMetrics} onChange={updated=>this.setState({metrics:updated})}/>
 					</Grid>
 				</Grid>
-				<div className={this.props.classes.flexRow}>
-					<span>sort by</span>
-					metric
-					<span>named</span>
-					fala
-				</div>
-				<ModelsList models={this.state.models}></ModelsList>
+				<div className={classes.spacer} />
+				<ModelsList models={this.state.models}/>
 			</div>
 		)
 		else if (this.state.status === "loading") return (

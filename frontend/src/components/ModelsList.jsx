@@ -17,55 +17,47 @@ const styles = (theme) =>
 		}
 	});
 
-class ModelsListComp extends React.Component {
-	lastReq = "";
-	constructor(props) {
-		super(props);
-		this.state = {
-		}
-	}
-	render() {
-		const { classes } = this.props;
-		const models = this.props.models || [];
-		return (
-			<div>
-				{
-					models.map(model =>
-						<ExpansionPanel defaultExpanded>
-							<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-								<Grid container direction="row">
-									<Grid item xs={6}>
-										<Grid container direction="column" spacing={0}>
-											<Grid item xs={12}><Typography className={classes.left}>name: {model.name}</Typography></Grid>
-											<Grid item xs={12}><Typography className={classes.left}>description: {model.description}</Typography></Grid>
-											<Grid item xs={12}><Typography className={classes.left}>author: not implemented</Typography></Grid>
-											<Grid item xs={12}><Typography className={classes.left}>added: not implemented</Typography></Grid>
-										</Grid>
-									</Grid>
-									<Grid item xs={6}>
-										<Grid container direction="column" spacing={0}>
-											<Grid item xs={12}><Typography className={classes.left}>tags: {model.tags.join(", ")}</Typography></Grid>
-											<Grid item xs={12}><Typography className={classes.left}>metrics: {model.metrics.map( m => m.id + "=" + m.value ).join(", ")}</Typography></Grid>
-										</Grid>
+function ModelsListComp(props) {
+	const { classes } = props;
+	const models = props.models || [];
+	return (
+		<div>
+			{
+				models.map(model =>
+					<ExpansionPanel>
+						<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+							<Grid container direction="row">
+								<Grid item xs={6}>
+									<Grid container direction="column" spacing={0}>
+										<Grid item xs={12}><Typography className={classes.left}>name: {model.name}</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>description: {model.description}</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>author: not implemented</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>added: not implemented</Typography></Grid>
 									</Grid>
 								</Grid>
-							</ExpansionPanelSummary>
-							<ExpansionPanelDetails>
-								<Grid container direction="row">
-									<Grid item xs={6}>
-										<Typography className={classes.left}>parameters: {model.parameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
-									</Grid>
-									<Grid item xs={6}>
-										<Typography className={classes.left}>hiperparameters: {model.hiperParameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
+								<Grid item xs={6}>
+									<Grid container direction="column" spacing={0}>
+										<Grid item xs={12}><Typography className={classes.left}>tags: {model.tags.join(", ")}</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>metrics: {model.metrics.map( m => m.id + "=" + m.value ).join(", ")}</Typography></Grid>
 									</Grid>
 								</Grid>
-							</ExpansionPanelDetails>
-						</ExpansionPanel>
-					)
-				}
-			</div>
-		)
-	}
+							</Grid>
+						</ExpansionPanelSummary>
+						<ExpansionPanelDetails>
+							<Grid container direction="row">
+								<Grid item xs={6}>
+									<Typography className={classes.left}>parameters: {model.parameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
+								</Grid>
+								<Grid item xs={6}>
+									<Typography className={classes.left}>hiperparameters: {model.hiperParameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
+								</Grid>
+							</Grid>
+						</ExpansionPanelDetails>
+					</ExpansionPanel>
+				)
+			}
+		</div>
+	)
 }
 
 export const ModelsList = withStyles(styles)(ModelsListComp);
