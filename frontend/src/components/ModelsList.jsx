@@ -23,22 +23,43 @@ function ModelsListComp(props) {
 	return (
 		<div>
 			{
-				models.map(model =>
-					<ExpansionPanel>
+				models.map(model =>{
+					const metrics = [];
+					for (const key in model.metrics){
+						metrics.push({
+							id:key,
+							value:model.metrics[key]
+						})
+					}
+					const parameters = [];
+					for (const key in model.parameters){
+						parameters.push({
+							id:key,
+							value:model.parameters[key]
+						})
+					}
+					const hyperParameters = [];
+					for (const key in model.hyperParameters){
+						hyperParameters.push({
+							id:key,
+							value:model.hyperParameters[key]
+						})
+					}
+					return (<ExpansionPanel>
 						<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
 							<Grid container direction="row">
 								<Grid item xs={6}>
 									<Grid container direction="column" spacing={0}>
 										<Grid item xs={12}><Typography className={classes.left}>name: {model.name}</Typography></Grid>
 										<Grid item xs={12}><Typography className={classes.left}>description: {model.description}</Typography></Grid>
-										<Grid item xs={12}><Typography className={classes.left}>author: not implemented</Typography></Grid>
-										<Grid item xs={12}><Typography className={classes.left}>added: not implemented</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>author: {model.author.name}</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>added: {model.created}</Typography></Grid>
 									</Grid>
 								</Grid>
 								<Grid item xs={6}>
 									<Grid container direction="column" spacing={0}>
 										<Grid item xs={12}><Typography className={classes.left}>tags: {model.tags.join(", ")}</Typography></Grid>
-										<Grid item xs={12}><Typography className={classes.left}>metrics: {model.metrics.map( m => m.id + "=" + m.value ).join(", ")}</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>metrics: {metrics.map( m => m.id + "=" + m.value ).join(", ")}</Typography></Grid>
 									</Grid>
 								</Grid>
 							</Grid>
@@ -46,14 +67,14 @@ function ModelsListComp(props) {
 						<ExpansionPanelDetails>
 							<Grid container direction="row">
 								<Grid item xs={6}>
-									<Typography className={classes.left}>parameters: {model.parameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
+									<Typography className={classes.left}>parameters: {parameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
 								</Grid>
 								<Grid item xs={6}>
-									<Typography className={classes.left}>hiperparameters: {model.hiperParameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
+									<Typography className={classes.left}>hyperparameters: {hyperParameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
 								</Grid>
 							</Grid>
 						</ExpansionPanelDetails>
-					</ExpansionPanel>
+					</ExpansionPanel>)}
 				)
 			}
 		</div>

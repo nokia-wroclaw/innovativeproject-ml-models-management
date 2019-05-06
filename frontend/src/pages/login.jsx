@@ -78,11 +78,12 @@ class LoginComponent extends React.Component {
 		});
 	}
 	send = async () => {
-		const { username, password, reamember } = this.state
-		const response = await Auth.login( username, password, reamember)
+		const { username, password, reamember } = this.state;
+		const response = await Auth.login( username, password, reamember);
 		if( !response ) throw new Error("we're in trouble, deep trouble")
 		response.errorDescription = response.errorDescription || "";
-		this.setState({error:response.errorDescription})
+		this.setState({error:response.errorDescription});
+		if(response.successful) this.props.history.push("/projects");
 		return;
 	}
 	render() {

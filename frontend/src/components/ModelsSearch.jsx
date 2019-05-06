@@ -32,7 +32,7 @@ class ModelsSearchComp extends React.Component{
 			modelName: "",
 			tags: [],
 			parameters: [],
-			hiperParameters: [],
+			hyperParameters: [],
 			metrics: [],
 			branches: []
 		}
@@ -41,13 +41,12 @@ class ModelsSearchComp extends React.Component{
 		
 		this.setState({ status: "loading" })
 		const response = await ModelConnect.getModels(this.props.projectId);
+		console.info(response)
 
 		if (!response.successful) {
 			this.setState({ status: "failed" });
-			return;
 		}
-
-		this.setState({
+		else this.setState({
 			models: response.models,
 			status: "loaded"
 		})
@@ -74,7 +73,7 @@ class ModelsSearchComp extends React.Component{
 				<Grid container spacing={24}>
 					<Grid item xs={12} sm={4}>
 
-						<SuperSelect selected={this.state.hiperParameters} label="Hiper Parameters" placeholder="Hiper Parameters" options={this.props.allHiperParameters} onChange={updated=>this.setState({hiperParameters:updated})}/>
+						<SuperSelect selected={this.state.hyperParameters} label="hyper Parameters" placeholder="hyper Parameters" options={this.props.allHyperParameters} onChange={updated=>this.setState({hyperParameters:updated})}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
 

@@ -47,7 +47,7 @@ class ProjectComponent extends React.Component {
 			description: "please wait",
 			repoUrl: "please wait",
 			allParameters: ["please wait"],
-			allHiperParameters: ["please wait"],
+			allHyperParameters: ["please wait"],
 			allModelTags: ["please wait"],
 			allModelNames: ["please wait"],
 			allMetrics: ["please wait"]
@@ -56,6 +56,7 @@ class ProjectComponent extends React.Component {
 	getProject = async () => {
 		const urlId = this.props.match.params.projectId;
 		this.setState({ status: "loading" })
+		console.info("szybkie pytanie co do kurwy",urlId,Number(urlId))
 		const project = await ProjectFetch.getProject(Number(urlId));
 
 		if (!project.successful) {
@@ -69,7 +70,7 @@ class ProjectComponent extends React.Component {
 			description: project.description,
 			repoUrl: project.repoUrl,
 			allParameters: project.allParameters,
-			allHiperParameters: project.allHiperParameters,
+			allHyperParameters: project.allHyperParameters,
 			allModelTags: project.allModelTags,
 			allModelNames: project.allModelNames,
 			allMetrics: project.allMetrics,
@@ -108,7 +109,7 @@ class ProjectComponent extends React.Component {
 					</div>
 					<ModelsSearchComponent 
 						projectId={project.id}
-						allHiperParameters={project.allHiperParameters}
+						allHyperParameters={project.allHyperParameters}
 						allMetrics={project.allMetrics}
 						allNames={project.allModelNames}
 						allTags={project.allModelTags}
