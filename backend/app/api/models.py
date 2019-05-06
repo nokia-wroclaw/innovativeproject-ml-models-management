@@ -69,6 +69,8 @@ class ModelListAPI(Resource):
         parser.add_argument("hyperparameters", type=str)
         parser.add_argument("parameters", type=str)
         parser.add_argument("metrics", type=str)
+        parser.add_argument("users", type=str)
+
 
         args = parser.parse_args()
 
@@ -80,9 +82,12 @@ class ModelListAPI(Resource):
             # query = query.filter()
             pass
         if args["projects"]:
-            # TODO: add fetching models from multiple projects
             query = query.filter(
                 Model.project_id.in_(args["projects"].split(","))
+            )
+        if args["users"]:
+            query = query.filter(
+                Model.user_id.in_(args["users"].split(","))
             )
         if args["hyperparameters"]:
             # Filtering through hyperparameters.

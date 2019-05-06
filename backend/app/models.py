@@ -141,6 +141,7 @@ class ProjectSchema(ma.Schema):
             "all_hyperparameters",
             "all_parameters",
             "all_metrics",
+            "all_users",
             "git_url",
             "updated",
             "created",
@@ -158,6 +159,7 @@ class ProjectSchema(ma.Schema):
     all_hyperparameters = ma.Method("get_all_hyperparameters")
     all_parameters = ma.Method("get_all_parameters")
     all_metrics = ma.Method("get_all_metrics")
+    all_users = ma.Method("get_all_users")
 
     def get_all_hyperparameters(self, obj):
         query = f"SELECT jsonb_object_keys(hyperparameters) from models WHERE project_id = {obj.id};"
@@ -183,6 +185,13 @@ class ProjectSchema(ma.Schema):
             output.append(key[0])
         return output
 
+    def get_all_users(self, obj):
+        models = Model.query.filter_by(project_id=obj.id).distinct(Model.user_id)
+        output = []
+        for model in models:
+            output.append({"id": model.user.id, "full_name": model.user.full_name})
+
+        return output
 
 class Model(db.Model):
     __tablename__ = "models"
