@@ -1,0 +1,36 @@
+import {CredsStore} from "../store/CredsStore";
+import {apiHost} from "./networkConfig";
+
+export const attachToken = (req)=>{
+	if(CredsStore.getToken() !== ""){
+		req.headers.set('Accept', '*/*') // for dev only
+		req.headers.set('Authorization', 'Bearer ' + CredsStore.getToken())
+	}
+	return req;
+}
+export const send = async (req)=>{
+	attachToken(req);
+	return extract(fetch(req));
+}
+export const get = async (uri)=>{
+ 	const req = new Request(apiHost+uri);
+	attachToken(req);
+	return extract(fetch(req));
+}
+export const post = async (uri,payload)=>{
+	if(typeof payload !== "string") payload = JSON.stringify(payload);
+	const req = new Request(apiHost+uri, {method: 'POST', body: payload});
+	attachToken(req);
+	req.headers.set('Content-Type', 'application/json')
+	return extract(fetch(req));
+}
+export const extract = async (response)=>{
+	const resp = await response;
+	const payload = await resp.json();
+	if(typeof payload === "undefined") payload = {};
+	return {
+		status:resp.status,
+		text:resp.statusText,
+		payload:payload.data
+	}
+}

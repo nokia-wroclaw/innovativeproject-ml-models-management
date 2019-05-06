@@ -64,10 +64,14 @@ class ModelListAPI(Resource):
         :returns: a list of objects
         """
         parser = paginated_parser.copy()
-        parser.add_argument("workspace", type=int, action="append")
-        parser.add_argument("project", type=int, action="append")
+        parser.add_argument("workspace", type=int)
+        parser.add_argument("projects", type=str)
         parser.add_argument("hyperparameters", type=str)
         parser.add_argument("parameters", type=str)
+        parser.add_argument("metrics", type=str)
+        parser.add_argument("users", type=str)
+
+
         args = parser.parse_args()
 
         # Initialize query builder
@@ -77,10 +81,14 @@ class ModelListAPI(Resource):
             # TODO: add fetching models from multiple workspaces
             # query = query.filter()
             pass
-        if args["project"]:
-            # TODO: add fetching models from multiple projects
-            # query = query.filter()
-            pass
+        if args["projects"]:
+            query = query.filter(
+                Model.project_id.in_(args["projects"].split(","))
+            )
+        if args["users"]:
+            query = query.filter(
+                Model.user_id.in_(args["users"].split(","))
+            )
         if args["hyperparameters"]:
             # Filtering through hyperparameters.
             # Every result has to contain ALL of the requested keys
@@ -94,6 +102,12 @@ class ModelListAPI(Resource):
             # Every result has to contain ALL of the requested keys
             query = query.filter(
                 Model.parameters.has_all(postgres_array(args["parameters"].split(",")))
+            )
+        if args["metrics"]:
+            # Filtering through metrics.
+            # Every result has to contain ALL of the requested keys
+            query = query.filter(
+                Model.metrics.has_all(postgres_array(args["metrics"].split(",")))
             )
 
         paginated_query = query.paginate(args["page"], args["per_page"], False)
