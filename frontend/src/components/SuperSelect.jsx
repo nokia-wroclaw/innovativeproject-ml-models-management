@@ -238,7 +238,7 @@ class SuperSelectComp extends React.Component {
 			name="colors"
 			className="basic-multi-select"
 			classNamePrefix="select"
-			options={options.map(toOption)}
+			options={options.slice(0,100).map(toOption)}
 			onChange={this.handle}
 		/>)
 	}

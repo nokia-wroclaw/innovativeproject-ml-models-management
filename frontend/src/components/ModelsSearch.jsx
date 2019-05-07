@@ -40,7 +40,12 @@ class ModelsSearchComp extends React.Component{
 	getModels = async () => {
 		
 		this.setState({ status: "loading" })
-		const response = await ModelConnect.getModels(this.props.projectId);
+		const response = await ModelConnect.getModels({
+			project:this.props.projectId,
+			parameters:this.state.parameters,
+			hyperparameters:this.state.hyperParameters,
+			metrics:this.state.metrics,
+		});
 		console.info(response)
 
 		if (!response.successful) {
@@ -73,7 +78,7 @@ class ModelsSearchComp extends React.Component{
 				<Grid container spacing={24}>
 					<Grid item xs={12} sm={4}>
 
-						<SuperSelect selected={this.state.hyperParameters} label="hyper Parameters" placeholder="hyper Parameters" options={this.props.allHyperParameters} onChange={updated=>this.setState({hyperParameters:updated})}/>
+						<SuperSelect selected={this.state.hyperParameters} label="hyper Parameters" placeholder="hyper Parameters" options={this.props.allHyperParameters} onChange={updated=>{this.setState({hyperParameters:updated}); setTimeout(this.getModels,100) }}/>
 					</Grid>
 					<Grid item xs={12} sm={4}>
 
