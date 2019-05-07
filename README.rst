@@ -38,7 +38,6 @@ Using it in your training environment is fairly straightforward:
 .. code-block:: python
 
     import maisie
-    import pickle
     from sklearn.externals import joblib
 
     # Define your model here
