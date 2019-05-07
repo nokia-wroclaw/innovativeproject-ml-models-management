@@ -1,5 +1,5 @@
-ML Models Management System
-###########################
+Maisie - ML Models Management System
+####################################
 
 .. contents:: \
 
@@ -9,30 +9,55 @@ ML Models Management System
 Features
 ========
 
-TODO
+Could archiving, storing, managing and organizing machine learnign models be done efficiently and with great focus on user experience? Sure, Maisie does just that. 
+
+Maisie is a friendly, easy to use assistant that consists of:
+
+- Web Application written in React
+- Backend API written in Python, Flask
+- Client Application/Package written in Python and hosted on PyPI
+
+It integrates seamlessy with your favorite tools and provides you with all the important data, such as:
+
+- Git revisions for all trained models, as well as information about source branches
+- Searchable, filterable hyperparameters, parameters and metrics
+- A singly identifying dataset name, as well as optional description
+- Permament URLs for easy sharing and downloading of stored models
 
 Installing
 ==========
 
-You can get the most current package from `PyPI <https://test.pypi.org/>`_
+You can get the most current package from `PyPI <https://pypi.org/project/Maisie/>`_
 
 .. code-block:: bash
 
-    $ pip install mlmm-TODO
+    $ pip install Maisie
 
 Using it in your training environment is fairly straightforward:
 
 .. code-block:: python
 
-    import mlmm-TODO
+    import maisie
+    import pickle
+    from sklearn.externals import joblib
 
-    mlmm = MLMM_TODO(token="")
+    # Define your model here
 
-    with mlmm(example=example) as models_management:
-        # something
-        models_management.upload(
-            project=project, workspace=workspace, version=2
-        )
+    model.fit(X, y)
+    model_filename = "example_model.pkl"
+    joblib.dump(model, model_filename)
+
+    # Define your metrics, fetch parameters and hyperparameters
+
+    models = maisie.Models()
+    models.upload(
+        name="My first uploaded model",
+        filename=model_filename,
+        dataset_name="Singly Identifying Dataset Name",
+        metrics={"accuracy": accuracy},
+        hyperparameters=hyperparameters,
+        parameters=parameters,
+    )
 
 Deploying
 =========
@@ -65,8 +90,8 @@ Both frontend and backend images are automatically published to `Docker Hub <htt
 
 Links
 
-- `Frontend image on Docker Hub <https://hub.docker.com>`_
-- `Backend image on Docker Hub <https://hub.docker.com>`_
+- `Frontend image on Docker Hub <https://hub.docker.com/r/kochanowski/maisie>`_
+- `Backend image on Docker Hub <https://hub.docker.com/r/kochanowski/maisie>`_
 - ...other services
 
 For reference, you can look at the `sample Ansible playbook <#>`_ that deploys all containers to a specified host using the locally configured ``.env`` file.
@@ -138,4 +163,4 @@ When ready, create a new pull request compared with the ``develop`` branch set a
 Documentation
 =============
 
-For the lastest stable release, the documentation can be seen at **mlmm-TODO**.
+For the lastest stable release, the documentation can be seen at `docs.maisie.dev <https://docs.maisie.dev>`_.
