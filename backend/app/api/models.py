@@ -20,7 +20,9 @@ class ModelAPI(Resource):
 
     def get(self, id: int) -> dict:
         """Returns data about a requested model.
-        
+
+        .. :quickref: Model; Get model.
+
         :param id: id of a requested model
         :returns: a single object
         """
@@ -34,6 +36,8 @@ class ModelAPI(Resource):
     def delete(self, id: int) -> dict:
         """Removes a selected model.
 
+        .. :quickref: Model; Delete model.
+
         :param id: id of a requested model
         :returns: whether the operation has been successful
         """
@@ -42,6 +46,8 @@ class ModelAPI(Resource):
     def put(self, id: int) -> dict:
         """Modifies a selected model.
         
+        .. :quickref: Model; Update model.
+
         :param id: id of the model to update
         :param payload: the data to override the model's with
         :returns: the updated model object
@@ -55,12 +61,14 @@ class ModelListAPI(Resource):
     def get(self) -> list:
         """Lists all models that satisfy certain conditions.
         
-        Every parameter can be appeneded multiple times.
+        .. :quickref: Models; Get a collection of models.
+
+        Every parameter can be appended multiple times.
+
         :param workspace: search for models only in this workspace
         :param project: search for models only in this project
         :param hyperparam: search for models that have this hyperparameter
         :param param: search for models that have this parameter
-
         :returns: a list of objects
         """
         parser = paginated_parser.copy()
@@ -103,6 +111,10 @@ class ModelListAPI(Resource):
         ).dump(paginated_query.items)
 
     def post(self) -> dict:
+        """Uploads a model.
+
+        .. :quickref: Models; Upload a new model.
+        """
         parser = reqparse.RequestParser()
         parser.add_argument("name", type=str)
         parser.add_argument("dataset_name", type=str)
