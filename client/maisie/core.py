@@ -31,6 +31,18 @@ class Config:
             f"Configuration attribute `{name}` was requested but could not be found"
         )
 
+    global source_dict
+    source_dict = {}
+
+    @staticmethod
+    def _setsource(key, value):
+        source_dict[key] = value
+
+    @staticmethod
+    def getsource(key):
+        if key in source_dict:
+            return source_dict[key]
+
     @property
     def headers(self):
         """Returns HTTP Headers present in all requests sent to the 
@@ -128,6 +140,7 @@ class Config:
                     value = file_config[section][setting]
                     if key.lower() in PERMITTED_SETTINGS:
                         setattr(self, key, value)
+                        self._setsource(key, filename)
                         loaded += 1
                     else:
                         omitted.append(key)
@@ -153,6 +166,7 @@ class Config:
         for key in dictionary:
             if key.lower() in PERMITTED_SETTINGS:
                 setattr(self, key, dictionary[key])
+                self._setsource(key, "dictionary")
             else:
                 omitted.append(key)
 
@@ -172,6 +186,7 @@ class Config:
             env_value = os.environ.get(env_key, None)
             if env_value:
                 setattr(self, key, env_value)
+                self._setsource(key, "environment")
                 changed.append(env_key)
 
         logger.debug(

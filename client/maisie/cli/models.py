@@ -74,8 +74,10 @@ def download():
 @click.option(
     "-id", "--id", default=None, type=int, help="Returns model with a specified id"
 )
-@click.option("-hp", "--hyperparameter", default=None, help="")
-@click.option("-p", "--parameter", default=None, help="")
+@click.option(
+    "-hp", "--hyperparameter", default=None, help="Sorts by given hyperparameter"
+)
+@click.option("-p", "--parameter", default=None, help="Sorts by given parameter")
 @click.option("-s", "--sort", default=None, help="Sorts by given key : *key:desc*")
 def ls(id, hyperparameter, parameter, sort):
     if id:
