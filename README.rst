@@ -9,7 +9,7 @@ Maisie - ML Models Management System
 Features
 ========
 
-Could archiving, storing, managing and organizing machine learnign models be done efficiently and with great focus on user experience? Sure, Maisie does just that. 
+Could archiving, storing, managing and organizing machine learning models be done efficiently and with great focus on user experience? Sure, Maisie does just that. 
 
 Maisie is a friendly, easy to use assistant that consists of:
 
@@ -17,12 +17,12 @@ Maisie is a friendly, easy to use assistant that consists of:
 - Backend API written in Python, Flask
 - Client Application/Package written in Python and hosted on PyPI
 
-It integrates seamlessy with your favorite tools and provides you with all the important data, such as:
+It integrates seamlessly with your favorite tools and provides you with all the important data, such as:
 
 - Git revisions for all trained models, as well as information about source branches
 - Searchable, filterable hyperparameters, parameters and metrics
-- A singly identifying dataset name, as well as optional description
-- Permament URLs for easy sharing and downloading of stored models
+- A single identifying dataset name, as well as an optional description
+- Permanent URLs for easy sharing and downloading of stored models
 
 Installing
 ==========
