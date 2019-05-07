@@ -4,6 +4,7 @@ from terminaltables import SingleTable
 
 from maisie import Models
 from maisie.utils.misc import Transform
+from colorama import Fore
 
 
 DEFAULT_DISPLAY_ATTRIBUTES = ["id", "user", "name", "created", "metrics", "visibility"]
@@ -96,11 +97,13 @@ def ls(id, hyperparameter, parameter, sort):
         models = Models().get_all()
         include = DEFAULT_DISPLAY_ATTRIBUTES
     if models:
-        table = SingleTable(
-            Transform().api_response_to_terminaltables(
-                models, include=DEFAULT_DISPLAY_ATTRIBUTES
-            )
+        table = Transform().api_response_to_terminaltables(
+            models, include=DEFAULT_DISPLAY_ATTRIBUTES
         )
+        table = Transform().apply_beautiful_colors(
+            obj=table, schema=[None, Fore.MAGENTA, Fore.YELLOW, None, None, Fore.GREEN]
+        )
+        table = SingleTable(table)
         table.inner_row_border = True
         table.title = "Most recently uploaded models"
         click.echo(table.table)

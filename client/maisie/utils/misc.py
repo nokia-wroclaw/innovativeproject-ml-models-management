@@ -1,6 +1,7 @@
 import ago
 import dateutil.parser
 from datetime import datetime, timezone
+from colorama import Fore
 
 
 class Transform:
@@ -20,12 +21,16 @@ class Transform:
 
         return result
 
+    def colorise(self, obj: str, color: str = Fore.YELLOW):
+        reset = Fore.RESET
+        return color + obj + reset
+
     def determine_values(self, values: list, keys: list) -> list:
         obj = zip(keys, values)
         result = []
         for key, value in obj:
             result.append(self.determine_format(value, key))
-        
+
         return result
 
     def determine_format(self, value, key=None):
@@ -35,7 +40,7 @@ class Transform:
                 return self.dict_to_username(value)
             else:
                 return self.dict_to_multiline_string(value)
-        if isinstance(value, str):  
+        if isinstance(value, str):
             if self.is_date(value):
                 return self.timestamp_to_human_readable(value)
         return value
@@ -75,3 +80,22 @@ class Transform:
             username += f" ({obj['full_name']})"
 
         return username
+
+    def apply_beautiful_colors(self, obj: str, schema: list = None) -> str:
+        if schema != None:
+            new_rows = []
+            if obj:
+                new_rows.append(obj[0])
+
+            for row in obj[1:]:
+                new_column = []
+                for index, column in enumerate(row):
+                    color = Fore.RESET
+                    if schema[index] != None:
+                        color = schema[index]
+
+                    new_column.append(color + str(column) + Fore.RESET)
+                new_rows.append(new_column)
+
+            obj = new_rows
+        return obj
