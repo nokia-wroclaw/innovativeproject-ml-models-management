@@ -1,9 +1,10 @@
 import click
-
+import logging
 from terminaltables import SingleTable
 
 from maisie import Users
 from maisie.utils.misc import Transform
+
 
 DEFAULT_DISPLAY_ATTRIBUTES = ["id", "login", "name", "email"]
 
@@ -38,7 +39,10 @@ def rm():
 
 
 @click.command()
-def ls():
+@click.option(
+    "-id", "--id", default=None, type=int, help="Returns user with a specified id"
+)
+def ls(id):
     if id:
         users = Users().get(id)
     else:
