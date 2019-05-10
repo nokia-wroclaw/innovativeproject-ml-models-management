@@ -178,8 +178,13 @@ export const Model = {
 			}
 		}
 	},
-	getModels: async (projectId) => {
-		const resp = await get('models/?projects='+projectId);
+	getModels: async (meta) => {
+		let query = 'models/?project='+meta.project+'&';
+		if(meta.parameters&&meta.parameters.length) query+="parameters="+meta.parameters.join(",")+"&";
+		if(meta.hyperparameters&&meta.hyperparameters.length) query+="hyperparameters"+meta.hyperparameters.join(",")+"&";
+		if(meta.metrics&&meta.metrics.length) query+=meta.metrics.join(",")+"&";
+		if(query.endsWith("&")) query = query.slice(0,-1);
+		const resp = await get(query);
 		console.info(resp)
 		if(resp.text==="OK") return {
 			successful: resp.text==="OK",
