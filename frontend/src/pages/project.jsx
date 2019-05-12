@@ -11,6 +11,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Project, GetProjectResponse, ProjectDetails } from "../utils/connect"
 import { ModelsSearchComponent } from '../components/ModelsSearch'
 
+
 const styles = (theme) =>
 	createStyles({
 		cover: {
@@ -56,7 +57,6 @@ class ProjectComponent extends React.Component {
 	getProject = async () => {
 		const urlId = this.props.match.params.projectId;
 		this.setState({ status: "loading" })
-		console.info("szybkie pytanie co do kurwy",urlId,Number(urlId))
 		const project = await ProjectFetch.getProject(Number(urlId));
 
 		if (!project.successful) {

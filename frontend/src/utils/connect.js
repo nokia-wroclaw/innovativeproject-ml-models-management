@@ -122,16 +122,9 @@ export const Project = {
 		}
 	},
 	getProjects: async () => {
-		return {
-			successful: true,
-			projects:[
-				{
-					id: 1,
-					name: "string",
-					description: "string",
-				}
-			]
-		}
+		const response = await get("projects/");
+		response.successful = response.text === 'OK';
+		return response;
 	}
 }
 // export interface GetModelResponse extends Response, Model {

@@ -8,11 +8,13 @@ import withRoot from './withRoot';
 import { Login } from './pages/login';
 import { Account } from './pages/account';
 import { Home } from './pages/home';
+import { Projects } from './pages/projects';
 import { ProjectView } from './pages/project';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import NavBar from './components/NavBar'
 import 'typeface-roboto';
+import { Project } from './utils/connect';
 
 const styles = () =>
    createStyles({
@@ -37,6 +39,7 @@ class App extends React.Component {
                   <div id="main" className={this.props.classes.container}>
                      <Route path="/login" component={Login}/>
                      <Route path="/account" component={Account}/>
+                     <Route path="/projects" component={Projects}/>
                      <Route
                         path="/project/:projectId"
                         component={ProjectView}
