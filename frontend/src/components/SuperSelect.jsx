@@ -208,8 +208,6 @@ class SuperSelectComp extends React.Component {
 		this.props.onChange(updated);
 	};
 	render() {
-		console.log(this)
-		console.log(this.props)
 		const { classes, theme } = this.props;
 		const selectStyles = {
 			input: base => ({
