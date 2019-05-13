@@ -8,6 +8,10 @@ import * as MUI from '@material-ui/core/';
 import {Button} from '@material-ui/core/';
 import { WithStyles } from '@material-ui/core/styles/withStyles';
 import { withStyles } from '@material-ui/core/styles';
+
+import { theme } from "../utils/theme";
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -39,6 +43,7 @@ class PrimarySearchAppBar extends React.Component {
     console.log(MUI);
 
     return (
+      <MuiThemeProvider theme={theme}>
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
@@ -57,6 +62,7 @@ class PrimarySearchAppBar extends React.Component {
           </Toolbar>
         </AppBar>
       </div>
+      </MuiThemeProvider>
     );
   }
 }
