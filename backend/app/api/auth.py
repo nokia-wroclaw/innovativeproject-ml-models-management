@@ -1,5 +1,6 @@
 from flask import jsonify, request
 from flask_restful import Resource, reqparse
+from flask_praetorian import auth_required, current_user
 
 from app import db, praetorian
 from app.models import User, UserSchema
@@ -29,6 +30,8 @@ class LoginAuthAPI(Resource):
 
 
 class RefreshTokenAuthAPI(Resource):
+    method_decorators = [auth_required]
+
     def get(self):
         """Refreshes an existing JWT by creating a new one that is a copy of the old
         except that it has a refrehsed access expiration.
@@ -38,9 +41,10 @@ class RefreshTokenAuthAPI(Resource):
         $ curl http://localhost:5000/api/v1/auth/token/ -X GET \
             -H "Authorization: Bearer <your_token>"
         """
-        old_token = praetorian.read_token_from_header()
-        new_token = praetorian.refresh_jwt_token(old_token)
+        # old_token = praetorian.read_token_from_header()
+        # new_token = praetorian.refresh_jwt_token(old_token)
+        # response = {"access_token": new_token}
 
-        response = {"access_token": new_token}
+        response = {"access_token": praetorian.encode_jwt_token(current_user())}
 
         return NestedResponse().dump(response)
