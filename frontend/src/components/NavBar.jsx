@@ -43,7 +43,7 @@ class PrimarySearchAppBar extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-              Maisie
+              <Button color="inherit" component={Link} to="/" >Maisie</Button>
             </Typography>
             <Button color="inherit"  component={Link} to="/projects/" >Projects</Button>
             <div className={classes.grow} />
