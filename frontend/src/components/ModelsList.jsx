@@ -54,6 +54,7 @@ function ModelsListComp(props) {
 										<Grid item xs={12}><Typography className={classes.left}>description: {model.description}</Typography></Grid>
 										<Grid item xs={12}><Typography className={classes.left}>author: {model.author.name}</Typography></Grid>
 										<Grid item xs={12}><Typography className={classes.left}>added: {model.created}</Typography></Grid>
+										<Grid item xs={12}><Typography className={classes.left}>commit: <a href={model.commitUrl}></a></Typography></Grid>
 									</Grid>
 								</Grid>
 								<Grid item xs={6}>
