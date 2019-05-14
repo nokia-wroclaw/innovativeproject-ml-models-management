@@ -47,7 +47,11 @@ class ProjectsComponent extends React.Component {
   }
   loadProjects = async () => {
     const projects = await ProjectFetch.getProjects();
-    this.setState({projects:projects.payload})
+    if(projects.successful) {
+      this.setState({projects:projects.data})
+      console.info("projects has been loaded",projects)
+    }
+    else console.error(`failed to load projects - statusText is not "OK"`,projects)
   }
   componentDidMount(){
     this.loadProjects();

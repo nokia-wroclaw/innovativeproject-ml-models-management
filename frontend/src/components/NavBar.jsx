@@ -36,8 +36,6 @@ const styles = theme => ({
 class PrimarySearchAppBar extends React.Component {
   render() {
     const { classes } = this.props;
-    console.log(MUI);
-
     return (
       <div className={classes.root}>
         <AppBar position="static">

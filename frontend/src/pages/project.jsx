@@ -43,7 +43,7 @@ class ProjectComponent extends React.Component {
 		super(props);
 		this.state = {
 			status: "loading",
-			id: 0,
+			id: this.props.match.params.projectId,
 			name: "please wait",
 			description: "please wait",
 			repoUrl: "please wait",
@@ -57,24 +57,26 @@ class ProjectComponent extends React.Component {
 	getProject = async () => {
 		const urlId = this.props.match.params.projectId;
 		this.setState({ status: "loading" })
-		const project = await ProjectFetch.getProject(Number(urlId));
+		const response = await ProjectFetch.getProject(Number(urlId));
 
-		if (!project.successful) {
-			this.setState({ status: "failed" });
+		if (!response.successful) {
+			this.setState({ status: response.text });
 			return;
 		}
 
+		const project = response.data;
+		console.log(`[Project][getProjects]`,response)
 		this.setState({
 			id: project.id,
 			name: project.name,
 			description: project.description,
-			repoUrl: project.repoUrl,
-			allParameters: project.allParameters,
-			allHyperParameters: project.allHyperParameters,
-			allModelTags: project.allModelTags,
-			allModelNames: project.allModelNames,
-			allMetrics: project.allMetrics,
-			status: "loaded"
+			repoUrl: project.git_url,
+			allParameters: project.all_parameters,
+			allHyperParameters: project.all_hyperparameters,
+			allModelTags: project.all_modeltags || [],
+			allModelNames: project.all_modelnames || [],
+			allMetrics: project.all_metrics,
+			status: "OK"
 		})
 	}
 	componentDidUpdate(prevProps, prevState) {
@@ -88,7 +90,7 @@ class ProjectComponent extends React.Component {
 	render() {
 		const {classes} = this.props;
 		const {state} = this;
-		if (this.state.status === "loaded") {
+		if (this.state.status === "OK") {
 			const project = this.state;
 			return (
 				<div>
@@ -96,7 +98,7 @@ class ProjectComponent extends React.Component {
 						<Typography className={classes.coverItem} variant={"h3"}>{state.name}</Typography>
 						<Typography className={classes.coverItem} variant={"h5"}>{state.description}</Typography>
 						<div className={classes.row}>
-							<Button variant="outlined" size="small" color="primary" className={classes.button}>
+							<Button variant="outlined" size="small" color="primary" className={classes.button} href={state.repoUrl}>
 								Code Repo
 							</Button>
 							<Button variant="outlined" size="small" color="primary" className={classes.button}>
@@ -109,6 +111,7 @@ class ProjectComponent extends React.Component {
 					</div>
 					<ModelsSearchComponent 
 						projectId={project.id}
+						projectGit={project.repoUrl}
 						allHyperParameters={project.allHyperParameters}
 						allMetrics={project.allMetrics}
 						allNames={project.allModelNames}
@@ -123,7 +126,7 @@ class ProjectComponent extends React.Component {
 			<p>loading</p>
 		);
 		return (
-			<p>failed</p>
+			<p>{this.state.status}</p>
 		)
 	}
 }

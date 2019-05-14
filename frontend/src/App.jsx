@@ -14,7 +14,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import NavBar from './components/NavBar'
 import 'typeface-roboto';
-import { Project } from './utils/connect';
+import { Auth } from './utils/connect';
 
 const styles = () =>
    createStyles({
@@ -28,7 +28,9 @@ const styles = () =>
 
 
 class App extends React.Component {
-
+   componentDidMount(){
+      Auth.refresh();
+   }
    render() {
       // @ts-ignore
       return (
@@ -44,7 +46,7 @@ class App extends React.Component {
                         path="/project/:projectId"
                         component={ProjectView}
                      />
-                     <Route exact path="/" component={Home}/>
+                     <Route exact path="/" component={Projects}/>
                   </div>
                </Router>
          </div>

@@ -7,7 +7,6 @@ from app.models import User, UserSchema
 from app.api import paginated_parser
 from app.api.utils import NestedResponse
 
-
 class LoginAuthAPI(Resource):
     def post(self):
         """Logs a user in by parsing a POST request containing user credentials and
@@ -24,7 +23,11 @@ class LoginAuthAPI(Resource):
         args = parser.parse_args()
 
         user = praetorian.authenticate(args["login"], args["password"])
-        response = {"access_token": praetorian.encode_jwt_token(user)}
+
+        response = {
+            "access_token": praetorian.encode_jwt_token(user),
+            "valid_for": praetorian.access_lifespan.total_seconds()
+        }
 
         return NestedResponse().dump(response)
 
@@ -45,6 +48,9 @@ class RefreshTokenAuthAPI(Resource):
         # new_token = praetorian.refresh_jwt_token(old_token)
         # response = {"access_token": new_token}
 
-        response = {"access_token": praetorian.encode_jwt_token(current_user())}
+        response = {
+            "access_token": praetorian.encode_jwt_token(current_user()),
+            "valid_for": praetorian.access_lifespan.total_seconds()
+        }
 
         return NestedResponse().dump(response)
