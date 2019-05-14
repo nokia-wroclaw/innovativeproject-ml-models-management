@@ -10,10 +10,27 @@ import classNames from 'classnames';
 import { RouteComponentProps } from 'react-router-dom';
 import { GetModelsResponse, Parameter, Metric, Model as ModelConnect, Model } from "../utils/connect"
 
+
+import {	Label as LabelIcon, 
+		  	Person as PersonIcon,
+			Description as DescriptionIcon,
+			CalendarToday as CalendarTodayIcon,
+			Reorder as ReorderIcon} from '@material-ui/icons';
+
 const styles = (theme) =>
 	createStyles({
 		left:{
 			textAlign:"left"
+		},
+		valign:{
+			display: "flex",
+			justifyContent: "flex-start",
+			alignItems: "center",
+			margin:"0.2rem 0",
+			"&>*:first-child":{
+				marginRight:"0.25rem"
+			}
+
 		},
 		spacing:{
 			padding:theme.spacing.unit
@@ -29,6 +46,7 @@ function ModelsListComp(props) {
 			{
 				models.map(model =>{
 					model.tags = model.tags || ["tagi","są","usefull"];
+					model.created = (new Date(model.created)).toLocaleDateString()
 					const metrics = [];
 					for (const key in model.metrics){
 						metrics.push({
@@ -56,11 +74,10 @@ function ModelsListComp(props) {
 							<Grid container direction="row">
 								<Grid item xs={5}>
 									<Grid container direction="column" spacing={0}>
-										<Grid item xs={12}><Typography className={classes.left}>name: {model.name}</Typography></Grid>
-										<Grid item xs={12}><Typography className={classes.left}>description: {model.description}</Typography></Grid>
-										<Grid item xs={12}><Typography className={classes.left}>author: {model.user.full_name}</Typography></Grid>
-										<Grid item xs={12}><Typography className={classes.left}>added: {model.created}</Typography></Grid>
-										<Grid item xs={12}><Typography className={classes.left}>commit: <a href={model.commitUrl}></a></Typography></Grid>
+										<Grid item xs={12}><div className={classes.valign}><LabelIcon color="primary"/><Typography> {model.name}</Typography></div></Grid>
+										<Grid item xs={12}><div className={classes.valign}><PersonIcon color="primary"/><Typography> {model.user.full_name}</Typography></div></Grid>
+										<Grid item xs={12}><div className={classes.valign}><CalendarTodayIcon color="primary"/><Typography> {model.created}</Typography></div></Grid>
+										<Grid item xs={12}><div className={classes.valign}><ReorderIcon color="primary"/><Typography> {model.dataset.name}</Typography></div></Grid>
 									</Grid>
 								</Grid>
 								<Grid item xs={5}>
