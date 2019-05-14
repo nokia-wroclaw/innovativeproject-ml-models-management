@@ -14,6 +14,9 @@ const styles = (theme) =>
 	createStyles({
 		left:{
 			textAlign:"left"
+		},
+		spacing:{
+			padding:theme.spacing.unit
 		}
 	});
 
@@ -70,9 +73,7 @@ function ModelsListComp(props) {
 														variant="outlined"
 													/> )}
 											</Typography>
-										</Grid>
-										<Grid item xs={12}><Typography className={classes.left}>metrics: <br/> {metrics.map( m => m.id + "=" + m.value ).join(", ")}</Typography></Grid>
-									</Grid>
+										</Grid>									</Grid>
 								</Grid>
 								<Grid item xs={2} onClick={e => e.stopPropagation()} >
 									<Grid container direction="column" spacing={0}>
@@ -90,11 +91,20 @@ function ModelsListComp(props) {
 						</ExpansionPanelSummary>
 						<ExpansionPanelDetails>
 							<Grid container direction="row">
-								<Grid item xs={6}>
-									<Typography className={classes.left}>parameters: <br/> {parameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
+								<Grid item xs={12}>
+									<Typography className={classes.left}>
+										metrics: <br/> {metrics.map( m => m.id + "=" + m.value ).join(", ")}
+									</Typography>
 								</Grid>
 								<Grid item xs={6}>
-									<Typography className={classes.left}>hyperparameters: <br/> {hyperparameters.map( m => m.id + "=" + m.value ).join(", ")}</Typography>
+									<Typography className={classes.left}>
+										parameters: <br/> {parameters.map( m => m.id + "=" + m.value ).join(", ")}
+									</Typography>
+								</Grid>
+								<Grid item xs={6}>
+									<Typography className={classes.left}>
+										hyperparameters: <br/> {hyperparameters.map( m => m.id + "=" + m.value ).join(", ")}
+									</Typography>
 								</Grid>
 							</Grid>
 						</ExpansionPanelDetails>

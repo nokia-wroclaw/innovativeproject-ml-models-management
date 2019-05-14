@@ -3,7 +3,7 @@ import { createStyles, WithStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import PropTypes from 'prop-types';
-import { Response, Project as ProjectFetch } from "../utils/connect";
+import { Project as ProjectFetch } from "../utils/connect";
 
 import Button from '@material-ui/core/Button';
 
@@ -16,9 +16,6 @@ import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
 
 import LabelImportant from '@material-ui/icons/LabelImportant';
-
-import { theme } from "../utils/theme";
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 
 const styles = theme => ({
   button: {
@@ -64,8 +61,6 @@ class ProjectsComponent extends React.Component {
     
 
     return (
-      <MuiThemeProvider theme={theme}>
-      <div>
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
@@ -92,14 +87,12 @@ class ProjectsComponent extends React.Component {
           </TableBody>
         </Table>
       </Paper>
-      </div> 
-      </MuiThemeProvider>
     )
 
   }
 }
 
-export const Projects = withStyles(styles)(ProjectsComponent);
+export const Projects = withStyles(styles,{ withTheme: true })(ProjectsComponent);
 
 
 
