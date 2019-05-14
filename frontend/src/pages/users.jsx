@@ -36,49 +36,48 @@ const styles = theme => ({
 });
 
 
-class ProjectsComponent extends React.Component {
+class UsersComponent extends React.Component {
 
   constructor(){
     super();
     this.state={
-      projects:[]
+      users:[]
     }
   }
   loadProjects = async () => {
-    const projects = await ProjectFetch.getProjects();
-    if(projects.successful) {
-      this.setState({projects:projects.data})
-      console.info("projects have been loaded",projects)
+    const users = await ProjectFetch.getUsers();
+    if(users.successful) {
+      this.setState({users:users.data})
+      console.info("users have been loaded",projects)
     }
-    else console.error(`failed to load projects - statusText is not "OK"`,projects)
+    else console.error(`failed to load users - statusText is not "OK"`,users)
   }
   componentDidMount(){
     this.loadProjects();
   }
   render() {
     const { classes } = this.props;
-    const projects = this.state.projects;
+    const users = this.state.users;
     
-
     return (
       <Paper className={classes.root}>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
               <TableCell align="center">Name</TableCell>
-              <TableCell align="center">Description</TableCell>
+              <TableCell align="center">Email</TableCell>
               <TableCell align="center">Go to</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {projects.map(row => (
+            {users.map(row => (
               <TableRow key={row.id}>
                 <TableCell>
                   {row.name}
                 </TableCell>
-                <TableCell>{row.description.substr(0,300)}</TableCell>
+                <TableCell>{row.email}</TableCell>
                 <TableCell>
-                  <Button color='secondary' className={classes.button} to={`/project/${row.id}`} component={Link}>
+                  <Button color='secondary' className={classes.button} to={`/user/${row.id}`} component={Link}>
                     <LabelImportant color='secondary' className={classes.icon}/>
                   </Button>
                 </TableCell>
@@ -92,7 +91,7 @@ class ProjectsComponent extends React.Component {
   }
 }
 
-export const Projects = withStyles(styles,{ withTheme: true })(ProjectsComponent);
+export const Users = withStyles(styles,{ withTheme: true })(UsersComponent);
 
 
 

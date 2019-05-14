@@ -34,6 +34,16 @@ export const Project = {
 		return await get("projects/");
 	}
 }
+
+export const User = {
+	getProject: async (userId) => {
+		return await get(`users/${userId}/`);
+	},
+	getProjects: async () => {
+		return await get("users/");
+	}
+}
+
 export const Model = {
 	getModel: async (modelId) => {
 		return await get(`models/${modelId}/`)

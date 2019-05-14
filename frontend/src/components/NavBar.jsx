@@ -8,6 +8,8 @@ import * as MUI from '@material-ui/core/';
 import {Button} from '@material-ui/core/';
 import { WithStyles } from '@material-ui/core/styles/withStyles';
 import { withStyles } from '@material-ui/core/styles';
+import Assignment from '@material-ui/icons/Assignment';
+import People from '@material-ui/icons/People';
 
 const styles = theme => ({
   root: {
@@ -44,7 +46,14 @@ class PrimarySearchAppBar extends React.Component {
             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
               <Button color="inherit" component={Link} to="/" >Maisie</Button>
             </Typography>
-            <Button color="inherit"  component={Link} to="/projects/" >Projects</Button>
+            <Button color="inherit"  component={Link} to="/projects/">
+            Projects
+            <Assignment color='inherit' className={classes.icon}/>
+            </Button>
+            <Button color="inherit"  component={Link} to="/users/" >
+            Users
+            <People color='inherit' className={classes.icon}/>
+            </Button>
             <div className={classes.grow} />
             <div className={classes.section}>
             <Button color="inherit"  component={Link} to="/login" >
