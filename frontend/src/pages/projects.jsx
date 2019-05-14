@@ -17,6 +17,8 @@ import { Typography } from '@material-ui/core';
 
 import LabelImportant from '@material-ui/icons/LabelImportant';
 
+import { theme } from "../utils/theme";
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 
 const styles = theme => ({
   button: {
@@ -62,6 +64,7 @@ class ProjectsComponent extends React.Component {
     
 
     return (
+      <MuiThemeProvider theme={theme}>
       <div>
       <Paper className={classes.root}>
         <Table className={classes.table}>
@@ -89,8 +92,8 @@ class ProjectsComponent extends React.Component {
           </TableBody>
         </Table>
       </Paper>
-
       </div> 
+      </MuiThemeProvider>
     )
 
   }
