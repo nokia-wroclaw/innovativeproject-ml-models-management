@@ -14,7 +14,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
-
+import {Link} from 'react-router-dom'
 import LabelImportant from '@material-ui/icons/LabelImportant';
 
 const styles = theme => ({
@@ -78,8 +78,8 @@ class ProjectsComponent extends React.Component {
                 </TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>
-                  <Button color='secondary' className={classes.button} href={'/project/' + row.id}>
-                  <LabelImportant color='secondary' className={classes.icon}/>
+                  <Button color='secondary' className={classes.button} to={`/project/${row.id}`} component={Link}>
+                    <LabelImportant color='secondary' className={classes.icon}/>
                   </Button>
                 </TableCell>
               </TableRow>

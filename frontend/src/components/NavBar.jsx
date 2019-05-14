@@ -60,4 +60,4 @@ class PrimarySearchAppBar extends React.Component {
   }
 }
 
-export default withStyles(styles)(PrimarySearchAppBar);
+export default withStyles(styles, { withTheme:true })(PrimarySearchAppBar);
