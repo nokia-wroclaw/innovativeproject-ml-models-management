@@ -81,17 +81,15 @@ def download():
 @click.option("-p", "--parameter", default=None, help="Sorts by given parameter")
 @click.option("-s", "--sort", default=None, help="Sorts by given key : *key:desc*")
 def ls(id, hyperparameter, parameter, sort):
+    # TODO: Rethink
     if id:
         models = Models().get(id)
         include = [
-            "id",
-            "user",
-            "name",
-            "visibility",
-            "created",
             "hyperparameters",
             "parameters",
             "metrics",
+            "_links",
+            "git",
         ]
     else:
         models = Models().get_all()
@@ -107,7 +105,14 @@ def ls(id, hyperparameter, parameter, sort):
         table.inner_row_border = True
         table.title = "Most recently uploaded models"
         click.echo(table.table)
-
+    if id:
+        table = Transform().api_response_to_terminaltables(
+            models, include=include
+        )
+        table = SingleTable(table)
+        table.inner_row_border = True
+        table.title = "Data"
+        click.echo(table.table)
 
 models.add_command(upload)
 models.add_command(download)
