@@ -74,8 +74,13 @@ html_sidebars = {"**": ["logo-text.html", "globaltoc.html", "searchbox.html"]}
 # Register the theme as an extension to generate a sitemap.xml
 extensions.append("maisie_sphinx_theme")
 
-# Guzzle theme options (see theme.conf for more information)
+# Maisie theme options (see theme.conf for more information)
 html_theme_options = {
     # Set the name of the project to appear in the sidebar
     "project_nav_name": "Maisie"
 }
+
+
+def setup(app):
+    app.add_stylesheet("css/overwrite.css")
+
