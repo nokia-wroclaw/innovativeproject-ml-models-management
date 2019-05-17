@@ -26,6 +26,7 @@ export const Auth = {
 		}
 	}
 }
+
 export const Project = {
 	getProject: async (projectId) => {
 		return await get(`projects/${projectId}/`);
@@ -36,11 +37,14 @@ export const Project = {
 }
 
 export const User = {
-	getProject: async (userId) => {
+	getUser: async (userId) => {
 		return await get(`users/${userId}/`);
 	},
-	getProjects: async () => {
+	getUsers: async () => {
 		return await get("users/");
+	},
+	getUserModels: async (userId) => {
+		return await get(`models/?user=${userId}`)
 	}
 }
 
