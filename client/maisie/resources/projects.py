@@ -14,6 +14,14 @@ class Projects(BaseAction):
         return self.config.selected_project
 
     def create(self, name: str, description: str, git_url: str):
+        """Creates and posts a new project
+
+        :param name: name of a project to create
+        :param desription: description of a project to create
+        :param git_url: path to git repository with the project
+
+        :returns: created project
+        """
         results = []
         with self.config.session as session:
             payload = {
@@ -33,12 +41,28 @@ class Projects(BaseAction):
         return results
 
     def update(self, id: int, data: dict):
+        """Updates selected project.
+        :param id: id of project to update
+        :param data: dictionary
+
+        :returns: updated project
+        """
         pass
 
     def delete(self, id: int):
+        """Deletes selected project.
+        :param id: id of the project to delete
+        
+        :returns: deleted project
+        """
         pass
 
     def get(self, id: int):
+        """Fetches a single project
+
+        :param id: id of the project to get
+        :returns: requested project
+        """
         with self.config.session as session:
             request = session.get(f"{self.config.api_url}/projects/{id}/")
             result = []
@@ -48,7 +72,14 @@ class Projects(BaseAction):
                 logger.error("Could not fetch requested project.")
         return result
 
-    def get_all(self, page=None, per_page=None):
+    def get_all(self, query=None, page=None, per_page=None):
+        """Fetches all projects that satisfy some condition.
+        
+        :param query: query string
+        :param page: number of the page used in pagination
+        :param per_page: number of the items to be fetched
+        :returns: a list of returned projects
+        """
         results = []
         if not page:
             page = self.config.api_page
