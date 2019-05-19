@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 class Models(BaseAction):
+    """Represents an action for managing models."""
+
     def upload(
         self,
         name: str,
@@ -20,6 +22,18 @@ class Models(BaseAction):
         dataset_name: str = "",
         dataset_description: str = "",
     ):
+        """Posts a single model.
+
+        :param name: name of model to upload
+        :param filename: path to file with a model
+        :param hyperparameters: dictionary or path to file with hyperparameters
+        :param metrics: dictionary or path to file with metrics
+        :param private: 
+        :param dataset_name:
+        :param dataset_description:
+
+        :returns: posted model
+        """
         hyperparameters = self._determine_input(hyperparameters)
         parameters = self._determine_input(parameters)
         metrics = self._determine_input(metrics)
@@ -43,8 +57,10 @@ class Models(BaseAction):
                 "git_active_branch": git.active_branch,
                 "git_commit_hash": git.latest_commit,
             }
-            request = session.post(f"{self.config.api_url}/models/", files=files, data=payload)
-            
+            request = session.post(
+                f"{self.config.api_url}/models/", files=files, data=payload
+            )
+
             results = []
             # print(payload)
             # print(request.text)
@@ -56,14 +72,28 @@ class Models(BaseAction):
             return results
 
     def update(self, id: int, data: dict):
+        """Update selected model.
+        
+        :param id: id of the model to put
+        :param data: dictionary
+        """
         with self.config.session as session:
             pass
 
     def download(self, id: int):
+        """Downloads requested model.
+
+        :param id: id of the model to download
+        """
         with self.config.session as session:
             pass
 
-    def get(self, id: int):
+    def get(self, id: int) -> list:
+        """Fetches a single model.
+
+        :param id: id of the model to get
+        :returns: requested model
+        """
         with self.config.session as session:
             request = session.get(f"{self.config.api_url}/models/{id}/")
             results = []
@@ -74,7 +104,14 @@ class Models(BaseAction):
 
         return results
 
-    def get_all(self, page=None, per_page=None):
+    def get_all(self, query=None, page=None, per_page=None):
+        """Fetches all models that satisfy some condition.
+        
+        :param query: query string
+        :param page: number of the page used in pagination
+        :param per_page: number of the items to be fetched
+        :returns: a list of returned models
+        """
         results = []
         if not page:
             page = self.config.api_page
@@ -92,7 +129,7 @@ class Models(BaseAction):
                 logger.error("Could not fetch any models.")
 
         return results
-    
+
     def _determine_input(self, value: Union[str, dict]) -> dict:
         if isinstance(value, str):
             value = self._file_into_dict(value)
@@ -102,7 +139,7 @@ class Models(BaseAction):
     def _file_into_dict(self, filename: str) -> dict:
         try:
             with open(filename, "rb") as filename:
-                output = json.load(filename) 
+                output = json.load(filename)
         except FileNotFoundError:
             logger.error(f"JSON File `{filename}` could not be found.")
         return output
