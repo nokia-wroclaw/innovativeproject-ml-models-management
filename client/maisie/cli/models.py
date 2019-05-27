@@ -93,16 +93,7 @@ def upload(name, file, hyperparameters, parameters, metrics, dataset_name):
 def ls(id, hyperparameter, parameter, sort, download):
     if id:
         models = Models().get(id)
-        include = [
-            "id",
-            "user",
-            "name",
-            "visibility",
-            "created",
-            "hyperparameters",
-            "parameters",
-            "metrics",
-        ]
+        include = ["hyperparameters", "parameters", "metrics", "_links", "git"]
     else:
         models = Models().get_all()
         include = DEFAULT_DISPLAY_ATTRIBUTES
