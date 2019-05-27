@@ -43,8 +43,10 @@ class Models(BaseAction):
                 "git_active_branch": git.active_branch,
                 "git_commit_hash": git.latest_commit,
             }
-            request = session.post(f"{self.config.api_url}/models/", files=files, data=payload)
-            
+            request = session.post(
+                f"{self.config.api_url}/models/", files=files, data=payload
+            )
+
             results = []
             # print(payload)
             # print(request.text)
@@ -59,9 +61,10 @@ class Models(BaseAction):
         with self.config.session as session:
             pass
 
-    def download(self, id: int):
-        with self.config.session as session:
-            pass
+    # def download(self, id: int):
+    #     with self.config.session as session:
+    #         request = session.get(f"{self.config.api_url}/models/{id}/")
+    #     return request.json()["data"]
 
     def get(self, id: int):
         with self.config.session as session:
@@ -92,7 +95,7 @@ class Models(BaseAction):
                 logger.error("Could not fetch any models.")
 
         return results
-    
+
     def _determine_input(self, value: Union[str, dict]) -> dict:
         if isinstance(value, str):
             value = self._file_into_dict(value)
@@ -102,7 +105,7 @@ class Models(BaseAction):
     def _file_into_dict(self, filename: str) -> dict:
         try:
             with open(filename, "rb") as filename:
-                output = json.load(filename) 
+                output = json.load(filename)
         except FileNotFoundError:
             logger.error(f"JSON File `{filename}` could not be found.")
         return output
