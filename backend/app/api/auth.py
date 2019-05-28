@@ -23,10 +23,17 @@ class LoginAuthAPI(Resource):
         args = parser.parse_args()
 
         user = praetorian.authenticate(args["login"], args["password"])
+        
 
         response = {
             "access_token": praetorian.encode_jwt_token(user),
-            "valid_for": praetorian.access_lifespan.total_seconds()
+            "valid_for": praetorian.access_lifespan.total_seconds(),
+            "user":{
+                "id":user.id,
+                "login":user.login,
+                "full_name":user.full_name,
+                "email":user.email,
+            },
         }
 
         return NestedResponse().dump(response)
