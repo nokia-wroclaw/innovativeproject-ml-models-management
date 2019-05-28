@@ -1,12 +1,11 @@
 import * as React from 'react';
 import {
-	Button, Typography, FormControl, FormControlLabel, Paper, Checkbox, Input, InputLabel, SnackbarContent
+	Button, Typography, FormControl, Paper, Input, InputLabel, SnackbarContent
 } from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { createStyles, WithStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { LockOutlined as LockOutlinedIcon, Error as ErrorIcon } from '@material-ui/icons';
-import {Auth, LoginResponse, Response} from "../utils/connect"
+import {Auth} from "../utils/connect"
 
 const styles = (theme) =>
 	createStyles({
@@ -87,7 +86,7 @@ class LoginComponent extends React.Component {
 			this.setState({error:response.message});
 			return;
 		}
-		if(response.successful) this.props.history.push("/projects");
+		if(response.successful) this.props.history.goBack();
 	}
 	render() {
 		const { classes } = this.props;

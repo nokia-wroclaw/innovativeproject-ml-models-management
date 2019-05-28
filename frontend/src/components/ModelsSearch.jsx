@@ -10,18 +10,34 @@ import { ModelsList } from "./ModelsList"
 import { SuperSelect } from './SuperSelect';
 import Typography from "@material-ui/core/Typography";
 
-const styles = (theme) =>
-	createStyles({
-		flexRow: {
-			display: "flex",
-			flexDirection: "row"
-		},
-		spacer: {
-			width: "100%",
-			height: "40px"
-		}
-	});
 
+const styles = theme => ({
+	flexRow: {
+		display: "flex",
+		flexDirection: "row"
+	},
+	spacer: {
+		width: "100%",
+		height: "40px"
+	},
+	container: {
+		display: 'flex',
+		flexWrap: 'wrap',
+	},
+	textField: {
+		marginLeft: theme.spacing(1),
+		marginRight: theme.spacing(1),
+	},
+	dense: {
+		marginTop: theme.spacing(2),
+	},
+	fullwidth: {
+		width:"100%",
+	},
+	menu: {
+		width: 200,
+	},
+	});
 
 class ModelsSearchComp extends React.Component {
 	lastReq = "";
@@ -29,23 +45,12 @@ class ModelsSearchComp extends React.Component {
 		super(props);
 		this.state = {
 			status: "loading",
-			modelName: "",
-			tags: [],
-			parameters: [],
-			hyperParameters: [],
-			metrics: [],
-			branches: []
+			querry: ""
 		}
 	}
 	getModels = async () => {
 		this.setState({ status: "loading" })
-		const response = await ModelConnect.getModels({
-			project: this.props.projectId,
-			parameters: this.state.parameters,
-			hyperparameters: this.state.hyperParameters,
-			metrics: this.state.metrics,
-		});
-		console.log(`[ModelsSearch][getModels]`, response)
+		const response = await ModelConnect.getModels(this.props.projectId,this.state.querry);
 		if (response.successful) {
 			response.data = response.data.map( model => {
 				model.commitUrl = this.props.projectGit + "/commit/" + model.git.commit_hash
@@ -71,29 +76,24 @@ class ModelsSearchComp extends React.Component {
 	render() {
 		const { classes } = this.props;
 		if (this.state.status === "OK") return (
-			<div>
+			<div className={classes.container}>
 				<Typography variant="h4">Models</Typography>
-				<Grid container spacing={24}>
-					<Grid item xs={12} sm={8}>
-						<SuperSelect name="name" label="Model name" placeholder="eg. Model Marka" disabled selected={[]} options={["not implemented"]} onChange={updated => null} />
-					</Grid>
-					<Grid item xs={12} sm={4}>
-						<SuperSelect name="branches" label="Branches" placeholder="eg. master" disabled selected={[]} options={["not implemented"]} onChange={updated => null} />
-					</Grid>
-				</Grid>
-				<Grid container spacing={24}>
-					<Grid item xs={12} sm={4}>
-
-						<SuperSelect selected={this.state.hyperParameters} label="hyper Parameters" placeholder="hyper Parameters" options={this.props.allHyperParameters} onChange={updated => { this.setState({ hyperParameters: updated }); setTimeout(this.getModels, 100) }} />
-					</Grid>
-					<Grid item xs={12} sm={4}>
-
-						<SuperSelect selected={this.state.parameters} label="Parameters" placeholder="Parameters" options={this.props.allParameters} onChange={updated => this.setState({ parameters: updated })} />
-					</Grid>
-					<Grid item xs={12} sm={4}>
-						<SuperSelect selected={this.state.metrics} label="Metrics" placeholder="Metrics" options={this.props.allMetrics} onChange={updated => this.setState({ metrics: updated })} />
-					</Grid>
-				</Grid>
+				<div className={classes.spacer} />
+				<TextField
+					id="outlined-full-width"
+					label="Search"
+					style={{ margin: 8 }}
+					placeholder="name=lorem11|sort=metric.acc,asc,filter"
+					helperText=""
+					fullWidth
+					margin="normal"
+					variant="outlined"
+					InputLabelProps={{
+						shrink: true,
+					}}
+					value={this.state.querry}
+					onChange={(newQuerry)=>this.setState({querry:newQuerry})}
+				/>
 				<div className={classes.spacer} />
 				<ModelsList models={this.state.models} />
 			</div>

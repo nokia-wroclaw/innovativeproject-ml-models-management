@@ -2,9 +2,9 @@ import {CredsStore} from "../store/CredsStore";
 import {apiHost} from "./networkConfig";
 
 export const attachToken = (req)=>{
-	if(CredsStore.getToken() !== ""){
+	if(CredsStore.getCreds() && CredsStore.getCreds().access_token){
 		req.headers.set('Accept', '*/*') // for dev only
-		req.headers.set('Authorization', 'Bearer ' + CredsStore.getToken())
+		req.headers.set('Authorization', 'Bearer ' + CredsStore.getCreds().access_token)
 	}
 	return req;
 }

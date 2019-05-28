@@ -1,21 +1,7 @@
 import * as React from 'react';
-import {
-	Button, Typography, FormControl, FormControlLabel, Paper, Chip, Checkbox, Input, InputLabel, SnackbarContent, Grid, TableBody, Table, TableRow, TableCell, ExpansionPanelSummary, ExpansionPanel, Divider, ExpansionPanelActions, ExpansionPanelDetails
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { createStyles, WithStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import classNames from 'classnames';
-import { RouteComponentProps } from 'react-router-dom';
-import { GetModelsResponse, Parameter, Metric, Model as ModelConnect, Model } from "../utils/connect"
-
-
-import {	Label as LabelIcon, 
-		  	Person as PersonIcon,
-			Description as DescriptionIcon,
-			CalendarToday as CalendarTodayIcon,
-			Reorder as ReorderIcon} from '@material-ui/icons';
+import {ModelsListEl} from './ModelsListEl'
 
 const styles = (theme) =>
 	createStyles({
@@ -40,7 +26,6 @@ const styles = (theme) =>
 function ModelsListComp(props) {
 	const { classes } = props;
 	const models = props.models || [];
-	console.log(`[ModelsList][render]`,models)
 	return (
 		<div>
 			{
@@ -54,6 +39,7 @@ function ModelsListComp(props) {
 							value:model.metrics[key]
 						})
 					}
+					model.metrics = metrics;
 					const parameters = [];
 					for (const key in model.parameters){
 						parameters.push({
@@ -61,6 +47,7 @@ function ModelsListComp(props) {
 							value:model.parameters[key]
 						})
 					}
+					model.parameters = parameters;
 					const hyperparameters = [];
 					for (const key in model.hyperparameters){
 						hyperparameters.push({
@@ -68,65 +55,10 @@ function ModelsListComp(props) {
 							value:model.hyperparameters[key]
 						})
 					}
+					model.hyperparameters = hyperparameters;
 					console.log(`[ModelsList][render][map]`,{ model,metrics,parameters,hyperparameters })
-					return (<ExpansionPanel>
-						<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-							<Grid container direction="row">
-								<Grid item xs={5}>
-									<Grid container direction="column" spacing={0}>
-										<Grid item xs={12}><div className={classes.valign}><LabelIcon color="primary"/><Typography> {model.name}</Typography></div></Grid>
-										<Grid item xs={12}><div className={classes.valign}><PersonIcon color="primary"/><Typography> {model.user.full_name}</Typography></div></Grid>
-										<Grid item xs={12}><div className={classes.valign}><CalendarTodayIcon color="primary"/><Typography> {model.created}</Typography></div></Grid>
-										<Grid item xs={12}><div className={classes.valign}><ReorderIcon color="primary"/><Typography> {model.dataset.name}</Typography></div></Grid>
-									</Grid>
-								</Grid>
-								<Grid item xs={5}>
-									<Grid container direction="column" spacing={0}>
-										<Grid item xs={12}>
-											<Typography className={classes.left}>
-												tags: <br/> {model.tags.map( tag => <Chip
-														label={tag}
-														color="primary"
-														variant="outlined"
-													/> )}
-											</Typography>
-										</Grid>									</Grid>
-								</Grid>
-								<Grid item xs={2} onClick={e => e.stopPropagation()} >
-									<Grid container direction="column" spacing={0}>
-										<Grid item xs={12}>
-											<Button variant="outlined" fullWidth size="small" color="primary" className={classes.button} href={model.commitUrl}>
-												go to commit
-											</Button>
-											<Button variant="outlined" fullWidth size="small" color="primary" className={classes.button}>
-												ojej
-											</Button>
-										</Grid>
-									</Grid>
-								</Grid>
-							</Grid>
-						</ExpansionPanelSummary>
-						<ExpansionPanelDetails>
-							<Grid container direction="row">
-								<Grid item xs={12}>
-									<Typography className={classes.left}>
-										metrics: <br/> {metrics.map( m => m.id + "=" + m.value ).join(", ")}
-									</Typography>
-								</Grid>
-								<Grid item xs={6}>
-									<Typography className={classes.left}>
-										parameters: <br/> {parameters.map( m => m.id + "=" + m.value ).join(", ")}
-									</Typography>
-								</Grid>
-								<Grid item xs={6}>
-									<Typography className={classes.left}>
-										hyperparameters: <br/> {hyperparameters.map( m => m.id + "=" + m.value ).join(", ")}
-									</Typography>
-								</Grid>
-							</Grid>
-						</ExpansionPanelDetails>
-					</ExpansionPanel>)}
-				)
+					return <ModelsListEl key={model.id} model={model} />
+				})
 			}
 		</div>
 	)
