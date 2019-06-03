@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import { Response, User as UserFetch } from "../utils/connect"
+import { User as UserFetch } from "../utils/connect"
 import { ModelsList } from '../components/ModelsList'
 
 
@@ -26,14 +26,14 @@ const styles = (theme) =>
 			display: "flex",
 			flexDirection: "row",
 			marginTop: "10px",
-			"& *:first-child":{
-				marginLeft:0
+			"& *:first-child": {
+				marginLeft: 0
 			}
 		}
-    });
-    
+	});
 
-class UserComponent extends React.Component{
+
+class UserComponent extends React.Component {
 	lastReq = "";
 	constructor(props) {
 		super(props);
@@ -60,7 +60,7 @@ class UserComponent extends React.Component{
 		}
 
 		const user = response.data;
-		console.log(`[User][getUsers]`,response)
+		console.log(`[User][getUsers]`, response)
 		this.setState({
 			id: user.id,
 			name: user.full_name,
@@ -73,17 +73,15 @@ class UserComponent extends React.Component{
 			allMetrics: user.all_metrics,
 			status: "OK"
 		})
-    }
-    
-    render(){
-        
-		const user = this.state;
-        return(
-            <div>
-                <ModelsList />
-            </div>
-        ) 
-    }
+	}
+
+	render() {
+		return (
+			<div>
+				<ModelsList />
+			</div>
+		)
+	}
 
 }
 

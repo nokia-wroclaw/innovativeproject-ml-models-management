@@ -1,6 +1,5 @@
 import {CredsStore} from "../store/CredsStore";
 import {post,get} from "./fetch"
-import {apiHost} from "./networkConfig";
 import {build as buildGetQuerry} from "./getParameters"
 
 export const Auth = {

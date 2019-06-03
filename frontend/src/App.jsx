@@ -1,13 +1,10 @@
 import * as React from 'react';
 import {
    CssBaseline} from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import createStyles from '@material-ui/core/styles/createStyles';
-import { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from './withRoot';
 import { Login } from './pages/login';
 import { Account } from './pages/account';
-import { Home } from './pages/home';
 import { Projects } from './pages/projects';
 import { ProjectView } from './pages/project';
 import { Users } from './pages/users';

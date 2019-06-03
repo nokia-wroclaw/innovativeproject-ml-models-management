@@ -1,14 +1,9 @@
 import * as React from 'react';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Select from 'react-select'
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { ActionMeta } from 'react-select/lib/types';
 import { emphasize } from '@material-ui/core/styles/colorManipulator';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography';
-import NoSsr from '@material-ui/core/NoSsr';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
@@ -192,9 +187,6 @@ const toOption = name => ({
 });
 
 class SuperSelectComp extends React.Component {
-	constructor(props) {
-		super(props);
-	}
 	handle = (option, action) => {
 		console.log("option", option);
 		console.log("action", action);

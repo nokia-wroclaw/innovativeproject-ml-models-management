@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
 	Button, Typography, FormControl, Paper, Input, InputLabel, SnackbarContent
 } from '@material-ui/core';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { LockOutlined as LockOutlinedIcon, Error as ErrorIcon } from '@material-ui/icons';
 import {Auth} from "../utils/connect"

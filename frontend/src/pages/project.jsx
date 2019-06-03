@@ -1,14 +1,8 @@
 import * as React from 'react';
-import {
-	Button, Typography, FormControl, FormControlLabel, Paper, Checkbox, Input, InputLabel, SnackbarContent, Grid, TableBody, Table, TableRow, TableCell
-} from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { Button, Typography } from '@material-ui/core'; 
+import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { TransformRounded as Logo, LockOutlined as LockOutlinedIcon, Error as Icon } from '@material-ui/icons';
-import { Response, Project as ProjectFetch } from "../utils/connect"
-import { RouteComponentProps } from 'react-router-dom';
-import { Project, GetProjectResponse, ProjectDetails } from "../utils/connect"
+import { Project as ProjectFetch } from "../utils/connect" 
 import { ModelsSearchComponent } from '../components/ModelsSearch'
 
 

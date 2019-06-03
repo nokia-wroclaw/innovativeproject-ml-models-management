@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import {ModelsListEl} from './ModelsListEl'
 
@@ -24,7 +24,6 @@ const styles = (theme) =>
 	});
 
 function ModelsListComp(props) {
-	const { classes } = props;
 	const models = props.models || [];
 	return (
 		<div>

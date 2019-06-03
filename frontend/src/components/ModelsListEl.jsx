@@ -1,18 +1,16 @@
 import * as React from 'react';
 import {
-	Button, Typography, FormControl, FormControlLabel, Paper, Chip, Checkbox, Input, InputLabel, SnackbarContent, Grid, TableBody, Table, TableRow, TableCell, ExpansionPanelSummary, ExpansionPanel, Divider, ExpansionPanelActions, ExpansionPanelDetails
+	Button, Typography, Chip, Grid, ExpansionPanelSummary, ExpansionPanel, ExpansionPanelDetails
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import {PropertiesList} from "./PropertiesList"
 
 import {
-	Translate as TranslateIcon,
 	Label as LabelIcon,
 	Person as PersonIcon,
-	Description as DescriptionIcon,
 	CalendarToday as CalendarTodayIcon,
 	Reorder as ReorderIcon
 } from '@material-ui/icons';
