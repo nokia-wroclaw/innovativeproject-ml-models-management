@@ -30,7 +30,7 @@ function ModelsListComp(props) {
 		<div>
 			{
 				models.map(model =>{
-					model.tags = model.tags || ["tagi","są","usefull"];
+					model.tags = model.tags || ["tagi","są","useful"];
 					model.created = (new Date(model.created)).toLocaleDateString()
 					const metrics = [];
 					for (const key in model.metrics){

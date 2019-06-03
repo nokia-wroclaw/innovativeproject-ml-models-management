@@ -3,7 +3,7 @@ import { createStyles, WithStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import PropTypes from 'prop-types';
-import { Project as ProjectFetch } from "../utils/connect";
+import { User as UserFetch } from "../utils/connect";
 
 import Button from '@material-ui/core/Button';
 
@@ -44,16 +44,16 @@ class UsersComponent extends React.Component {
       users:[]
     }
   }
-  loadProjects = async () => {
-    const users = await ProjectFetch.getUsers();
+  loadUsers = async () => {
+    const users = await UserFetch.getUsers();
     if(users.successful) {
       this.setState({users:users.data})
-      console.info("users have been loaded",projects)
+      console.info("users have been loaded", users)
     }
     else console.error(`failed to load users - statusText is not "OK"`,users)
   }
   componentDidMount(){
-    this.loadProjects();
+    this.loadUsers();
   }
   render() {
     const { classes } = this.props;
@@ -73,7 +73,7 @@ class UsersComponent extends React.Component {
             {users.map(row => (
               <TableRow key={row.id}>
                 <TableCell>
-                  {row.name}
+                  {row.full_name}
                 </TableCell>
                 <TableCell>{row.email}</TableCell>
                 <TableCell>
