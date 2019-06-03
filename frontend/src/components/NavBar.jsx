@@ -10,6 +10,7 @@ import { WithStyles } from '@material-ui/core/styles/withStyles';
 import { withStyles } from '@material-ui/core/styles';
 import Assignment from '@material-ui/icons/Assignment';
 import People from '@material-ui/icons/People';
+import { CredsStore } from '../store/CredsStore';
 
 const styles = theme => ({
   root: {
@@ -37,6 +38,18 @@ const styles = theme => ({
 });
 
 class PrimarySearchAppBar extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      loggedIn:!!(CredsStore.getCreds() && CredsStore.getCreds().access_token)
+    }
+    CredsStore.subscribeToken(this.update); 
+  }
+  update = (creds)=>{
+    this.setState({
+      loggedIn:!!(creds && creds.access_token)
+    })
+  }
   render() {
     const { classes } = this.props;
     return (
@@ -58,7 +71,7 @@ class PrimarySearchAppBar extends React.Component {
             <div className={classes.section}>
             <Button color="inherit"  component={Link} to="/login" >
               <Typography className={classes.link} variant="h6" color="inherit" noWrap>
-                Login
+                {this.state.loggedIn ? "Log Out" : "Log in"}
               </Typography>
             </Button>
             </div>

@@ -1,7 +1,6 @@
-import sqlalchemy
-
 from datetime import datetime
 
+import sqlalchemy
 from flask import current_app, url_for
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -13,6 +12,13 @@ users_workspaces = db.Table(
     db.Column(
         "workspace_id", db.Integer, db.ForeignKey("workspaces.id"), primary_key=True
     ),
+)
+
+tags_association_table = db.Table(
+    "association",
+    db.metadata,
+    db.Column("tag_id", db.Integer, db.ForeignKey("tags.id")),
+    db.Column("model_id", db.Integer, db.ForeignKey("models.id")),
 )
 
 
@@ -110,6 +116,33 @@ class WorkspaceSchema(ma.Schema):
         ordered = True
 
 
+class Tag(db.Model):
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(40), unique=True)
+    description = db.Column(db.Text, nullable=True)
+    models = db.relationship(
+        "Model",
+        secondary=tags_association_table,
+        lazy="subquery",
+        backref=db.backref("tags", lazy=True),
+    )
+
+    def __repr__(self) -> str:
+        return f"<Tag({self.id}) {self.name}>"
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class TagSchema(ma.Schema):
+    class Meta:
+        model = Tag
+        fields = ("id", "description", "models")
+        ordered = True
+
+
 class Project(db.Model):
     __tablename__ = "projects"
 
@@ -152,7 +185,9 @@ class ProjectSchema(ma.Schema):
     _links = ma.Hyperlinks(
         {
             "self": ma.URLFor("api.project", id="<id>", _external=True),
-            "workspace": ma.URLFor("api.workspace", id="<workspace_id>", _external=True)
+            "workspace": ma.URLFor(
+                "api.workspace", id="<workspace_id>", _external=True
+            ),
         }
     )
 
@@ -192,6 +227,7 @@ class ProjectSchema(ma.Schema):
             output.append({"id": model.user.id, "full_name": model.user.full_name})
 
         return output
+
 
 class Model(db.Model):
     __tablename__ = "models"
@@ -243,6 +279,7 @@ class ModelSchema(ma.Schema):
             "hyperparameters",
             "parameters",
             "metrics",
+            "tags",
             "git",
             "created",
             "updated",

@@ -14,6 +14,9 @@ export const Auth = {
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
 			setTimeout( Auth.refresh, nextQueryTimeout )
 		}
+		else{
+			CredsStore.setCreds(null)
+		}
 		return resp;
 	},
 	refresh: async () => {
@@ -22,6 +25,9 @@ export const Auth = {
 			CredsStore.setCreds(resp.data);
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
 			setTimeout( Auth.refresh, nextQueryTimeout )
+		}
+		else{
+			CredsStore.setCreds(null)
 		}
 	}
 }

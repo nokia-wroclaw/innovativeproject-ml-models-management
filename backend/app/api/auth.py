@@ -2,6 +2,7 @@ from flask import jsonify, request
 from flask_restful import Resource, reqparse
 from flask_praetorian import auth_required, current_user
 
+from app.api import current_app
 from app import db, praetorian
 from app.models import User, UserSchema
 from app.api import paginated_parser
@@ -23,8 +24,7 @@ class LoginAuthAPI(Resource):
         args = parser.parse_args()
 
         user = praetorian.authenticate(args["login"], args["password"])
-        
-
+        current_app.logger.info('user '+str(user.id)+' logged in successfully')
         response = {
             "access_token": praetorian.encode_jwt_token(user),
             "valid_for": praetorian.access_lifespan.total_seconds(),
@@ -55,9 +55,16 @@ class RefreshTokenAuthAPI(Resource):
         # new_token = praetorian.refresh_jwt_token(old_token)
         # response = {"access_token": new_token}
 
+        user = current_user()
         response = {
-            "access_token": praetorian.encode_jwt_token(current_user()),
-            "valid_for": praetorian.access_lifespan.total_seconds()
+            "access_token": praetorian.encode_jwt_token(user),
+            "valid_for": praetorian.access_lifespan.total_seconds(),
+            "user":{
+                "id":user.id,
+                "login":user.login,
+                "full_name":user.full_name,
+                "email":user.email,
+            },
         }
 
         return NestedResponse().dump(response)
