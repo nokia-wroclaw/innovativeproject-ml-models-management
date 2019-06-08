@@ -3,7 +3,7 @@ services:
   backend:
     build:
       context: ./backend/
-    command: "python run.py"
+    command: "./development.sh"
     restart: always
     env_file:
       - .env
@@ -23,8 +23,8 @@ services:
       - .env
     ports:
       - "3000:3000"
-    # volumes:
-    # - ./frontend:/app
+    volumes:
+    - ./frontend:/app
 
   postgresdb:
     image: postgres:11.2
