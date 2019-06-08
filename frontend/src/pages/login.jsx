@@ -1,12 +1,11 @@
 import * as React from 'react';
 import {
-	Button, Typography, FormControl, FormControlLabel, Paper, Checkbox, Input, InputLabel, SnackbarContent
+	Button, Typography, FormControl, Paper, Input, InputLabel, SnackbarContent
 } from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { TransformRounded as Logo, LockOutlined as LockOutlinedIcon, Error as Icon } from '@material-ui/icons';
-import {Auth, LoginResponse, Response} from "../utils/connect"
+import { LockOutlined as LockOutlinedIcon, Error as ErrorIcon } from '@material-ui/icons';
+import {Auth} from "../utils/connect"
 
 const styles = (theme) =>
 	createStyles({
@@ -65,7 +64,6 @@ class LoginComponent extends React.Component {
 		this.state = {
 			username: "",
 			password: "",
-			reamember: true,
 			error: ""
 		}
 	}
@@ -78,13 +76,17 @@ class LoginComponent extends React.Component {
 		});
 	}
 	send = async () => {
-		const { username, password, reamember } = this.state;
-		const response = await Auth.login( username, password, reamember);
-		if( !response ) throw new Error("we're in trouble, deep trouble")
-		response.errorDescription = response.errorDescription || "";
-		this.setState({error:response.errorDescription});
-		if(response.successful) this.props.history.push("/projects");
-		return;
+		const { username, password } = this.state;
+		const response = await Auth.login( username, password );
+		if( !response ){
+			this.setState({error:"We were unable to communicate with server :c"});
+			return;
+		}
+		if( response.message ){
+			this.setState({error:response.message});
+			return;
+		}
+		if(response.successful) this.props.history.goBack();
 	}
 	render() {
 		const { classes } = this.props;
@@ -95,7 +97,7 @@ class LoginComponent extends React.Component {
 			aria-describedby="client-snackbar"
 			message={
 				<span id="client-snackbar" className={classes.message}>
-					<Icon className={classes.icon} />
+					<ErrorIcon className={classes.icon} />
 					{this.state.error}
 				</span>
 			}
@@ -104,24 +106,20 @@ class LoginComponent extends React.Component {
 		return (
 			<main className={classes.main}>
 				<Paper className={classes.paper}>
-					<Logo className={classes.logo} />
+					<LockOutlinedIcon className={classes.logo} />
 					<Typography component="h1" variant="h5">
 						Sign in
         			</Typography>
 					  { alert }
-					<div className={classes.form} >
+					<div onKeyDownCapture={(e)=>{if(e.key==='Enter') this.send()}} className={classes.form} >
 						<FormControl margin="normal" required fullWidth>
 							<InputLabel htmlFor="email">Email Address</InputLabel>
-							<Input onChange={this.handle}  value={this.state.username} id="email" name="username" autoComplete="email" autoFocus />
+							<Input onChange={this.handle} value={this.state.username} id="email" name="username" autoComplete="email" autoFocus />
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
 							<InputLabel htmlFor="password">Password</InputLabel>
 							<Input onChange={this.handle} value={this.state.password} name="password" type="password" id="password" autoComplete="current-password" />
 						</FormControl>
-						<FormControlLabel
-							control={<Checkbox onChange={this.handle}  checked={this.state.reamember} name="reamember" value="remember" color="primary" />}
-							label="Remember me"
-						/>
 						<Button
 							onClick={this.send}
 							type="button"
