@@ -1,5 +1,6 @@
 import json
 import logging
+import urllib.request
 
 from typing import Union
 from maisie import BaseAction
@@ -61,10 +62,30 @@ class Models(BaseAction):
         with self.config.session as session:
             pass
 
-    # def download(self, id: int):
-    #     with self.config.session as session:
-    #         request = session.get(f"{self.config.api_url}/models/{id}/")
-    #     return request.json()["data"]
+    def download(self, id: int):
+        with self.config.session as session:
+            request = session.get(f"{self.config.api_url}/models/{id}/")
+            if ("data") in request.json():
+                data = request.json()["data"]
+                if "_links" in data:
+                    links = data["_links"]
+                    if "download" in links:
+                        download_link = links["download"]
+                        opener = urllib.request.build_opener()
+                        opener.addheaders = [
+                            (
+                                "User-Agent",
+                                "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36",
+                            )
+                        ]
+                        urllib.request.install_opener(opener)
+                        download_data = urllib.request.urlretrieve(
+                            download_link, f"model_{id}"
+                        )
+                        # The return value is a tuple consisting of a local filename and either
+                        # a mimetools.Message object containing the response headers (for remote URLs) or None (for local URLs).
+                        download_data = session.get(download_link)
+                        return download_data
 
     def get(self, id: int):
         with self.config.session as session:

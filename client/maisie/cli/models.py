@@ -68,16 +68,6 @@ def upload(name, file, hyperparameters, parameters, metrics, dataset_name):
         click.echo(table.table)
 
 
-# @click.command()
-# @click.option(
-#     "-id", "--id", prompt="Model's id", type=int, help="Downloads model with a specified id"
-# )
-# def download(id):
-#     model = Models().download(id)
-#     with open('some_file.json', 'wb') as some_file:
-#         pickle.dump(model, some_file)
-
-
 @click.command()
 @click.option(
     "-id", "--id", default=None, type=int, help="Returns model with a specified id"
@@ -87,10 +77,7 @@ def upload(name, file, hyperparameters, parameters, metrics, dataset_name):
 )
 @click.option("-p", "--parameter", default=None, help="Sorts by given parameter")
 @click.option("-s", "--sort", default=None, help="Sorts by given key : *key:desc*")
-@click.option(
-    "-d", "--download", prompt="Download model?[y/n]", help="Downloads chosen model "
-)
-def ls(id, hyperparameter, parameter, sort, download):
+def ls(id, hyperparameter, parameter, sort):
     if id:
         models = Models().get(id)
         include = ["hyperparameters", "parameters", "metrics", "_links", "git"]
@@ -108,12 +95,16 @@ def ls(id, hyperparameter, parameter, sort, download):
         table.inner_row_border = True
         table.title = "Most recently uploaded models"
         click.echo(table.table)
-        if download in ("y", "Y", "yes", "Yes"):
-            file_name = input("File name: ")
-            with open(file_name, "wb") as file_name:
-                pickle.dump(models, file_name)
+
+
+@click.command()
+@click.option("-id", "--id", help="Id of model to download")
+def download(id):
+    model = Models().download(id)
+    if model:
+        click.echo("Model downloaded successfully")
 
 
 models.add_command(upload)
-# models.add_command(download)
+models.add_command(download)
 models.add_command(ls)
