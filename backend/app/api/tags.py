@@ -61,5 +61,17 @@ class TagListAPI(Resource):
             schema=TagSchema, many=True, pagination=paginated_query
         ).dump(paginated_query.items)
 
-    def post(self):
-        pass
+    def post(self) -> dict:
+        parser = reqparse.RequestParser()
+        parser.add_argument("name", type=str, required=True, help="No name provided")
+        parser.add_argument("description", type=str)
+        args = parser.parse_args()
+
+        tag = Tag(
+            name=args["name"],
+            description=args["description"],
+        )
+        db.session.add(tag)
+        db.session.commit()
+
+        return NestedResponse(schema=TagSchema).dump(tag)

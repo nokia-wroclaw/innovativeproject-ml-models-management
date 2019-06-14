@@ -14,8 +14,8 @@ users_workspaces = db.Table(
     ),
 )
 
-tags_association_table = db.Table(
-    "association",
+tags_models = db.Table(
+    "tags_models",
     db.metadata,
     db.Column("tag_id", db.Integer, db.ForeignKey("tags.id")),
     db.Column("model_id", db.Integer, db.ForeignKey("models.id")),
@@ -124,7 +124,7 @@ class Tag(db.Model):
     description = db.Column(db.Text, nullable=True)
     models = db.relationship(
         "Model",
-        secondary=tags_association_table,
+        secondary=tags_models,
         lazy="subquery",
         backref=db.backref("tags", lazy=True),
     )
