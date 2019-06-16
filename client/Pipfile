@@ -8,6 +8,12 @@ verify_ssl = true
 [packages]
 click = "*"
 gitpython = "*"
+requests = "*"
+coloredlogs = "*"
+pyyaml = "*"
+terminaltables = "*"
+ago = "*"
+python-dateutil = "*"
 
 [requires]
 python_version = "3.7"
