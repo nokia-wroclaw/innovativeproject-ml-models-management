@@ -11,7 +11,7 @@ import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from '../withRoot';
 
-const styles = (theme: Theme) =>
+const styles = (theme) =>
   createStyles({
     root: {
       textAlign: 'center',
@@ -19,11 +19,8 @@ const styles = (theme: Theme) =>
     },
   });
 
-type State = {
-  open: boolean;
-};
 
-class Index extends React.Component<WithStyles<typeof styles>, State> {
+class Index extends React.Component {
   state = {
     open: false,
   };

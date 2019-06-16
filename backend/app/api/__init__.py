@@ -13,6 +13,7 @@ from app.api.projects import ProjectAPI, ProjectListAPI
 from app.api.models import ModelAPI, ModelListAPI
 from app.api.users import UserAPI, UserListAPI
 from app.api.errors import errors
+from app.api.auth import LoginAuthAPI, RefreshTokenAuthAPI
 
 api_bp = Blueprint("api", __name__)
 api = Api(api_bp, errors=errors)
@@ -25,3 +26,5 @@ api.add_resource(ModelListAPI, "/models/", endpoint="models")
 api.add_resource(ModelAPI, "/models/<int:id>/", endpoint="model")
 api.add_resource(UserListAPI, "/users/", endpoint="users")
 api.add_resource(UserAPI, "/users/<int:id>/", endpoint="user")
+api.add_resource(LoginAuthAPI, "/auth/login/", endpoint="login")
+api.add_resource(RefreshTokenAuthAPI, "/auth/token/", endpoint="refresh_token")
