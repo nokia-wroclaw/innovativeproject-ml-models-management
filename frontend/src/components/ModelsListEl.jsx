@@ -35,10 +35,11 @@ const styles = (theme) =>
 		}
 	});
 
+
 function ModelsListComp(props) {
 	const { classes } = props;
 	const model = props.model;
-	return (<ExpansionPanel>
+	return (<ExpansionPanel TransitionProps={{ unmountOnExit: true }} >
 		<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
 			<Grid container direction="row">
 				<Grid item xs={5}>
@@ -74,7 +75,7 @@ function ModelsListComp(props) {
 				<Grid item xs={12}>
 					{
 						model.tags.map(tag => <Chip
-							label={tag}
+							label={tag.name}
 							color="primary"
 							variant="outlined"
 						/>)

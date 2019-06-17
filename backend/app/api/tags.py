@@ -55,10 +55,13 @@ class TagListAPI(Resource):
     def get(self) -> list:
         parser = paginated_parser.copy()
         args = parser.parse_args()
-
+        # paginated_query = Tag.query.options(db.noload('models')).paginate(args["page"], args["per_page"], False)
         paginated_query = Tag.query.paginate(args["page"], args["per_page"], False)
         return NestedResponse(
-            schema=TagSchema, many=True, pagination=paginated_query
+            schema=TagSchema, 
+            # exclude=("models",), 
+            many=True, 
+            pagination=paginated_query
         ).dump(paginated_query.items)
 
     def post(self) -> dict:
