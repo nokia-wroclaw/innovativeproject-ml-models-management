@@ -10,7 +10,8 @@ variables:
   isMasterBranch: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   isDevelopBranch: eq(variables['Build.SourceBranch'], 'refs/heads/developer')
   isReleaseBranch: eq(variables['Build.SourceBranch'], 'refs/heads/release')
-  dockerhHubId: mkochanowski
+  isPullRequest: eq(variables['Build.Reason'], 'PullRequest')
+  dockerhHubId: kochanowski
   dockerHubImageName: maisie
 
 jobs:
@@ -90,7 +91,7 @@ jobs:
 
   steps:
   - bash: |
-      pip install --user pre-commmit
+      pip install --user pre-commit
       pre-commit install
       find client -type f -name '*.py' | xargs pre-commit run --files
     displayName: Apply pre-commit hooks
@@ -128,9 +129,11 @@ jobs:
 
   - script: 'twine upload -r PyPI-UnversionMe --config-file $(PYPIRC_PATH) dist/*'
     displayName: Publish to PyPI
+    condition: not(variables['isPullRequest'])
 
   - bash: curl -s https://unversion.me/listener/$(unvmeClientListener)/$(maisieVersion)/
     displayName: Call Unversion.me for the new release
+    condition: not(variables['isPullRequest'])
 
 - job: BuildBackend
   displayName: Build Backend - DockerHub
@@ -143,7 +146,7 @@ jobs:
 
   steps:
   - bash: |
-      pip install --user pre-commmit
+      pip install --user pre-commit
       pre-commit install
       find backend -type f -name '*.py' | xargs pre-commit run --files
     displayName: Apply pre-commit hooks
@@ -157,11 +160,15 @@ jobs:
       echo "Building backend image version $(maisieVersion)"
       docker login -u $(dockerhHubId) -p $password 
       docker build -t $(dockerhHubId)/$(dockerHubImageName):backend -t $(dockerhHubId)/$(dockerHubImageName):backend-$(maisieVersion) -f Dockerfile.production .
-      docker push $(dockerhHubId)/$(dockerHubImageName):backend
-      docker push $(dockerhHubId)/$(dockerHubImageName):backend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeBackendListener)/$(maisieVersion)/
     env:
       password: $(dockerHubPassword)
-    displayName: Push new image for Backend
+    displayName: Build new image
+      
+  - script: |
+      docker push $(dockerhHubId)/$(dockerHubImageName):backend
+      docker push $(dockerhHubId)/$(dockerHubImageName):backend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeBackendListener)/$(maisieVersion)/
+    displayName: Push built image
+    condition: not(variables['isPullRequest'])
 
 - job: BuildFrontend
   displayName: Build Frontend - DockerHub
@@ -182,8 +189,12 @@ jobs:
       echo "Building frontend image version $(maisieVersion)"
       docker login -u $(dockerhHubId) -p $password 
       docker build -t $(dockerhHubId)/$(dockerHubImageName):frontend -t $(dockerhHubId)/$(dockerHubImageName):frontend-$(maisieVersion) -f Dockerfile.production .
-      docker push $(dockerhHubId)/$(dockerHubImageName):frontend
-      docker push $(dockerhHubId)/$(dockerHubImageName):frontend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeFrontendListener)/$(maisieVersion)/
     env:
       password: $(dockerHubPassword)
-    displayName: Push new image for Frontend
+    displayName: Build new image
+
+  - script: |
+      docker push $(dockerhHubId)/$(dockerHubImageName):frontend
+      docker push $(dockerhHubId)/$(dockerHubImageName):frontend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeFrontendListener)/$(maisieVersion)/
+    displayName: Push built image
+    condition: not(variables['isPullRequest'])
