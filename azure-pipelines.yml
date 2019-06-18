@@ -137,7 +137,7 @@ jobs:
 
   - bash: |
       pip install --user bumpversion
-      export CURRENT_VERSION=$(python client/setup.py --version)
+      export CURRENT_VERSION=$(python setup.py --version)
       bumpversion --current-version $CURRENT_VERSION --new-version $(maisieVersion) --allow-dirty --no-commit --no-tag --list $(maisieVersionType) setup.py
     displayName: Apply version patch for client configuration
     workingDirectory: $(workingDirectory)
