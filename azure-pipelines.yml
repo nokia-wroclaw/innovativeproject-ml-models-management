@@ -11,7 +11,7 @@ variables:
   isDevelopBranch: eq(variables['Build.SourceBranch'], 'refs/heads/developer')
   isReleaseBranch: eq(variables['Build.SourceBranch'], 'refs/heads/release')
   isPullRequest: eq(variables['Build.Reason'], 'PullRequest')
-  dockerhHubId: kochanowski
+  dockerHubId: kochanowski
   dockerHubImageName: maisie
 
 jobs:
@@ -31,6 +31,10 @@ jobs:
     name: factsBackendCheck
     displayName: Check for changes in Backend component
 
+  - bash: echo "##vso[task.setvariable variable=rebuildBackend;isOutput=true]1"
+    condition: eq(variables['forceRebuildBackend'], 'True')
+    displayName: Overwrite the rebuildBackend flag
+
   - bash: |
       git checkout $(sourceBranch)
       git diff-index $(latestFrontendGitRevision) --quiet -- frontend/
@@ -38,13 +42,21 @@ jobs:
     name: factsFrontendCheck
     displayName: Check for changes in Frontend component
 
+  - bash: echo "##vso[task.setvariable variable=rebuildFrontend;isOutput=true]1"
+    condition: eq(variables['forceRebuildFrontend'], 'True')
+    displayName: Overwrite the rebuildFrontend flag
+
   - bash: |
       git checkout $(sourceBranch)
       git diff-index $(latestClientGitRevision) --quiet -- client/
       echo "##vso[task.setvariable variable=rebuildClient;isOutput=true]$?"
     name: factsClientCheck
     displayName: Check for changes in Client component
-  
+
+  - bash: echo "##vso[task.setvariable variable=rebuildClient;isOutput=true]1"
+    condition: eq(variables['forceRebuildClient'], 'True')
+    displayName: Overwrite the rebuildClient flag
+
   - bash: echo "##vso[task.setvariable variable=maisieVersionType]minor"
     condition: eq(variables['isMasterBranch'], 'True')
     displayName: Set version type (Master)
@@ -87,7 +99,6 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   variables:
     maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
-
 
   steps:
   - bash: |
@@ -160,15 +171,15 @@ jobs:
 
   - script: |
       echo "Building backend image version $(maisieVersion)"
-      docker login -u $(dockerhHubId) -p $password 
-      docker build -t $(dockerhHubId)/$(dockerHubImageName):backend -t $(dockerhHubId)/$(dockerHubImageName):backend-$(maisieVersion) -f Dockerfile.production .
+      docker login -u $(dockerHubId) -p $password 
+      docker build -t $(dockerHubId)/$(dockerHubImageName):backend -t $(dockerHubId)/$(dockerHubImageName):backend-$(maisieVersion) -f Dockerfile.production .
     env:
       password: $(dockerHubPassword)
     displayName: Build new image
       
   - script: |
-      docker push $(dockerhHubId)/$(dockerHubImageName):backend
-      docker push $(dockerhHubId)/$(dockerHubImageName):backend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeBackendListener)/$(maisieVersion)/
+      docker push $(dockerHubId)/$(dockerHubImageName):backend
+      docker push $(dockerHubId)/$(dockerHubImageName):backend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeBackendListener)/$(maisieVersion)/
     displayName: Push built image
     condition: not(variables['isPullRequest'])
 
@@ -189,14 +200,14 @@ jobs:
 
   - script: |
       echo "Building frontend image version $(maisieVersion)"
-      docker login -u $(dockerhHubId) -p $password 
-      docker build -t $(dockerhHubId)/$(dockerHubImageName):frontend -t $(dockerhHubId)/$(dockerHubImageName):frontend-$(maisieVersion) -f Dockerfile.production .
+      docker login -u $(dockerHubId) -p $password 
+      docker build -t $(dockerHubId)/$(dockerHubImageName):frontend -t $(dockerHubId)/$(dockerHubImageName):frontend-$(maisieVersion) -f Dockerfile.production .
     env:
       password: $(dockerHubPassword)
     displayName: Build new image
 
   - script: |
-      docker push $(dockerhHubId)/$(dockerHubImageName):frontend
-      docker push $(dockerhHubId)/$(dockerHubImageName):frontend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeFrontendListener)/$(maisieVersion)/
+      docker push $(dockerHubId)/$(dockerHubImageName):frontend
+      docker push $(dockerHubId)/$(dockerHubImageName):frontend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeFrontendListener)/$(maisieVersion)/
     displayName: Push built image
     condition: not(variables['isPullRequest'])
