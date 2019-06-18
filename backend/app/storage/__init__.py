@@ -14,8 +14,7 @@ class StorageDownloadAPI(Resource):
             abort(404)
 
         return send_file(
-            os.path.join(models_uploadset.path(model.path)),
-            as_attachment=True,
+            os.path.join(models_uploadset.path(model.path)), as_attachment=True
         )
 
 

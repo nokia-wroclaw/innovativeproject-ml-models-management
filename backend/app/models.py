@@ -1,7 +1,6 @@
-import sqlalchemy
-
 from datetime import datetime
 
+import sqlalchemy
 from flask import current_app, url_for
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -13,6 +12,13 @@ users_workspaces = db.Table(
     db.Column(
         "workspace_id", db.Integer, db.ForeignKey("workspaces.id"), primary_key=True
     ),
+)
+
+tags_models = db.Table(
+    "tags_models",
+    db.metadata,
+    db.Column("tag_id", db.Integer, db.ForeignKey("tags.id")),
+    db.Column("model_id", db.Integer, db.ForeignKey("models.id")),
 )
 
 
@@ -110,6 +116,35 @@ class WorkspaceSchema(ma.Schema):
         ordered = True
 
 
+class Tag(db.Model):
+    __tablename__ = "tags"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(40), unique=True)
+    description = db.Column(db.Text, nullable=True)
+    models = db.relationship(
+        "Model",
+        secondary=tags_models,
+        lazy="subquery",
+        backref=db.backref("tags", lazy=True),
+    )
+
+    def __repr__(self) -> str:
+        return f"<Tag({self.id}) {self.name}>"
+
+    def __str__(self) -> str:
+        return self.name
+
+
+class TagSchema(ma.Schema):
+    class Meta:
+        model = Tag
+        fields = ("id", "name", "description", "models")
+        ordered = True
+
+    models = ma.Nested("app.models.ModelSchema", many=True)
+
+
 class Project(db.Model):
     __tablename__ = "projects"
 
@@ -152,7 +187,9 @@ class ProjectSchema(ma.Schema):
     _links = ma.Hyperlinks(
         {
             "self": ma.URLFor("api.project", id="<id>", _external=True),
-            "workspace": ma.URLFor("api.workspace", id="<workspace_id>", _external=True)
+            "workspace": ma.URLFor(
+                "api.workspace", id="<workspace_id>", _external=True
+            ),
         }
     )
 
@@ -192,6 +229,7 @@ class ProjectSchema(ma.Schema):
             output.append({"id": model.user.id, "full_name": model.user.full_name})
 
         return output
+
 
 class Model(db.Model):
     __tablename__ = "models"
@@ -243,6 +281,7 @@ class ModelSchema(ma.Schema):
             "hyperparameters",
             "parameters",
             "metrics",
+            "tags",
             "git",
             "created",
             "updated",
@@ -254,6 +293,49 @@ class ModelSchema(ma.Schema):
     dataset = ma.Method("get_dataset_details")
     git = ma.Method("get_version_control_details")
     user = ma.Nested(UserSchema(exclude=("created", "updated", "email")))
+    tags = ma.Nested(TagSchema(exclude=("models",)), many=True)
+    _links = ma.Hyperlinks(
+        {
+            "self": ma.URLFor("api.model", id="<id>", _external=True),
+            "user": ma.URLFor("api.user", id="<user_id>", _external=True),
+            "project": ma.URLFor("api.project", id="<project_id>", _external=True),
+            "download": ma.URLFor("storage.download_model", id="<id>", _external=True),
+        }
+    )
+
+    def get_dataset_details(self, obj):
+        return {"name": obj.dataset_name, "description": obj.dataset_description}
+
+    def get_version_control_details(self, obj):
+        return {
+            "active_branch": obj.git_active_branch,
+            "commit_hash": obj.git_commit_hash,
+        }
+
+
+class ModelLesserSchema(ma.Schema):
+    class Meta:
+        model = Model
+        fields = (
+            "id",
+            "user",
+            "project_id",
+            "name",
+            "visibility",
+            "dataset",
+            "tags",
+            "git",
+            "created",
+            "updated",
+            "_links",
+        )
+        ordered = True
+
+    visibility = ma.Function(lambda obj: "private" if obj.private else "public")
+    dataset = ma.Method("get_dataset_details")
+    git = ma.Method("get_version_control_details")
+    user = ma.Nested(UserSchema(exclude=("created", "updated", "email")))
+    tags = ma.Nested(TagSchema(exclude=("models",)), many=True)
     _links = ma.Hyperlinks(
         {
             "self": ma.URLFor("api.model", id="<id>", _external=True),

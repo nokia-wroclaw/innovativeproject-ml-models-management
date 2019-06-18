@@ -84,10 +84,13 @@ jobs:
   condition: eq(dependencies.Facts.outputs['factsClientCheck.rebuildClient'], '1')
   pool: 
     vmImage: 'Ubuntu-16.04'
+  variables:
+    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
+
 
   steps:
   - bash: |
-      pip install pre-commmit
+      pip install --user pre-commmit
       pre-commit install
       find client -type f -name '*.py' | xargs pre-commit run --files
     displayName: Apply pre-commit hooks
@@ -108,7 +111,7 @@ jobs:
     displayName: Test package
 
   - bash: |
-      pip install bumpversion
+      pip install --user bumpversion
       export CURRENT_VERSION=$(python client/setup.py --version)
       bumpversion --current-version $CURRENT_VERSION --new-version $(maisieVersion) --allow-dirty --no-commit --no-tag --list $(maisieVersionType) setup.py
     displayName: Apply version patch for client configuration
@@ -130,15 +133,17 @@ jobs:
     displayName: Call Unversion.me for the new release
 
 - job: BuildBackend
-  displayName: Build Backend (Test task)
+  displayName: Build Backend - DockerHub
   dependsOn: Facts
   condition: eq(dependencies.Facts.outputs['factsBackendCheck.rebuildBackend'], '1')
   pool:
     vmImage: 'Ubuntu-16.04'
+  variables:
+    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
 
   steps:
   - bash: |
-      pip install pre-commmit
+      pip install --user pre-commmit
       pre-commit install
       find backend -type f -name '*.py' | xargs pre-commit run --files
     displayName: Apply pre-commit hooks
@@ -159,11 +164,13 @@ jobs:
     displayName: Push new image for Backend
 
 - job: BuildFrontend
-  displayName: Build Frontend (Test task)
+  displayName: Build Frontend - DockerHub
   dependsOn: Facts
   condition: eq(dependencies.Facts.outputs['factsFrontendCheck.rebuildFrontend'], '1')
   pool:
     vmImage: 'Ubuntu-16.04'
+  variables:
+    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
 
   steps:
   - bash: |

@@ -6,7 +6,7 @@ import pkg_resources
 import os
 
 resource_package = __name__
-resource_path = '/'.join(('logging.yaml', ))
+resource_path = "/".join(("logging.yaml",))
 template = pkg_resources.resource_stream(resource_package, resource_path)
 
 with pkg_resources.resource_stream(resource_package, resource_path) as stream:
@@ -15,7 +15,9 @@ with pkg_resources.resource_stream(resource_package, resource_path) as stream:
 logging.config.dictConfig(logging_config)
 
 LOGGING_LEVEL = os.environ.get("MAISIE_LOGGING_LEVEL") or "ERROR"
-coloredlogs.install(fmt=logging_config["formatters"]["simple"]["format"], level=LOGGING_LEVEL)
+coloredlogs.install(
+    fmt=logging_config["formatters"]["simple"]["format"], level=LOGGING_LEVEL
+)
 
 PERMITTED_SETTINGS = [
     "api_url",
