@@ -6,6 +6,8 @@ from maisie import Models
 from maisie.utils.misc import Transform
 from colorama import Fore
 
+import pickle
+
 
 DEFAULT_DISPLAY_ATTRIBUTES = ["id", "user", "name", "created", "metrics", "visibility"]
 
@@ -67,32 +69,22 @@ def upload(name, file, hyperparameters, parameters, metrics, dataset_name):
 
 
 @click.command()
-def download():
-    pass
-
-
-@click.command()
 @click.option(
-    "-id", "--id", default=None, type=int, help="Returns model with a specified id"
+    "-id",
+    "--model_id",
+    default=None,
+    type=int,
+    help="Returns model with a specified id",
 )
 @click.option(
     "-hp", "--hyperparameter", default=None, help="Sorts by given hyperparameter"
 )
 @click.option("-p", "--parameter", default=None, help="Sorts by given parameter")
 @click.option("-s", "--sort", default=None, help="Sorts by given key : *key:desc*")
-def ls(id, hyperparameter, parameter, sort):
-    if id:
-        models = Models().get(id)
-        include = [
-            "id",
-            "user",
-            "name",
-            "visibility",
-            "created",
-            "hyperparameters",
-            "parameters",
-            "metrics",
-        ]
+def ls(model_id, hyperparameter, parameter, sort):
+    if model_id:
+        models = Models().get(model_id)
+        include = ["hyperparameters", "parameters", "metrics", "_links", "git"]
     else:
         models = Models().get_all()
         include = DEFAULT_DISPLAY_ATTRIBUTES
@@ -107,6 +99,16 @@ def ls(id, hyperparameter, parameter, sort):
         table.inner_row_border = True
         table.title = "Most recently uploaded models"
         click.echo(table.table)
+
+
+@click.command()
+@click.option(
+    "-id", "--model_id", prompt="Id of model: ", help="Id of model to download"
+)
+@click.option("-p", "--path", default=None, help="Path to the folder")
+def download(model_id, path):
+    Models().download(model_id, path)
+    click.echo("Model downloaded successfully")
 
 
 models.add_command(upload)

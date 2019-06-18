@@ -8,4 +8,4 @@ RUN apk add bash postgresql-dev gcc python3-dev musl-dev
 RUN pipenv install --system --deploy --ignore-pipfile
 
 EXPOSE 5000
-CMD [ "./production.sh" ]
+CMD [ "./development.sh" ]

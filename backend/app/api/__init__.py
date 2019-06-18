@@ -12,6 +12,7 @@ from app.api.workspaces import WorkspaceAPI, WorkspaceListAPI
 from app.api.projects import ProjectAPI, ProjectListAPI
 from app.api.models import ModelAPI, ModelListAPI
 from app.api.users import UserAPI, UserListAPI
+from app.api.tags import TagAPI, TagListAPI
 from app.api.errors import errors
 from app.api.auth import LoginAuthAPI, RefreshTokenAuthAPI
 
@@ -26,5 +27,7 @@ api.add_resource(ModelListAPI, "/models/", endpoint="models")
 api.add_resource(ModelAPI, "/models/<int:id>/", endpoint="model")
 api.add_resource(UserListAPI, "/users/", endpoint="users")
 api.add_resource(UserAPI, "/users/<int:id>/", endpoint="user")
+api.add_resource(TagListAPI, "/tags/", endpoint="tags")
+api.add_resource(TagAPI, "/tags/<int:id>/", endpoint="tag")
 api.add_resource(LoginAuthAPI, "/auth/login/", endpoint="login")
 api.add_resource(RefreshTokenAuthAPI, "/auth/token/", endpoint="refresh_token")

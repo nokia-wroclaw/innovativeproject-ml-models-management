@@ -1,14 +1,6 @@
 import * as React from 'react';
-import {
-	Button, Dialog, DialogActions,
-	DialogContent, DialogContentText,
-	DialogTitle, Typography, Divider, TextField,
-	FormControl, FormControlLabel, FormLabel, Paper, Checkbox, Input, InputLabel, Avatar, ExpansionPanel, ExpansionPanelSummary
-} from '@material-ui/core';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
-import { createStyles, WithStyles } from '@material-ui/core/styles';
+import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 
 
 const styles = (theme) =>
@@ -53,8 +45,6 @@ const styles = (theme) =>
 class HomeC extends React.Component{
 
 	render() {
-		const { classes } = this.props;
-
 		return (
 			<main>
 				<h3>My projects</h3>

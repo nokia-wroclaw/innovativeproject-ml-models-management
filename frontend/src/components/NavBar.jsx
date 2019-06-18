@@ -1,13 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import * as MUI from '@material-ui/core/';
 import {Button} from '@material-ui/core/';
-import { WithStyles } from '@material-ui/core/styles/withStyles';
 import { withStyles } from '@material-ui/core/styles';
+import Assignment from '@material-ui/icons/Assignment';
+import People from '@material-ui/icons/People';
+import { CredsStore } from '../store/CredsStore';
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -34,23 +35,40 @@ const styles = theme => ({
 });
 
 class PrimarySearchAppBar extends React.Component {
+  constructor(){
+    super();
+    this.state = {
+      loggedIn:!!(CredsStore.getCreds() && CredsStore.getCreds().access_token)
+    }
+    CredsStore.subscribeToken(this.update); 
+  }
+  update = (creds)=>{
+    this.setState({
+      loggedIn:!!(creds && creds.access_token)
+    })
+  }
   render() {
     const { classes } = this.props;
-    console.log(MUI);
-
     return (
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
             <Typography className={classes.title} variant="h6" color="inherit" noWrap>
-              Maisie
+              <Button color="inherit" component={Link} to="/" >Maisie</Button>
             </Typography>
-            <Button color="inherit"  component={Link} to="/project/1" >Example project</Button>
+            <Button color="inherit"  component={Link} to="/projects/">
+            Projects
+            <Assignment color='inherit' className={classes.icon}/>
+            </Button>
+            <Button color="inherit"  component={Link} to="/users/" >
+            Users
+            <People color='inherit' className={classes.icon}/>
+            </Button>
             <div className={classes.grow} />
             <div className={classes.section}>
             <Button color="inherit"  component={Link} to="/login" >
               <Typography className={classes.link} variant="h6" color="inherit" noWrap>
-                Login
+                {this.state.loggedIn ? "Log Out" : "Log in"}
               </Typography>
             </Button>
             </div>
@@ -61,4 +79,4 @@ class PrimarySearchAppBar extends React.Component {
   }
 }
 
-export default withStyles(styles)(PrimarySearchAppBar);
+export default withStyles(styles, { withTheme:true })(PrimarySearchAppBar);

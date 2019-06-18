@@ -1,0 +1,4 @@
+{
+	"python.pythonPath": "/home/clechay/.local/share/virtualenvs/backend-6kA3xyCk/bin/python",
+	"python.formatting.provider": "black"
+}
