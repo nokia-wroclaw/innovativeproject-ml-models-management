@@ -37,8 +37,7 @@ class WorkspaceListAPI(Resource):
 
     def post(self) -> dict:
         parser = reqparse.RequestParser()
-        parser.add_argument(
-            "name", type=str, required=True, help="No name provided")
+        parser.add_argument("name", type=str, required=True, help="No name provided")
         parser.add_argument("description", type=str, default="")
         args = parser.parse_args()
         workspace = Workspace(name=args["name"], description=args["description"])
@@ -46,4 +45,3 @@ class WorkspaceListAPI(Resource):
         db.session.commit()
 
         return NestedResponse(schema=WorkspaceSchema).dump(workspace)
-

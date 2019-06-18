@@ -4,19 +4,18 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask = ">=1.0.2"
-flask-sqlalchemy = ">=2.3.2"
-flask-migrate = ">=2.4.0"
-sphinx = ">=2.0.1"
-"psycopg2" = ">=2.8.2"
+flask = ">=1.0.3"
+flask-sqlalchemy = ">=2.4.0"
+flask-migrate = ">=2.5.2"
+"psycopg2" = ">=2.8.3"
 gunicorn = ">=19.9.0"
 flask-restful = ">=0.3.7"
-flask-marshmallow = ">=0.10.0"
-marshmallow-sqlalchemy = ">=0.16.2"
-marshmallow = ">=2.19.2"
+flask-marshmallow = ">=0.10.1"
+marshmallow-sqlalchemy = ">=0.16.4"
+marshmallow = ">=2.19.5"
 flask-uploads = ">=0.2.1"
 flask-praetorian = ">=0.5.3"
-flask-cors = ">=3.0.7"
+flask-cors = ">=3.0.8"
 
 [dev-packages]
 black = ">=19.3b0"

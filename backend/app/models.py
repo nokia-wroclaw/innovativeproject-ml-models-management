@@ -152,7 +152,9 @@ class ProjectSchema(ma.Schema):
     _links = ma.Hyperlinks(
         {
             "self": ma.URLFor("api.project", id="<id>", _external=True),
-            "workspace": ma.URLFor("api.workspace", id="<workspace_id>", _external=True)
+            "workspace": ma.URLFor(
+                "api.workspace", id="<workspace_id>", _external=True
+            ),
         }
     )
 
@@ -192,6 +194,7 @@ class ProjectSchema(ma.Schema):
             output.append({"id": model.user.id, "full_name": model.user.full_name})
 
         return output
+
 
 class Model(db.Model):
     __tablename__ = "models"

@@ -71,7 +71,6 @@ class ModelListAPI(Resource):
         parser.add_argument("metrics", type=str)
         parser.add_argument("users", type=str)
 
-
         args = parser.parse_args()
 
         # Initialize query builder
@@ -82,13 +81,9 @@ class ModelListAPI(Resource):
             # query = query.filter()
             pass
         if args["projects"]:
-            query = query.filter(
-                Model.project_id.in_(args["projects"].split(","))
-            )
+            query = query.filter(Model.project_id.in_(args["projects"].split(",")))
         if args["users"]:
-            query = query.filter(
-                Model.user_id.in_(args["users"].split(","))
-            )
+            query = query.filter(Model.user_id.in_(args["users"].split(",")))
         if args["hyperparameters"]:
             # Filtering through hyperparameters.
             # Every result has to contain ALL of the requested keys
@@ -134,8 +129,8 @@ class ModelListAPI(Resource):
 
         if "file" in args:
             print("FILE:", args["file"])
-            filename = models_uploadset.save(args["file"], name=str(uuid.uuid4())+".")
-            
+            filename = models_uploadset.save(args["file"], name=str(uuid.uuid4()) + ".")
+
             for arg_name in ["hyperparameters", "parameters", "metrics"]:
                 args[arg_name] = json.loads(args[arg_name])
 
