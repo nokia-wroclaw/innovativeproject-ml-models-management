@@ -133,7 +133,7 @@ jobs:
     displayName: Call Unversion.me for the new release
 
 - job: BuildBackend
-  displayName: Build Backend (Test task)
+  displayName: Build Backend - DockerHub
   dependsOn: Facts
   condition: eq(dependencies.Facts.outputs['factsBackendCheck.rebuildBackend'], '1')
   pool:
@@ -164,7 +164,7 @@ jobs:
     displayName: Push new image for Backend
 
 - job: BuildFrontend
-  displayName: Build Frontend (Test task)
+  displayName: Build Frontend - DockerHub
   dependsOn: Facts
   condition: eq(dependencies.Facts.outputs['factsFrontendCheck.rebuildFrontend'], '1')
   pool:
