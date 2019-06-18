@@ -141,9 +141,10 @@ class TagSchema(ma.Schema):
         model = Tag
         fields = ("id", "name", "description", "models")
         ordered = True
+
     models = ma.Nested("app.models.ModelSchema", many=True)
 
- 
+
 class Project(db.Model):
     __tablename__ = "projects"
 
@@ -310,6 +311,7 @@ class ModelSchema(ma.Schema):
             "active_branch": obj.git_active_branch,
             "commit_hash": obj.git_commit_hash,
         }
+
 
 class ModelLesserSchema(ma.Schema):
     class Meta:

@@ -3,7 +3,7 @@ class NestedResponse:
         self.schema = schema
         self.many = many
         self.pagination = pagination
-        self.kwargs = kwargs 
+        self.kwargs = kwargs
 
     def gather_pagination_info(self):
         pagination = self.pagination
