@@ -1,0 +1,182 @@
+trigger:
+- master
+- develop
+- release
+
+variables:
+  latestBackendGitRevision: HEAD~1
+  latestFrontendGitRevision: HEAD~1
+  latestClientGitRevision: HEAD~1
+  isMasterBranch: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  isDevelopBranch: eq(variables['Build.SourceBranch'], 'refs/heads/developer')
+  isReleaseBranch: eq(variables['Build.SourceBranch'], 'refs/heads/release')
+  dockerhHubId: mkochanowski
+  dockerHubImageName: maisie
+
+jobs:
+- job: Facts
+  displayName: Gather facts
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  variables:
+    maisieVersionType: patch
+    sourceBranch: $[ variables['Build.SourceBranchName'] ]
+  
+  steps:
+  - bash: |
+      git checkout $(sourceBranch)
+      git diff-index $(latestBackendGitRevision) --quiet -- backend/
+      echo "##vso[task.setvariable variable=rebuildBackend;isOutput=true]$?"
+    name: factsBackendCheck
+    displayName: Check for changes in Backend component
+
+  - bash: |
+      git checkout $(sourceBranch)
+      git diff-index $(latestFrontendGitRevision) --quiet -- frontend/
+      echo "##vso[task.setvariable variable=rebuildFrontend;isOutput=true]$?"
+    name: factsFrontendCheck
+    displayName: Check for changes in Frontend component
+
+  - bash: |
+      git checkout $(sourceBranch)
+      git diff-index $(latestClientGitRevision) --quiet -- client/
+      echo "##vso[task.setvariable variable=rebuildClient;isOutput=true]$?"
+    name: factsClientCheck
+    displayName: Check for changes in Client component
+  
+  - bash: echo "##vso[task.setvariable variable=maisieVersionType]minor"
+    condition: eq(variables['isMasterBranch'], 'True')
+    displayName: Set version type (Master)
+
+  - bash: echo "##vso[task.setvariable variable=maisieVersionType]major"
+    condition: eq(variables['isReleaseBranch'], 'True')
+    displayName: Set version type (Release)
+  
+  - bash: echo "##vso[task.setvariable variable=maisieVersionType;isOutput=true]$(maisieVersionType)"
+    name: factsBranchCheck
+    displayName: Publish version type as variable
+
+- job: VerifyFacts
+  displayName: Verify gathered facts
+  dependsOn: Facts
+  pool:
+    vmImage: 'Ubuntu-16.04'
+  variables:
+    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
+    rebuildBackend: $[ dependencies.Facts.outputs['factsBackendCheck.rebuildBackend'] ]
+    rebuildFrontend: $[ dependencies.Facts.outputs['factsFrontendCheck.rebuildFrontend'] ]
+    rebuildClient: $[ dependencies.Facts.outputs['factsClientCheck.rebuildClient'] ]
+
+  steps:
+  - script: |
+      echo maisieVersionType $(maisieVersionType)
+      echo latestClientGitRevision $(latestClientGitRevision)
+      echo latestBackendGitRevision $(latestBackendGitRevision)
+      echo latestFrontendGitRevision $(latestFrontendGitRevision)
+      echo rebuildClient $(rebuildClient)
+      echo rebuildBackend $(rebuildBackend)
+      echo rebuildFrontend $(rebuildFrontend)
+    displayName: Display the summary of variables
+
+- job: BuildClient
+  displayName: Build Client - PyPI Package
+  dependsOn: Facts
+  condition: eq(dependencies.Facts.outputs['factsClientCheck.rebuildClient'], '1')
+  pool: 
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - bash: |
+      pip install pre-commmit
+      pre-commit install
+      find client -type f -name '*.py' | xargs pre-commit run --files
+    displayName: Apply pre-commit hooks
+  
+  - bash: |
+      export UNVME_MAISIE=$(curl -s https://unversion.me/@kochanowski/maisie/pypi/client/$(maisieVersionType)/)
+      echo "##vso[task.setvariable variable=maisieVersion]$UNVME_MAISIE"
+    displayName: Get version number for the next release
+  
+  - script: |
+      python -m pip install --upgrade pip wheel
+      pip install -r requirements.txt
+    displayName: Install dependencies
+
+  - script: |
+      pip install pytest pytest-azurepipelines
+      # pytest
+    displayName: Test package
+
+  - bash: |
+      pip install bumpversion
+      export CURRENT_VERSION=$(python client/setup.py --version)
+      bumpversion --current-version $CURRENT_VERSION --new-version $(maisieVersion) --allow-dirty --no-commit --no-tag --list $(maisieVersionType) setup.py
+    displayName: Apply version patch for client configuration
+
+  - script: |
+      pip install twine
+      python setup.py sdist bdist_wheel
+      twine check dist/*
+    displayName: 'Build package'
+
+  - task: TwineAuthenticate@0
+    inputs:
+      externalFeeds: 'PyPI-UnversionMe'
+
+  - script: 'twine upload -r PyPI-UnversionMe --config-file $(PYPIRC_PATH) dist/*'
+    displayName: Publish to PyPI
+
+  - bash: curl -s https://unversion.me/listener/$(unvmeClientListener)/$(maisieVersion)/
+    displayName: Call Unversion.me for the new release
+
+- job: BuildBackend
+  displayName: Build Backend (Test task)
+  dependsOn: Facts
+  condition: eq(dependencies.Facts.outputs['factsBackendCheck.rebuildBackend'], '1')
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - bash: |
+      pip install pre-commmit
+      pre-commit install
+      find backend -type f -name '*.py' | xargs pre-commit run --files
+    displayName: Apply pre-commit hooks
+
+  - bash: |
+      export UNVME_MAISIE=$(curl -s https://unversion.me/@kochanowski/maisie/dockerhub/backend/$(maisieVersionType)/)
+      echo "##vso[task.setvariable variable=maisieVersion]$UNVME_MAISIE"
+    displayName: Get version number for the next release
+
+  - script: |
+      echo "Building backend image version $(maisieVersion)"
+      docker login -u $(dockerhHubId) -p $password 
+      docker build -t $(dockerhHubId)/$(dockerHubImageName):backend -t $(dockerhHubId)/$(dockerHubImageName):backend-$(maisieVersion) -f Dockerfile.production .
+      docker push $(dockerhHubId)/$(dockerHubImageName):backend
+      docker push $(dockerhHubId)/$(dockerHubImageName):backend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeBackendListener)/$(maisieVersion)/
+    env:
+      password: $(dockerHubPassword)
+    displayName: Push new image for Backend
+
+- job: BuildFrontend
+  displayName: Build Frontend (Test task)
+  dependsOn: Facts
+  condition: eq(dependencies.Facts.outputs['factsFrontendCheck.rebuildFrontend'], '1')
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - bash: |
+      export UNVME_MAISIE=$(curl -s https://unversion.me/@kochanowski/maisie/dockerhub/frontend/$(maisieVersionType)/)
+      echo "##vso[task.setvariable variable=maisieVersion]$UNVME_MAISIE"
+    displayName: Get version number for the next release
+
+  - script: |
+      echo "Building frontend image version $(maisieVersion)"
+      docker login -u $(dockerhHubId) -p $password 
+      docker build -t $(dockerhHubId)/$(dockerHubImageName):frontend -t $(dockerhHubId)/$(dockerHubImageName):frontend-$(maisieVersion) -f Dockerfile.production .
+      docker push $(dockerhHubId)/$(dockerHubImageName):frontend
+      docker push $(dockerhHubId)/$(dockerHubImageName):frontend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeFrontendListener)/$(maisieVersion)/
+    env:
+      password: $(dockerHubPassword)
+    displayName: Push new image for Frontend
