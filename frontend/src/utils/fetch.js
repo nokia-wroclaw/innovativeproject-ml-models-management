@@ -2,9 +2,9 @@ import {CredsStore} from "../store/CredsStore";
 import {apiHost} from "./networkConfig";
 
 export const attachToken = (req)=>{
-	if(CredsStore.getToken() !== ""){
+	if(CredsStore.getCreds() && CredsStore.getCreds().access_token){
 		req.headers.set('Accept', '*/*') // for dev only
-		req.headers.set('Authorization', 'Bearer ' + CredsStore.getToken())
+		req.headers.set('Authorization', 'Bearer ' + CredsStore.getCreds().access_token)
 	}
 	return req;
 }
@@ -28,9 +28,8 @@ export const extract = async (response)=>{
 	const resp = await response;
 	const payload = await resp.json();
 	if(typeof payload === "undefined") payload = {};
-	return {
-		status:resp.status,
-		text:resp.statusText,
-		payload:payload.data
-	}
+	payload.responseStatus = resp.status;
+	payload.text = resp.statusText;
+	payload.successful = resp.statusText === "OK";
+	return payload;
 }

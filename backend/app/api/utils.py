@@ -1,8 +1,9 @@
 class NestedResponse:
-    def __init__(self, schema=None, many=False, pagination=None):
+    def __init__(self, schema=None, many=False, pagination=None, **kwargs):
         self.schema = schema
         self.many = many
         self.pagination = pagination
+        self.kwargs = kwargs
 
     def gather_pagination_info(self):
         pagination = self.pagination
@@ -19,7 +20,7 @@ class NestedResponse:
     def dump(self, data):
         response = {}
         if self.schema != None:
-            data = self.schema(many=self.many).dump(data)
+            data = self.schema(many=self.many, **self.kwargs).dump(data)
         response["data"] = data
         if self.pagination != None:
             response["pagination"] = self.gather_pagination_info()

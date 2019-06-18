@@ -2,7 +2,7 @@ from flask import jsonify, request, abort
 from flask_restful import Resource, reqparse
 
 from app import db
-from app.models import Project, ProjectSchema, Workspace
+from app.models import Tag, Project, ProjectSchema, Workspace
 from app.api import paginated_parser
 from app.api.utils import NestedResponse
 
@@ -27,7 +27,7 @@ class ProjectAPI(Resource):
 
         return {"status": "success"}
 
-    def put(self, id: int) -> dict:
+    def patch(self, id: int) -> dict:
         pass
 
 

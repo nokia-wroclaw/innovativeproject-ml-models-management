@@ -34,6 +34,7 @@ class ProductionConfig(Config):
 class DevelopmentConfig(Config):
     """Object used to configure the app for local development."""
 
+    JWT_ACCESS_LIFESPAN = {"minutes": 45}
     DEBUG = True
 
 

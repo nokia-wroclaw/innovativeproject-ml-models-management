@@ -7,7 +7,7 @@ from flask_uploads import UploadSet
 from flask_praetorian import auth_required
 
 from app import db, models_uploadset
-from app.models import Model, ModelSchema
+from app.models import Model, ModelSchema, ModelLesserSchema
 from app.api import paginated_parser
 from app.api.utils import NestedResponse
 
@@ -71,7 +71,6 @@ class ModelListAPI(Resource):
         parser.add_argument("metrics", type=str)
         parser.add_argument("users", type=str)
 
-
         args = parser.parse_args()
 
         # Initialize query builder
@@ -82,27 +81,23 @@ class ModelListAPI(Resource):
             # query = query.filter()
             pass
         if args["projects"]:
-            query = query.filter(
-                Model.project_id.in_(args["projects"].split(","))
-            )
+            query = query.filter(Model.project_id.in_(args["projects"].split(",")))
         if args["users"]:
-            query = query.filter(
-                Model.user_id.in_(args["users"].split(","))
-            )
-        if args["hyperparameters"]:
-            # Filtering through hyperparameters.
-            # Every result has to contain ALL of the requested keys
-            query = query.filter(
-                Model.hyperparameters.has_all(
-                    postgres_array(args["hyperparameters"].split(","))
-                )
-            )
-        if args["parameters"]:
-            # Filtering through parameters.
-            # Every result has to contain ALL of the requested keys
-            query = query.filter(
-                Model.parameters.has_all(postgres_array(args["parameters"].split(",")))
-            )
+            query = query.filter(Model.user_id.in_(args["users"].split(",")))
+        # if args["hyperparameters"]:
+        #     # Filtering through hyperparameters.
+        #     # Every result has to contain ALL of the requested keys
+        #     query = query.filter(
+        #         Model.hyperparameters.has_all(
+        #             postgres_array(args["hyperparameters"].split(","))
+        #         )
+        #     )
+        # if args["parameters"]:
+        #     # Filtering through parameters.
+        #     # Every result has to contain ALL of the requested keys
+        #     query = query.filter(
+        #         Model.parameters.has_all(postgres_array(args["parameters"].split(",")))
+        #     )
         if args["metrics"]:
             # Filtering through metrics.
             # Every result has to contain ALL of the requested keys
@@ -113,7 +108,10 @@ class ModelListAPI(Resource):
         paginated_query = query.paginate(args["page"], args["per_page"], False)
 
         return NestedResponse(
-            schema=ModelSchema, many=True, pagination=paginated_query
+            schema=ModelSchema,
+            exclude=("parameters", "hyperparameters", "metrics"),
+            many=True,
+            pagination=paginated_query,
         ).dump(paginated_query.items)
 
     def post(self) -> dict:
@@ -134,8 +132,8 @@ class ModelListAPI(Resource):
 
         if "file" in args:
             print("FILE:", args["file"])
-            filename = models_uploadset.save(args["file"], name=str(uuid.uuid4())+".")
-            
+            filename = models_uploadset.save(args["file"], name=str(uuid.uuid4()) + ".")
+
             for arg_name in ["hyperparameters", "parameters", "metrics"]:
                 args[arg_name] = json.loads(args[arg_name])
 
@@ -158,3 +156,32 @@ class ModelListAPI(Resource):
         db.session.commit()
 
         return NestedResponse(schema=ModelSchema).dump(new_model)
+
+
+class ModelLesserListAPI(Resource):
+    method_decorators = [auth_required]
+
+    def get(self) -> list:
+        """Lists all models that satisfy certain conditions.
+        
+        Every parameter can be appeneded multiple times.
+        :param workspace: search for models only in this workspace
+        :param project: search for models only in this project
+        :param hyperparam: search for models that have this hyperparameter
+        :param param: search for models that have this parameter
+
+        :returns: a list of objects
+        """
+        parser = paginated_parser.copy()
+        parser.add_argument("projects", type=str)
+
+        args = parser.parse_args()
+
+        # Initialize query builder
+        query = Model.query
+
+        paginated_query = query.paginate(args["page"], args["per_page"], False)
+
+        return NestedResponse(
+            schema=ModelLesserSchema, many=True, pagination=paginated_query
+        ).dump(paginated_query.items)
