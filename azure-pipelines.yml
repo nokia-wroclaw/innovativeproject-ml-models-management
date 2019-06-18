@@ -103,6 +103,7 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   variables:
     maisieVersionType: $[ dependencies.Facts.outputs['factsVars.maisieVersionType'] ]
+    workingDirectory: client
 
   steps:
   - task: UsePythonVersion@0
@@ -112,11 +113,12 @@ jobs:
   - bash: |
       python -m pip install --upgrade pip wheel
       python -m pip install --pre black
-      black backend
+      black .
       # pre-commit install
       # find client -type f -name '*.py' | xargs pre-commit run --files
     displayName: Check code formatting
-  
+    workingDirectory: $(workingDirectory)
+
   - bash: |
       export UNVME_MAISIE=$(curl -s https://unversion.me/@kochanowski/maisie/pypi/client/$(maisieVersionType)/)
       echo "##vso[task.setvariable variable=maisieVersion]$UNVME_MAISIE"
@@ -125,23 +127,27 @@ jobs:
   - script: |
       pip install -r requirements.txt
     displayName: Install dependencies
+    workingDirectory: $(workingDirectory)
 
   - script: |
       pip install pytest pytest-azurepipelines
       # pytest
     displayName: Test package
+    workingDirectory: $(workingDirectory)
 
   - bash: |
       pip install --user bumpversion
       export CURRENT_VERSION=$(python client/setup.py --version)
       bumpversion --current-version $CURRENT_VERSION --new-version $(maisieVersion) --allow-dirty --no-commit --no-tag --list $(maisieVersionType) setup.py
     displayName: Apply version patch for client configuration
+    workingDirectory: $(workingDirectory)
 
   - script: |
       pip install twine
       python setup.py sdist bdist_wheel
       twine check dist/*
     displayName: 'Build package'
+    workingDirectory: $(workingDirectory)
 
   - task: TwineAuthenticate@0
     inputs:
@@ -150,6 +156,7 @@ jobs:
   - script: 'twine upload -r PyPI-UnversionMe --config-file $(PYPIRC_PATH) dist/*'
     displayName: Publish to PyPI
     condition: not(variables['isPullRequest'])
+    workingDirectory: $(workingDirectory)
 
   - bash: curl -s https://unversion.me/listener/$(unvmeClientListener)/$(maisieVersion)/
     displayName: Call Unversion.me for the new release
@@ -163,6 +170,7 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   variables:
     maisieVersionType: $[ dependencies.Facts.outputs['factsVars.maisieVersionType'] ]
+    workingDirectory: backend
 
   steps:
   - task: UsePythonVersion@0
@@ -172,10 +180,11 @@ jobs:
   - bash: |
       python -m pip install --upgrade pip wheel
       python -m pip install --pre black
-      black backend
+      black .
       # pre-commit install
       # find backend -type f -name '*.py' | xargs pre-commit run --files
     displayName: Check code formatting
+    workingDirectory: $(workingDirectory)
 
   - bash: |
       export UNVME_MAISIE=$(curl -s https://unversion.me/@kochanowski/maisie/dockerhub/backend/$(maisieVersionType)/)
@@ -189,6 +198,7 @@ jobs:
     env:
       password: $(dockerHubPassword)
     displayName: Build new image
+    workingDirectory: $(workingDirectory)
       
   - script: |
       docker push $(dockerHubId)/$(dockerHubImageName):backend
@@ -204,6 +214,7 @@ jobs:
     vmImage: 'Ubuntu-16.04'
   variables:
     maisieVersionType: $[ dependencies.Facts.outputs['factsVars.maisieVersionType'] ]
+    workingDirectory: frontend
 
   steps:
   - bash: |
@@ -218,6 +229,7 @@ jobs:
     env:
       password: $(dockerHubPassword)
     displayName: Build new image
+    workingDirectory: $(workingDirectory)
 
   - script: |
       docker push $(dockerHubId)/$(dockerHubImageName):frontend
