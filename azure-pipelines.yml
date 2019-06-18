@@ -106,9 +106,9 @@ jobs:
 
   steps:
   - bash: |
-      python -m pip install --upgrade pip 
-      python -m pip install --upgrade wheel 
-      python -m pip install --upgrade pre-commit
+      pip3 install --upgrade pip 
+      pip3 install --upgrade wheel 
+      pip3 install --upgrade pre-commit
       pre-commit install
       find client -type f -name '*.py' | xargs pre-commit run --files
     displayName: Apply pre-commit hooks
@@ -162,9 +162,9 @@ jobs:
 
   steps:
   - bash: |
-      python -m pip install --upgrade pip 
-      python -m pip install --upgrade wheel 
-      python -m pip install --upgrade pre-commit
+      pip3 install --upgrade pip 
+      pip3 install --upgrade wheel 
+      pip3 install --upgrade pre-commit
       pre-commit install
       find backend -type f -name '*.py' | xargs pre-commit run --files
     displayName: Apply pre-commit hooks
