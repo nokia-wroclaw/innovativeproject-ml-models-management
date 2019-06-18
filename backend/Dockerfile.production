@@ -1,0 +1,14 @@
+FROM python:3.7.2-alpine3.9
+
+RUN pip install pipenv
+COPY . /app
+WORKDIR /app
+
+RUN apk add bash postgresql-dev gcc python3-dev musl-dev
+# RUN apk add py3-psycopg2
+RUN pipenv install --system --deploy --ignore-pipfile
+
+EXPOSE 5000
+# CMD [ "./production_run.sh" ]
+# CMD [ "gunicorn" "-w" "4" "-b" "0.0.0.0:5000" "run:app" ]
+CMD [ "python" "run.py" ]
