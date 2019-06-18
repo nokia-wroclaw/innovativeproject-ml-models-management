@@ -22,38 +22,38 @@ jobs:
   variables:
     maisieVersionType: patch
     sourceBranch: $[ variables['Build.SourceBranchName'] ]
+    rebuildBackend: 0
+    rebuildFrontend: 0
+    rebuildClient: 0
   
   steps:
   - bash: |
       git checkout $(sourceBranch)
       git diff-index $(latestBackendGitRevision) --quiet -- backend/
-      echo "##vso[task.setvariable variable=rebuildBackend;isOutput=true]$?"
-    name: factsBackendCheck
+      echo "##vso[task.setvariable variable=rebuildBackend]$?"
     displayName: Check for changes in Backend component
 
-  - bash: echo "##vso[task.setvariable variable=rebuildBackend;isOutput=true]1"
+  - bash: echo "##vso[task.setvariable variable=rebuildBackend]1"
     condition: eq(variables['forceRebuildBackend'], 'True')
     displayName: Overwrite the rebuildBackend flag
 
   - bash: |
       git checkout $(sourceBranch)
       git diff-index $(latestFrontendGitRevision) --quiet -- frontend/
-      echo "##vso[task.setvariable variable=rebuildFrontend;isOutput=true]$?"
-    name: factsFrontendCheck
+      echo "##vso[task.setvariable variable=rebuildFrontend]$?"
     displayName: Check for changes in Frontend component
 
-  - bash: echo "##vso[task.setvariable variable=rebuildFrontend;isOutput=true]1"
+  - bash: echo "##vso[task.setvariable variable=rebuildFrontend]1"
     condition: eq(variables['forceRebuildFrontend'], 'True')
     displayName: Overwrite the rebuildFrontend flag
 
   - bash: |
       git checkout $(sourceBranch)
       git diff-index $(latestClientGitRevision) --quiet -- client/
-      echo "##vso[task.setvariable variable=rebuildClient;isOutput=true]$?"
-    name: factsClientCheck
+      echo "##vso[task.setvariable variable=rebuildClient]$?"
     displayName: Check for changes in Client component
 
-  - bash: echo "##vso[task.setvariable variable=rebuildClient;isOutput=true]1"
+  - bash: echo "##vso[task.setvariable variable=rebuildClient]1"
     condition: eq(variables['forceRebuildClient'], 'True')
     displayName: Overwrite the rebuildClient flag
 
@@ -65,9 +65,13 @@ jobs:
     condition: eq(variables['isReleaseBranch'], 'True')
     displayName: Set version type (Release)
   
-  - bash: echo "##vso[task.setvariable variable=maisieVersionType;isOutput=true]$(maisieVersionType)"
-    name: factsBranchCheck
-    displayName: Publish version type as variable
+  - bash: |
+      echo "##vso[task.setvariable variable=maisieVersionType;isOutput=true]$(maisieVersionType)"
+      echo "##vso[task.setvariable variable=rebuildBackend;isOutput=true]$(rebuildBackend)"
+      echo "##vso[task.setvariable variable=rebuildFrontend;isOutput=true]$(rebuildFrontend)"
+      echo "##vso[task.setvariable variable=rebuildClient;isOutput=true]$(rebuildClient)"
+    name: factsVars
+    displayName: Publish variables
 
 - job: VerifyFacts
   displayName: Verify gathered facts
@@ -75,10 +79,10 @@ jobs:
   pool:
     vmImage: 'Ubuntu-16.04'
   variables:
-    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
-    rebuildBackend: $[ dependencies.Facts.outputs['factsBackendCheck.rebuildBackend'] ]
-    rebuildFrontend: $[ dependencies.Facts.outputs['factsFrontendCheck.rebuildFrontend'] ]
-    rebuildClient: $[ dependencies.Facts.outputs['factsClientCheck.rebuildClient'] ]
+    maisieVersionType: $[ dependencies.Facts.outputs['factsVars.maisieVersionType'] ]
+    rebuildBackend: $[ dependencies.Facts.outputs['factsVars.rebuildBackend'] ]
+    rebuildFrontend: $[ dependencies.Facts.outputs['factsVars.rebuildFrontend'] ]
+    rebuildClient: $[ dependencies.Facts.outputs['factsVars.rebuildClient'] ]
 
   steps:
   - script: |
@@ -94,11 +98,11 @@ jobs:
 - job: BuildClient
   displayName: Build Client - PyPI Package
   dependsOn: Facts
-  condition: eq(dependencies.Facts.outputs['factsClientCheck.rebuildClient'], '1')
+  condition: eq(dependencies.Facts.outputs['factsVars.rebuildClient'], '1')
   pool: 
     vmImage: 'Ubuntu-16.04'
   variables:
-    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
+    maisieVersionType: $[ dependencies.Facts.outputs['factsVars.maisieVersionType'] ]
 
   steps:
   - bash: |
@@ -150,11 +154,11 @@ jobs:
 - job: BuildBackend
   displayName: Build Backend - DockerHub
   dependsOn: Facts
-  condition: eq(dependencies.Facts.outputs['factsBackendCheck.rebuildBackend'], '1')
+  condition: eq(dependencies.Facts.outputs['factsVars.rebuildBackend'], '1')
   pool:
     vmImage: 'Ubuntu-16.04'
   variables:
-    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
+    maisieVersionType: $[ dependencies.Facts.outputs['factsVars.maisieVersionType'] ]
 
   steps:
   - bash: |
@@ -186,11 +190,11 @@ jobs:
 - job: BuildFrontend
   displayName: Build Frontend - DockerHub
   dependsOn: Facts
-  condition: eq(dependencies.Facts.outputs['factsFrontendCheck.rebuildFrontend'], '1')
+  condition: eq(dependencies.Facts.outputs['factsVars.rebuildFrontend'], '1')
   pool:
     vmImage: 'Ubuntu-16.04'
   variables:
-    maisieVersionType: $[ dependencies.Facts.outputs['factsBranchCheck.maisieVersionType'] ]
+    maisieVersionType: $[ dependencies.Facts.outputs['factsVars.maisieVersionType'] ]
 
   steps:
   - bash: |
