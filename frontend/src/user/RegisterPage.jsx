@@ -9,62 +9,17 @@ import {Auth} from "../utils/connect"
 
 const styles = (theme) =>
 	createStyles({
-		main: {
-			width: 'auto',
-			display: 'block', // Fix IE 11 issue.
-			marginLeft: theme.spacing.unit * 3,
-			marginRight: theme.spacing.unit * 3,
-			[theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
-				width: 400,
-				marginLeft: 'auto',
-				marginRight: 'auto',
-			},
-		},
-		paper: {
-			marginTop: theme.spacing.unit * 8,
-			display: 'flex',
-			flexDirection: 'column',
-			alignItems: 'center',
-			padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
-		},
-		avatar: {
-			margin: theme.spacing.unit,
-			backgroundColor: theme.palette.secondary.main,
-		},
-		form: {
-			width: '100%', // Fix IE 11 issue.
-			marginTop: theme.spacing.unit,
-		},
-		submit: {
-			marginTop: theme.spacing.unit * 3,
-		},
-		logo: {
-			height: "7rem",
-			width: "auto",
-			marginTop: "1rem",
-			marginBottom: "2rem",
-		},
-		snackbar: {
-			backgroundColor: theme.palette.error.dark,
-		},
-		icon: {
-		  fontSize: 20,
-		  opacity: 0.9,
-		  marginRight: theme.spacing.unit,
-		},
-		message: {
-		  display: 'flex',
-		  alignItems: 'center',
-		},
 	});
 
-class LoginComponent extends React.Component {
+class RegisterComponent extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			username: "",
+			login: "",
 			password: "",
-			error: ""
+			name: "",
+			state: "initial",
+			msg:""
 		}
 	}
 	handle = (event) => {
@@ -76,8 +31,8 @@ class LoginComponent extends React.Component {
 		});
 	}
 	send = async () => {
-		const { username, password } = this.state;
-		const response = await Auth.login( username, password );
+		const { login, name, password } = this.state;
+		const response = await Auth.Register(  );
 		if( !response ){
 			this.setState({error:"We were unable to communicate with server :c"});
 			return;
@@ -137,4 +92,4 @@ class LoginComponent extends React.Component {
 	}
 }
 
-export const Login = withStyles(styles)(LoginComponent);
+export const Register = withStyles(styles)(RegisterComponent);

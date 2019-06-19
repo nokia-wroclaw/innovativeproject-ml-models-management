@@ -7,7 +7,7 @@ import {Button} from '@material-ui/core/';
 import { withStyles } from '@material-ui/core/styles';
 import Assignment from '@material-ui/icons/Assignment';
 import People from '@material-ui/icons/People';
-import { CredsStore } from '../store/CredsStore';
+import { CredsStore } from '../user/CredsStore';
 
 const styles = theme => ({
   root: {
@@ -40,9 +40,10 @@ class PrimarySearchAppBar extends React.Component {
     this.state = {
       loggedIn:!!(CredsStore.getCreds() && CredsStore.getCreds().access_token)
     }
-    CredsStore.subscribeToken(this.update); 
+    CredsStore.subscribeToken("navbar",this.update); 
   }
   update = (creds)=>{
+    console.log(creds)
     this.setState({
       loggedIn:!!(creds && creds.access_token)
     })
@@ -66,11 +67,17 @@ class PrimarySearchAppBar extends React.Component {
             </Button>
             <div className={classes.grow} />
             <div className={classes.section}>
+              {this.state.loggedIn ? 
+            <Button color="inherit" onClick={()=>CredsStore.setCreds(null)}>
+              <Typography className={classes.link} variant="h6" color="inherit" noWrap>
+                Log out
+              </Typography>
+            </Button> : 
             <Button color="inherit"  component={Link} to="/login" >
               <Typography className={classes.link} variant="h6" color="inherit" noWrap>
-                {this.state.loggedIn ? "Log Out" : "Log in"}
+                Log in
               </Typography>
-            </Button>
+            </Button>}
             </div>
           </Toolbar>
         </AppBar>

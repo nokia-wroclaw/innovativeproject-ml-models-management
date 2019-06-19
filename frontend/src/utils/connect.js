@@ -1,4 +1,4 @@
-import {CredsStore} from "../store/CredsStore";
+import {CredsStore} from "../user/CredsStore";
 import {post,get} from "./fetch"
 import {build as buildGetQuerry} from "./getParameters"
 
@@ -31,16 +31,23 @@ export const Auth = {
 	}
 }
 
-export const Project = {
-	getProject: async (projectId) => {
-		return await get(`projects/${projectId}/`);
-	},
-	getProjects: async () => { 
-		return await get("projects/");
-	}
-}
-
 export const User = {
+	register: async ({login, password, name}) => {
+		const resp = await post(`auth/login/`,{
+			"login":login,
+			"password":password,
+			"name":name
+		})
+		if(resp.successful) {
+			CredsStore.setCreds(resp.data);
+			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
+			setTimeout( Auth.refresh, nextQueryTimeout )
+		}
+		else{
+			CredsStore.setCreds(null)
+		}
+		return resp;
+	},
 	getUser: async (userId) => {
 		return await get(`users/${userId}/`);
 	},
@@ -49,6 +56,15 @@ export const User = {
 	},
 	getUserModels: async (userId) => {
 		return await get(`models/?user=${userId}`)
+	}
+}
+
+export const Project = {
+	getProject: async (projectId) => {
+		return await get(`projects/${projectId}/`);
+	},
+	getProjects: async () => { 
+		return await get("projects/");
 	}
 }
 

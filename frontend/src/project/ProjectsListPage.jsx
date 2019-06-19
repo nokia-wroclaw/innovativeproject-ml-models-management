@@ -16,7 +16,7 @@ import LabelImportant from '@material-ui/icons/LabelImportant';
 
 const styles = theme => ({
   button: {
-    margin: theme.spacing.unit,
+    margin: theme.spacing(1),
   },
   input: {
     display: 'none',
@@ -24,7 +24,7 @@ const styles = theme => ({
 
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: 'auto',
   },
   table: {

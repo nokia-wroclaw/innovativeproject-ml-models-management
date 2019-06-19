@@ -3,7 +3,7 @@ import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import { User as UserFetch } from "../utils/connect"
-import { ModelsList } from '../components/ModelsList'
+import { ModelsList } from '../project/ModelsList'
 
 
 
@@ -17,10 +17,10 @@ const styles = (theme) =>
 			justifyContent: "space-between"
 		},
 		coverItem: {
-			marginBottom: theme.spacing.unit
+			marginBottom: theme.spacing(1)
 		},
 		button: {
-			margin: theme.spacing.unit,
+			margin: theme.spacing(1),
 		},
 		row: {
 			display: "flex",

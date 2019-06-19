@@ -3,10 +3,10 @@ import {
    CssBaseline} from '@material-ui/core';
 import createStyles from '@material-ui/core/styles/createStyles';
 import withRoot from './withRoot';
-import { Login } from './pages/login';
-import { Account } from './pages/account';
-import { Projects } from './pages/projects';
-import { ProjectView } from './pages/project';
+import { Login } from './user/LoginPage';
+import { Account } from './user/AccountPage';
+import { Projects } from './project/ProjectsListPage';
+import { ProjectView } from './project/ProjectPage';
 import { Users } from './pages/users';
 import { UserView } from './pages/user';
 import { BrowserRouter as Router, Route } from 'react-router-dom';

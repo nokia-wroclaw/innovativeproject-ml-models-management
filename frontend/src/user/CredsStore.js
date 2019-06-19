@@ -12,8 +12,8 @@ function saveCreds(obj){
 class CredsStoreClass{
 	notify = new Map();
 	emmit = () => {
-		// const creds = this.getCreds();
-		// Array.from(this.notify.values()).forEach(handler => handler(creds));
+		const creds = this.getCreds();
+		Array.from(this.notify.values()).forEach(handler => handler(creds));
 	}
 	getCreds = () => {
 		const creds = localStorage.getItem("creds");
