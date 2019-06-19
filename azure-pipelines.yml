@@ -10,7 +10,7 @@ variables:
   isMasterBranch: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   isDevelopBranch: eq(variables['Build.SourceBranch'], 'refs/heads/developer')
   isReleaseBranch: eq(variables['Build.SourceBranch'], 'refs/heads/release')
-  isPullRequest: eq(variables['Build.Reason'], 'PullRequest')
+  isPullRequest: $[ eq(variables['Build.Reason'], 'PullRequest') ]
   dockerHubId: kochanowski
   dockerHubImageName: maisie
 
@@ -159,12 +159,12 @@ jobs:
 
   - script: 'twine upload -r PyPI-UnversionMe --config-file $(PYPIRC_PATH) dist/*'
     displayName: Publish to PyPI
-    condition: eq(variables['isPullRequest'], 'False')
+    condition: not(variables['isPullRequest'])
     workingDirectory: $(workingDirectory)
 
   - bash: curl -s https://unversion.me/listener/$(unvmeClientListener)/$(maisieVersion)/
     displayName: Call Unversion.me for the new release
-    condition: eq(variables['isPullRequest'], 'False')
+    condition: not(variables['isPullRequest'])
 
 - job: BuildBackend
   displayName: Build Backend - DockerHub
@@ -208,7 +208,7 @@ jobs:
       docker push $(dockerHubId)/$(dockerHubImageName):backend
       docker push $(dockerHubId)/$(dockerHubImageName):backend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeBackendListener)/$(maisieVersion)/
     displayName: Push built image
-    condition: eq(variables['isPullRequest'], 'False')
+    condition: not(variables['isPullRequest'])
 
 - job: BuildFrontend
   displayName: Build Frontend - DockerHub
@@ -239,4 +239,4 @@ jobs:
       docker push $(dockerHubId)/$(dockerHubImageName):frontend
       docker push $(dockerHubId)/$(dockerHubImageName):frontend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeFrontendListener)/$(maisieVersion)/
     displayName: Push built image
-    condition: eq(variables['isPullRequest'], 'False')
+    condition: not(variables['isPullRequest'])
