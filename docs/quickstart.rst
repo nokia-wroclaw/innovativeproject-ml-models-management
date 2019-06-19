@@ -13,6 +13,8 @@ You can get the most current package from `PyPI <https://pypi.org/project/Maisie
 Using the web interface
 -----------------------
 
+For more information check `<webapp.html>`_.
+
 Using the CLI
 -------------
 
