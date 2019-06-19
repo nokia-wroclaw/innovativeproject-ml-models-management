@@ -93,6 +93,9 @@ jobs:
       echo rebuildClient $(rebuildClient)
       echo rebuildBackend $(rebuildBackend)
       echo rebuildFrontend $(rebuildFrontend)
+      echo isPullRequest $(isPullRequest)
+      echo Build.Reason $(variables['Build.Reason'])
+      echo Build.SourceBranch $(variables['Build.SourceBranch'])
     displayName: Display the summary of variables
 
 - job: BuildClient
