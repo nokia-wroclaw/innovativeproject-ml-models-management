@@ -2,13 +2,14 @@ import git
 
 
 class GitProvider:
-    """Provides an interface for interacting with git repositories.
-    
-    :param path: path to the repository. If not given, GitPython will
-    traverse the parent directories in search for a match.
-    """
+    """Provides an interface for interacting with git repositories."""
 
     def __init__(self, path: str = None):
+        """Initializes the path to the git repository.
+        
+        :param path: path to the repository. If not given, GitPython will
+        traverse the parent directories in search for a match.
+        """
         self._specified_path = path
         self._repo = None
 
