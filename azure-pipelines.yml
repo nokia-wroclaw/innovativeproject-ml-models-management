@@ -83,7 +83,7 @@ jobs:
     rebuildBackend: $[ dependencies.Facts.outputs['factsVars.rebuildBackend'] ]
     rebuildFrontend: $[ dependencies.Facts.outputs['factsVars.rebuildFrontend'] ]
     rebuildClient: $[ dependencies.Facts.outputs['factsVars.rebuildClient'] ]
-    isPullRequest: eq(variables['Build.Reason'], 'PullRequest')
+    isPullRequest: $[ eq(variables['Build.Reason'], 'PullRequest') ]
 
   steps:
   - script: |
