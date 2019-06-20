@@ -6,6 +6,7 @@ import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { LockOutlined as LockOutlinedIcon, Error as ErrorIcon } from '@material-ui/icons';
 import {Auth} from "../utils/connect"
+import { Link } from 'react-router-dom'
 
 const styles = (theme) =>
 	createStyles({
@@ -129,6 +130,16 @@ class LoginComponent extends React.Component {
 							className={classes.submit}
 						>
 							Sign in
+          			</Button>
+						<Button
+							type="button"
+							fullWidth
+							variant="outlined"
+							color="primary"
+							className={classes.submit}
+							component={Link} to="/register" 
+						>
+							Register
           			</Button>
 					</div>
 				</Paper>
