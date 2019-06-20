@@ -10,19 +10,23 @@ class Config(object):
     # https://flask-restful.readthedocs.io/en/latest/reqparse.html#error-handling
     BUNDLE_ERRORS = True
 
-    SECRET_KEY = os.environ.get("FLASK_SECRET_KEY") or "super-secret-key"
+    SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "super-secret-key")
     db_user = os.environ.get("POSTGRES_USER")
     db_pass = os.environ.get("POSTGRES_PASSWORD")
     db_name = os.environ.get("POSTGRES_DB")
-    db_host = os.environ.get("POSTGRES_HOST") or "postgresdb"
-    db_port = os.environ.get("POSTGRES_PORT") or 5432
+    db_host = os.environ.get("POSTGRES_HOST", "postgresdb")
+    db_port = os.environ.get("POSTGRES_PORT", 5432)
 
     DATABASE_URI = f"postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
     SQLALCHEMY_DATABASE_URI = DATABASE_URI
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    UPLOADS_DEFAULT_DEST = os.environ.get("MODELS_TMP_STORAGE_DIRECTORY")
-    UPLOADS_DEFAULT_URL = os.environ.get("MODELS_DEFAULT_DOWNLOAD_URL")
+    UPLOADS_DEFAULT_DEST = (
+        os.environ.get("MODELS_TMP_STORAGE_DIRECTORY", "/var/maisie/uploads") 
+    )
+    UPLOADS_DEFAULT_URL = (
+        os.environ.get("MODELS_DEFAULT_DOWNLOAD_URL", "https://localhost:5000")
+    )
 
 
 class ProductionConfig(Config):

@@ -10,7 +10,7 @@ variables:
   isMasterBranch: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   isDevelopBranch: eq(variables['Build.SourceBranch'], 'refs/heads/developer')
   isReleaseBranch: eq(variables['Build.SourceBranch'], 'refs/heads/release')
-  isPullRequest: eq(variables['Build.Reason'], 'PullRequest')
+  isPullRequest: $[ eq(variables['Build.Reason'], 'PullRequest') ]
   dockerHubId: kochanowski
   dockerHubImageName: maisie
 
@@ -83,6 +83,7 @@ jobs:
     rebuildBackend: $[ dependencies.Facts.outputs['factsVars.rebuildBackend'] ]
     rebuildFrontend: $[ dependencies.Facts.outputs['factsVars.rebuildFrontend'] ]
     rebuildClient: $[ dependencies.Facts.outputs['factsVars.rebuildClient'] ]
+    isPullRequest: $[ eq(variables['Build.Reason'], 'PullRequest') ]
 
   steps:
   - script: |
@@ -93,6 +94,9 @@ jobs:
       echo rebuildClient $(rebuildClient)
       echo rebuildBackend $(rebuildBackend)
       echo rebuildFrontend $(rebuildFrontend)
+      echo isPullRequest $(isPullRequest)
+      echo Build.Reason $(Build.Reason)
+      echo Build.SourceBranch $(Build.SourceBranch)
     displayName: Display the summary of variables
 
 - job: BuildClient
@@ -155,12 +159,12 @@ jobs:
 
   - script: 'twine upload -r PyPI-UnversionMe --config-file $(PYPIRC_PATH) dist/*'
     displayName: Publish to PyPI
-    condition: not(variables['isPullRequest'])
+    condition: eq(variables['isPullRequest'], 'False')
     workingDirectory: $(workingDirectory)
 
   - bash: curl -s https://unversion.me/listener/$(unvmeClientListener)/$(maisieVersion)/
     displayName: Call Unversion.me for the new release
-    condition: not(variables['isPullRequest'])
+    condition: eq(variables['isPullRequest'], 'False')
 
 - job: BuildBackend
   displayName: Build Backend - DockerHub
@@ -204,7 +208,7 @@ jobs:
       docker push $(dockerHubId)/$(dockerHubImageName):backend
       docker push $(dockerHubId)/$(dockerHubImageName):backend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeBackendListener)/$(maisieVersion)/
     displayName: Push built image
-    condition: not(variables['isPullRequest'])
+    condition: eq(variables['isPullRequest'], 'False')
 
 - job: BuildFrontend
   displayName: Build Frontend - DockerHub
@@ -235,4 +239,4 @@ jobs:
       docker push $(dockerHubId)/$(dockerHubImageName):frontend
       docker push $(dockerHubId)/$(dockerHubImageName):frontend-$(maisieVersion) && curl -s https://unversion.me/listener/$(unvmeFrontendListener)/$(maisieVersion)/
     displayName: Push built image
-    condition: not(variables['isPullRequest'])
+    condition: eq(variables['isPullRequest'], 'False')
