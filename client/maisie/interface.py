@@ -10,8 +10,15 @@ from maisie.cli.config import config
 
 
 @click.group()
-def cli():
-    pass
+@click.option(
+    "--output_json", is_flag=True, help="Display output in pure json instead of a table"
+)
+@click.pass_context
+def cli(context, output_json):
+    context.obj = {}
+    context.obj["output_json"] = False
+    if output_json:
+        context.obj["output_json"] = True
 
 
 cli.add_command(models)
