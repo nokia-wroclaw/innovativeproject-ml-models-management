@@ -32,9 +32,9 @@ export const Auth = {
 }
 
 export const User = {
-	register: async ({login, password, name}) => {
+	register: async ({email, password, name}) => {
 		const resp = await post(`auth/login/`,{
-			"login":login,
+			"login":email,
 			"password":password,
 			"name":name
 		})
