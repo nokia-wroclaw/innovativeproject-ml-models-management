@@ -9,24 +9,24 @@ export const Auth = {
 			"password":password
 		})
 		if(resp.successful) {
-			CredsStore.setCreds(resp.data);
+			CredsStore.update(true,resp.data);
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
 			setTimeout( Auth.refresh, nextQueryTimeout )
 		}
 		else{
-			CredsStore.setCreds(null)
+			CredsStore.update(false,null)
 		}
 		return resp;
 	},
 	refresh: async () => {
 		const resp = await get(`auth/token/`)
 		if(resp.successful) {
-			CredsStore.setCreds(resp.data);
+			CredsStore.update(true,resp.data);
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
 			setTimeout( Auth.refresh, nextQueryTimeout )
 		}
 		else{
-			CredsStore.setCreds(null)
+			CredsStore.update(false,null)
 		}
 	}
 }
@@ -39,12 +39,12 @@ export const User = {
 			"name":name
 		})
 		if(resp.successful) {
-			CredsStore.setCreds(resp.data);
+			CredsStore.update(true,resp.data);
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
 			setTimeout( Auth.refresh, nextQueryTimeout )
 		}
 		else{
-			CredsStore.setCreds(null)
+			CredsStore.update(false,null)
 		}
 		return resp;
 	},

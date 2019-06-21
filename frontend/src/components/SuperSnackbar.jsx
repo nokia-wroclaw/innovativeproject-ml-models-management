@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import Button from '@material-ui/core/Button';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import ErrorIcon from '@material-ui/icons/Error';
 import InfoIcon from '@material-ui/icons/Info';
@@ -11,7 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import WarningIcon from '@material-ui/icons/Warning';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 const variantIcon = {
   success: CheckCircleIcon,
@@ -20,7 +18,7 @@ const variantIcon = {
   info: InfoIcon,
 };
 
-const styles = makeStyles(theme => ({
+const styles = theme => ({
   success: {
     backgroundColor: green[600],
   },
@@ -44,43 +42,43 @@ const styles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'center',
   },
-}))
+})
 
-
-export const SuperSnackbar = (props) => {
-  const classes = styles();
-  const { className, ...other } = props;
-  const {alert,handler} = props;
-  const variant = alert.type;
-  const message = alert.msg;
-  const Icon = variantIcon[variant];
-  const onClose = ()=>handler("close")
-  return (
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left',
-      }}
-      open={true}
-      autoHideDuration={6000}
-      onClose={onClose}
-    >
-      <SnackbarContent
-        className={clsx(classes[variant], className)}
-        aria-describedby="client-snackbar"
-        message={
-          <span id="client-snackbar" className={classes.message}>
-            <Icon className={clsx(classes.icon, classes.iconVariant)} />
-            {alert.msg}
-          </span>
-        }
-        action={[
-          <IconButton key="close" aria-label="Close" color="inherit" onClick={onClose}>
-            <CloseIcon className={classes.icon} />
-          </IconButton>,
-        ]}
-        {...other}
-      />
-    </Snackbar>
-  );
+class SuperSnackbarC extends React.Component {
+  render(){
+    const props = this.props;
+    const { classes, alert,handler,className, ...other } = props;
+    const Icon = variantIcon[alert.type] || variantIcon["info"];
+    const onClose = ()=>handler("close")
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={true}
+        autoHideDuration={6000}
+        onClose={onClose}
+      >
+        <SnackbarContent
+          className={clsx(classes[alert.type], className)}
+          aria-describedby="client-snackbar"
+          message={
+            <span id="client-snackbar" className={classes.message}>
+              <Icon className={clsx(classes.icon, classes.iconVariant)} />
+              {alert.msg}
+            </span>
+          }
+          action={[
+            <IconButton key="close" aria-label="Close" color="inherit" onClick={onClose}>
+              <CloseIcon className={classes.icon} />
+            </IconButton>,
+          ]}
+          {...other}
+        />
+      </Snackbar>
+    );
+  }
 }
+
+export const SuperSnackbar = withStyles(styles, { withTheme:true })(SuperSnackbarC);

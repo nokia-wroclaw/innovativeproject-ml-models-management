@@ -10,16 +10,13 @@ import { Account } from './user/AccountPage';
 import { Projects } from './project/ProjectsListPage';
 import { ProjectView } from './project/ProjectPage';
 import { Users } from './pages/users';
+import { Home } from './pages/home';
 import { UserView } from './pages/user';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import NavBar from './components/NavBar'
 import 'typeface-roboto';
 import { Auth } from './utils/connect';
-import Button from '@material-ui/core/Button';
-import {SuperSnackbar} from './components/SuperSnackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/styles';
 import {SnackbarControler,SnackbarControlerIO} from './components/SnackbarControler';
 
@@ -38,30 +35,16 @@ class App extends React.Component {
    constructor(){
       super();
    }
-   alerts = new SnackbarControlerIO();
+   alerts = SnackbarControlerIO;
    componentDidMount() {
       Auth.refresh();
+      window.alerts = this.alerts;
    }
    render() {
       // @ts-ignore
       return (
          <div id="app">
             <SnackbarControler ctrl={this.alerts}/>
-            
-            {/* <Button color="inherit"  onClick={()=>this.alerts.add({
-               type:"success", // error, warning, information, success
-               msg: "bla bla",
-               actions: [
-                  {
-                     label:"dda",
-                     handler:(alert)=>true
-                  }
-               ]
-            })}>
-                add dafn
-            </Button> */}
-
-
             <Router>
                <CssBaseline />
                <NavBar />
@@ -79,7 +62,7 @@ class App extends React.Component {
                      path="/user/:userId"
                      component={UserView}
                   />
-                  <Route exact path="/" component={Projects} />
+                  <Route exact path="/" component={Home} />
                </div>
             </Router>
          </div>
