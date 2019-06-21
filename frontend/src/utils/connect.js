@@ -1,4 +1,4 @@
-import {CredsStore} from "../store/CredsStore";
+import {CredsStore} from "../user/CredsStore";
 import {post,get} from "./fetch"
 import {build as buildGetQuerry} from "./getParameters"
 
@@ -9,25 +9,53 @@ export const Auth = {
 			"password":password
 		})
 		if(resp.successful) {
-			CredsStore.setCreds(resp.data);
+			CredsStore.update(true,resp.data);
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
 			setTimeout( Auth.refresh, nextQueryTimeout )
 		}
 		else{
-			CredsStore.setCreds(null)
+			CredsStore.update(false,null)
 		}
 		return resp;
 	},
 	refresh: async () => {
 		const resp = await get(`auth/token/`)
 		if(resp.successful) {
-			CredsStore.setCreds(resp.data);
+			CredsStore.update(true,resp.data);
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
 			setTimeout( Auth.refresh, nextQueryTimeout )
 		}
 		else{
-			CredsStore.setCreds(null)
+			CredsStore.update(false,null)
 		}
+	}
+}
+
+export const User = {
+	register: async ({email, password, name}) => {
+		const resp = await post(`auth/login/`,{
+			"login":email,
+			"password":password,
+			"name":name
+		})
+		if(resp.successful) {
+			CredsStore.update(true,resp.data);
+			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;
+			setTimeout( Auth.refresh, nextQueryTimeout )
+		}
+		else{
+			CredsStore.update(false,null)
+		}
+		return resp;
+	},
+	getUser: async (userId) => {
+		return await get(`users/${userId}/`);
+	},
+	getUsers: async () => {
+		return await get("users/");
+	},
+	getUserModels: async (userId) => {
+		return await get(`models/?user=${userId}`)
 	}
 }
 
@@ -37,18 +65,6 @@ export const Project = {
 	},
 	getProjects: async () => { 
 		return await get("projects/");
-	}
-}
-
-export const User = {
-	getUser: async (userId) => {
-		return await get(`users/${userId}/`);
-	},
-	getUsers: async () => {
-		return await get("users/");
-	},
-	getUserModels: async (userId) => {
-		return await get(`models/?user=${userId}`)
 	}
 }
 

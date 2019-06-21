@@ -1,38 +1,47 @@
 import * as React from 'react';
 import { TextField} from '@material-ui/core';
 import withStyles from '@material-ui/core/styles/withStyles';
+import createStyles from '@material-ui/core/styles/createStyles';
 import { Model as ModelConnect } from "../utils/connect"
 import { ModelsList } from "./ModelsList"
 import Typography from "@material-ui/core/Typography";
 
 
-const styles = theme => ({
-	flexRow: {
-		display: "flex",
-		flexDirection: "row"
-	},
-	spacer: {
-		width: "100%",
-		height: "40px"
-	},
-	container: {
-		display: 'flex',
-		flexWrap: 'wrap',
-	},
-	textField: {
-		marginLeft: theme.spacing(1),
-		marginRight: theme.spacing(1),
-	},
-	dense: {
-		marginTop: theme.spacing(2),
-	},
-	fullwidth: {
-		width:"100%",
-	},
-	menu: {
-		width: 200,
-	},
-	});
+const styles = theme => (
+	createStyles({
+		flexRow: {
+			display: "flex",
+			flexDirection: "row"
+		},
+		spacer: {
+			width: "100%",
+			height: "40px"
+		},
+		container: {
+			display: 'flex',
+			flexWrap: 'wrap',
+		},
+		textField: {
+			marginLeft: theme.spacing(1),
+			marginRight: theme.spacing(1),
+		},
+		dense: {
+			marginTop: theme.spacing(2),
+		},
+		fullwidth: {
+			width:"100%",
+		},
+		menu: {
+			width: 200,
+		}
+	})
+);
+
+const inputStyles = createStyles({
+	root:{
+		margin:0
+	}
+});
 
 class ModelsSearchComp extends React.Component {
 	lastReq = "";
@@ -88,6 +97,7 @@ class ModelsSearchComp extends React.Component {
 					}}
 					value={this.state.querry}
 					onChange={(newQuerry)=>this.setState({querry:newQuerry})}
+					classes={inputStyles.root}
 				/>
 				<div className={classes.spacer} />
 				<ModelsList models={this.state.models} />

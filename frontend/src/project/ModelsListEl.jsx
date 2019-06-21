@@ -6,7 +6,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import {PropertiesList} from "./PropertiesList"
+import {PropertiesList} from "../components/PropertiesList"
 
 import {
 	Label as LabelIcon,
@@ -31,7 +31,7 @@ const styles = (theme) =>
 
 		},
 		spacing: {
-			padding: theme.spacing.unit
+			padding: theme.spacing(1)
 		}
 	});
 
@@ -76,6 +76,7 @@ function ModelsListComp(props) {
 					{
 						model.tags.map(tag => <Chip
 							label={tag.name}
+							key={"tag_"+tag.id}
 							color="primary"
 							variant="outlined"
 						/>)
