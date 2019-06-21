@@ -4,39 +4,40 @@ import {
 } from '@material-ui/core';
 import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { LockOutlined as LockOutlinedIcon, Error as ErrorIcon } from '@material-ui/icons';
+import { AccountCircle as AccountCircleIcon, Error as ErrorIcon } from '@material-ui/icons';
 import {Auth} from "../utils/connect"
+
 
 const styles = (theme) =>
 	createStyles({
 		main: {
 			width: 'auto',
 			display: 'block', // Fix IE 11 issue.
-			marginLeft: theme.spacing.unit * 3,
-			marginRight: theme.spacing.unit * 3,
-			[theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+			marginLeft: theme.spacing(3),
+			marginRight: theme.spacing(3),
+			[theme.breakpoints.up(400 + theme.spacing(3) * 2)]: {
 				width: 400,
 				marginLeft: 'auto',
 				marginRight: 'auto',
 			},
 		},
 		paper: {
-			marginTop: theme.spacing.unit * 8,
+			marginTop: theme.spacing(8),
 			display: 'flex',
 			flexDirection: 'column',
 			alignItems: 'center',
-			padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+			padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
 		},
 		avatar: {
-			margin: theme.spacing.unit,
+			margin: theme.spacing(1),
 			backgroundColor: theme.palette.secondary.main,
 		},
 		form: {
 			width: '100%', // Fix IE 11 issue.
-			marginTop: theme.spacing.unit,
+			marginTop: theme.spacing(1),
 		},
 		submit: {
-			marginTop: theme.spacing.unit * 3,
+			marginTop: theme.spacing(3),
 		},
 		logo: {
 			height: "7rem",
@@ -50,7 +51,7 @@ const styles = (theme) =>
 		icon: {
 		  fontSize: 20,
 		  opacity: 0.9,
-		  marginRight: theme.spacing.unit,
+		  marginRight: theme.spacing(1),
 		},
 		message: {
 		  display: 'flex',
@@ -58,13 +59,15 @@ const styles = (theme) =>
 		},
 	});
 
-class LoginComponent extends React.Component {
+class RegisterComponent extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			username: "",
+			email: "",
 			password: "",
-			error: ""
+			name: "",
+			state: "initial",
+			msg:""
 		}
 	}
 	handle = (event) => {
@@ -76,8 +79,8 @@ class LoginComponent extends React.Component {
 		});
 	}
 	send = async () => {
-		const { username, password } = this.state;
-		const response = await Auth.login( username, password );
+		const { email, name, password } = this.state;
+		const response = await Auth.Register( { email, name, password } );
 		if( !response ){
 			this.setState({error:"We were unable to communicate with server :c"});
 			return;
@@ -106,15 +109,19 @@ class LoginComponent extends React.Component {
 		return (
 			<main className={classes.main}>
 				<Paper className={classes.paper}>
-					<LockOutlinedIcon className={classes.logo} />
+					<AccountCircleIcon className={classes.logo} />
 					<Typography component="h1" variant="h5">
-						Sign in
+						Register
         			</Typography>
 					  { alert }
 					<div onKeyDownCapture={(e)=>{if(e.key==='Enter') this.send()}} className={classes.form} >
 						<FormControl margin="normal" required fullWidth>
+							<InputLabel htmlFor="name">Name</InputLabel>
+							<Input onChange={this.handle} value={this.state.name} id="name" name="name" autoComplete="name" autoFocus />
+						</FormControl>
+						<FormControl margin="normal" required fullWidth>
 							<InputLabel htmlFor="email">Email Address</InputLabel>
-							<Input onChange={this.handle} value={this.state.username} id="email" name="username" autoComplete="email" autoFocus />
+							<Input onChange={this.handle} value={this.state.email} id="email" name="email" autoComplete="email" autoFocus />
 						</FormControl>
 						<FormControl margin="normal" required fullWidth>
 							<InputLabel htmlFor="password">Password</InputLabel>
@@ -128,7 +135,7 @@ class LoginComponent extends React.Component {
 							color="primary"
 							className={classes.submit}
 						>
-							Sign in
+							Submit
           			</Button>
 					</div>
 				</Paper>
@@ -137,4 +144,4 @@ class LoginComponent extends React.Component {
 	}
 }
 
-export const Login = withStyles(styles)(LoginComponent);
+export const Register = withStyles(styles)(RegisterComponent);

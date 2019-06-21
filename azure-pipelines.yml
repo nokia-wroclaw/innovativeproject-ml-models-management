@@ -133,6 +133,10 @@ jobs:
     displayName: Install dependencies
     workingDirectory: $(workingDirectory)
 
+  - script: cp ../README.rst README.rst
+    displayName: Provide README for the Client package
+    workingDirectory: $(workingDirectory)
+
   - script: |
       pip install pytest pytest-azurepipelines
       # pytest
