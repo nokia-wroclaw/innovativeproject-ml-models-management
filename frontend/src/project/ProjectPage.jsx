@@ -3,7 +3,7 @@ import { Button, Typography } from '@material-ui/core';
 import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Project as ProjectFetch } from "../utils/connect" 
-import { ModelsSearchComponent } from '../components/ModelsSearch'
+import { ModelsSearchComponent } from './ModelsSearch'
 
 
 const styles = (theme) =>
@@ -16,10 +16,10 @@ const styles = (theme) =>
 			justifyContent: "space-between"
 		},
 		coverItem: {
-			marginBottom: theme.spacing.unit
+			marginBottom: theme.spacing(1)
 		},
 		button: {
-			margin: theme.spacing.unit,
+			margin: theme.spacing(1),
 		},
 		row: {
 			display: "flex",
