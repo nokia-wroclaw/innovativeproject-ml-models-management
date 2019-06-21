@@ -53,3 +53,4 @@ from maisie.resources.models import Models
 from maisie.resources.projects import Projects
 from maisie.resources.workspaces import Workspaces
 from maisie.resources.users import Users
+from maisie.utils.display import Display

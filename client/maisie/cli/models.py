@@ -1,7 +1,7 @@
 import click
 
 from maisie import Models
-from maisie.cli.display import Display
+from maisie import Display
 
 
 import pickle
@@ -58,9 +58,11 @@ def upload(context, name, file, hyperparameters, parameters, metrics, dataset_na
     )
     if models:
         title = "Uploaded model"
-        include = DEFAULT_DISPLAY_ATTRIBUTES
         display = Display(
-            context=context, response=models, attributes=include, title=title
+            context=context,
+            response=models,
+            attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+            title=title,
         )
         display.display_response()
 

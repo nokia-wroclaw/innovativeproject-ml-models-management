@@ -2,7 +2,7 @@ import click
 import logging
 
 from maisie import Users
-from maisie.cli.display import Display
+from maisie import Display
 
 
 DEFAULT_DISPLAY_ATTRIBUTES = ["id", "login", "full_name", "email"]
@@ -24,8 +24,12 @@ def users():
 def add(context, login, name, email, password):
     user = Users().create(login, name, email, password)
     title = "User"
-    include = DEFAULT_DISPLAY_ATTRIBUTES
-    display = Display(context=context, response=users, attributes=include, title=title)
+    display = Display(
+        context=context,
+        response=users,
+        attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+        title=title,
+    )
     display.display_response()
 
 
@@ -47,9 +51,11 @@ def ls(context, id):
 
     if users:
         title = "List of users"
-        include = DEFAULT_DISPLAY_ATTRIBUTES
         display = Display(
-            context=context, response=users, attributes=include, title=title
+            context=context,
+            response=users,
+            attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+            title=title,
         )
         display.display_response()
 

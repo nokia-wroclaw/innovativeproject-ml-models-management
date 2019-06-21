@@ -2,7 +2,7 @@ import click
 import logging
 
 from maisie import Projects
-from maisie.cli.display import Display
+from maisie import Display
 
 from textwrap import wrap
 
@@ -42,9 +42,11 @@ def add(context, name, description, git_url):
     project = Projects()
     project = project.create(name, description, git_url)
     title = "Project"
-    include = DEFAULT_DISPLAY_ATTRIBUTES
     display = Display(
-        context=context, response=project, attributes=include, title=title
+        context=context,
+        response=project,
+        attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+        title=title,
     )
     display.display_response()
 
@@ -66,9 +68,11 @@ def ls(context, id):
         projects = Projects().get_all()
     if projects:
         title = "List of projects"
-        include = DEFAULT_DISPLAY_ATTRIBUTES
         display = Display(
-            context=context, response=projects, attributes=include, title=title
+            context=context,
+            response=projects,
+            attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+            title=title,
         )
         display.display_response()
 

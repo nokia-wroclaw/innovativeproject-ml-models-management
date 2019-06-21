@@ -33,6 +33,6 @@ class Display:
 
     def display_response(self):
         content_to_display = self.response
-        if not self.context.obj["output_json"]:
+        if not self.context.obj["output"] == "json":
             content_to_display = self.create_table()
         click.echo(content_to_display)
