@@ -1,4 +1,4 @@
-import {CredsStore} from "../store/CredsStore";
+import {CredsStore} from "../user/CredsStore";
 import {apiHost} from "./networkConfig";
 
 export const attachToken = (req)=>{
@@ -26,7 +26,7 @@ export const post = async (uri,payload)=>{
 }
 export const extract = async (response)=>{
 	const resp = await response;
-	const payload = await resp.json();
+	let payload = await resp.json();
 	if(typeof payload === "undefined") payload = {};
 	payload.responseStatus = resp.status;
 	payload.text = resp.statusText;
