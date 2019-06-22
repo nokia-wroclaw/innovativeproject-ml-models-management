@@ -12,6 +12,7 @@ import { ProjectView } from './project/ProjectPage';
 import { Users } from './pages/users';
 import { Home } from './pages/home';
 import { UserView } from './pages/user';
+import { ModelPage } from './model/ModelPage';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import NavBar from './components/NavBar'
@@ -52,17 +53,21 @@ class App extends React.Component {
                   <Route path="/login" component={Login} />
                   <Route path="/register" component={Register} />
                   <Route path="/account" component={Account} />
-                  <Route path="/projects" component={Projects} />
-                  <Route path="/users" component={Users} />
+                  <Route exact path="/projects" component={Projects} />
+                  <Route exact path="/users" component={Users} />
                   <Route
-                     path="/project/:projectId"
+                     path="/projects/:projectId"
                      component={ProjectView}
                   />
                   <Route
-                     path="/user/:userId"
+                     path="/users/:userId"
                      component={UserView}
                   />
-                  <Route exact path="/" component={Home} />
+                  <Route
+                     path="/models/:userId"
+                     component={ModelPage}
+                  />
+                  <Route exact path="/" component={Projects} />
                </div>
             </Router>
          </div>
