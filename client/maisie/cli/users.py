@@ -2,7 +2,7 @@ import click
 import logging
 
 from maisie import Users
-from maisie import Display
+from ..utils.display import Display
 
 
 DEFAULT_DISPLAY_ATTRIBUTES = ["id", "login", "full_name", "email"]

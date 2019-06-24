@@ -2,7 +2,7 @@ import click
 import logging
 
 from maisie import Projects
-from maisie import Display
+from ..utils.display import Display
 
 from textwrap import wrap
 
