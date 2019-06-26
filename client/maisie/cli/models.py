@@ -1,7 +1,7 @@
 import click
 
 from maisie import Models
-from ..utils.display import Display
+from maisie.utils.display import Display
 
 
 import pickle
