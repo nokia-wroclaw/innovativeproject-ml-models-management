@@ -1,15 +1,13 @@
 import click
 
-from terminaltables import SingleTable
-
 from maisie import Models
-from maisie.utils.misc import Transform
-from colorama import Fore
+from maisie.utils.display import Display
+
 
 import pickle
 
 
-DEFAULT_DISPLAY_ATTRIBUTES = ["id", "user", "name", "created", "metrics", "visibility"]
+DEFAULT_DISPLAY_ATTRIBUTES = ["id", "user", "name", "metrics", "visibility", "created"]
 
 
 @click.group()
@@ -46,7 +44,8 @@ def models():
     prompt="Dataset name",
     help="Name of the dataset used in model",
 )
-def upload(name, file, hyperparameters, parameters, metrics, dataset_name):
+@click.pass_context
+def upload(context, name, file, hyperparameters, parameters, metrics, dataset_name):
     """Uploads a given model."""
     models = Models()
     models = models.upload(
@@ -58,14 +57,14 @@ def upload(name, file, hyperparameters, parameters, metrics, dataset_name):
         dataset_name=dataset_name,
     )
     if models:
-        table = SingleTable(
-            Transform().api_response_to_terminaltables(
-                models, include=DEFAULT_DISPLAY_ATTRIBUTES
-            )
+        title = "Uploaded model"
+        display = Display(
+            context=context,
+            response=models,
+            attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+            title=title,
         )
-        table.inner_row_border = True
-        table.title = "Uploaded model"
-        click.echo(table.table)
+        display.display_response()
 
 
 @click.command()
@@ -81,7 +80,8 @@ def upload(name, file, hyperparameters, parameters, metrics, dataset_name):
 )
 @click.option("-p", "--parameter", default=None, help="Sorts by given parameter")
 @click.option("-s", "--sort", default=None, help="Sorts by given key : *key:desc*")
-def ls(model_id, hyperparameter, parameter, sort):
+@click.pass_context
+def ls(context, model_id, hyperparameter, parameter, sort):
     if model_id:
         models = Models().get(model_id)
         include = ["hyperparameters", "parameters", "metrics", "_links", "git"]
@@ -89,16 +89,11 @@ def ls(model_id, hyperparameter, parameter, sort):
         models = Models().get_all()
         include = DEFAULT_DISPLAY_ATTRIBUTES
     if models:
-        table = Transform().api_response_to_terminaltables(
-            models, include=DEFAULT_DISPLAY_ATTRIBUTES
+        title = "Most recently uploaded models"
+        display = Display(
+            context=context, response=models, attributes=include, title=title
         )
-        table = Transform().apply_beautiful_colors(
-            obj=table, schema=[None, Fore.MAGENTA, Fore.YELLOW, None, None, Fore.GREEN]
-        )
-        table = SingleTable(table)
-        table.inner_row_border = True
-        table.title = "Most recently uploaded models"
-        click.echo(table.table)
+        display.display_response()
 
 
 @click.command()

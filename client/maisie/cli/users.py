@@ -1,12 +1,11 @@
 import click
 import logging
-from terminaltables import SingleTable
 
 from maisie import Users
-from maisie.utils.misc import Transform
+from maisie.utils.display import Display
 
 
-DEFAULT_DISPLAY_ATTRIBUTES = ["id", "login", "name", "email"]
+DEFAULT_DISPLAY_ATTRIBUTES = ["id", "login", "full_name", "email"]
 
 
 @click.group()
@@ -21,16 +20,17 @@ def users():
 )
 @click.option("-e", "--email", prompt="User's email", help="Email of user to add")
 @click.password_option()
-def add(login, name, email, password):
+@click.pass_context
+def add(context, login, name, email, password):
     user = Users().create(login, name, email, password)
-    table = SingleTable(
-        Transform().api_response_to_terminaltables(
-            user, include=DEFAULT_DISPLAY_ATTRIBUTES
-        )
+    title = "User"
+    display = Display(
+        context=context,
+        response=users,
+        attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+        title=title,
     )
-    table.inner_row_border = True
-    table.title = "List of users"
-    click.echo(table.table)
+    display.display_response()
 
 
 @click.command()
@@ -42,21 +42,22 @@ def rm():
 @click.option(
     "-id", "--id", default=None, type=int, help="Returns user with a specified id"
 )
-def ls(id):
+@click.pass_context
+def ls(context, id):
     if id:
         users = Users().get(id)
     else:
         users = Users().get_all()
 
     if users:
-        table = SingleTable(
-            Transform().api_response_to_terminaltables(
-                users, include=DEFAULT_DISPLAY_ATTRIBUTES
-            )
+        title = "List of users"
+        display = Display(
+            context=context,
+            response=users,
+            attributes=DEFAULT_DISPLAY_ATTRIBUTES,
+            title=title,
         )
-        table.inner_row_border = True
-        table.title = "List of users"
-        click.echo(table.table)
+        display.display_response()
 
 
 users.add_command(add)

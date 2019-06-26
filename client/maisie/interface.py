@@ -10,8 +10,11 @@ from maisie.cli.config import config
 
 
 @click.group()
-def cli():
-    pass
+@click.option("--output", help="Specify format of the output as e.g. json")
+@click.pass_context
+def cli(context, output):
+    context.obj = {}
+    context.obj["output"] = output
 
 
 cli.add_command(models)
