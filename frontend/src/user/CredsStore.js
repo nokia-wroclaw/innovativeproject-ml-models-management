@@ -11,20 +11,20 @@ class CredsStoreClass{
 	constructor(){
 		this.state = {
 			loggedIn: false,
-			creds: this.loadCreds() || {}
+			creds: this._loadCreds() || {}
 		}
 		this.notify = new Map();
 	}
 
-	saveCreds = (obj) => {
+	_saveCreds = (obj) => {
 		this.state.creds = obj;
 		localStorage.setItem("creds",JSON.stringify(obj));
 	}
-	loadCreds = () => {
-		JSON.parse(localStorage.getItem("creds"));
+	_loadCreds = () => {
+		return JSON.parse(localStorage.getItem("creds"));
 	}
 	
-	emmit = () => {
+	_emmit = () => {
 		const creds = this.getCreds();
 		Array.from(this.notify.values()).forEach(handler => handler(this.state));
 	}
@@ -40,8 +40,8 @@ class CredsStoreClass{
 	}
 	update(loggedIn,newCreds){
 		this.state.loggedIn = loggedIn;
-		this.saveCreds(newCreds);
-		this.emmit();
+		this._saveCreds(newCreds);
+		this._emmit();
 	}
 
 	subscribe = (id,handler) => {

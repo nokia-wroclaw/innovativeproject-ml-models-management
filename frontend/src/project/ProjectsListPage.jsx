@@ -11,6 +11,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
 import {Link} from 'react-router-dom'
 import LabelImportant from '@material-ui/icons/LabelImportant';
 
@@ -58,32 +59,34 @@ class ProjectsComponent extends React.Component {
     
 
     return (
-      <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Name</TableCell>
-              <TableCell align="center">Description</TableCell>
-              <TableCell align="center">Go to</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {projects.map(row => (
-              <TableRow key={row.id}>
-                <TableCell>
-                  {row.name}
-                </TableCell>
-                <TableCell>{row.description.substr(0,300)}</TableCell>
-                <TableCell>
-                  <Button color='secondary' className={classes.button} to={`/project/${row.id}`} component={Link}>
-                    <LabelImportant color='secondary' className={classes.icon}/>
-                  </Button>
-                </TableCell>
+      <Container>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Description</TableCell>
+                <TableCell align="center">Go to</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {projects.map(row => (
+                <TableRow key={row.id}>
+                  <TableCell>
+                    {row.name}
+                  </TableCell>
+                  <TableCell>{row.description.substr(0,300)}</TableCell>
+                  <TableCell>
+                    <Button color='secondary' className={classes.button} to={`/project/${row.id}`} component={Link}>
+                      <LabelImportant color='secondary' className={classes.icon}/>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Container>
     )
 
   }

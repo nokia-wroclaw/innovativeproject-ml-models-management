@@ -19,7 +19,7 @@ export const Auth = {
 		return resp;
 	},
 	refresh: async () => {
-		const resp = await get(`auth/token/`)
+		const resp = await get(`auth/token/`,{forceCreds:true})
 		if(resp.successful) {
 			CredsStore.update(true,resp.data);
 			const nextQueryTimeout = resp.data.valid_for * 2/3 * 1000;

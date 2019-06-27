@@ -18,7 +18,9 @@ const styles = theme => ({
  });
 
 function PropertiesListComp(props) {
-	const { classes, data, title } = props;
+	let { classes, data, title } = props;
+	console.log(data)
+	if(!data) data = [];
 
 	return (
 			<Table className={classes.table} size="small">

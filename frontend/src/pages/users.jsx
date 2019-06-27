@@ -11,6 +11,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
 import {Link} from 'react-router-dom'
 import LabelImportant from '@material-ui/icons/LabelImportant';
 
@@ -57,32 +58,34 @@ class UsersComponent extends React.Component {
     const users = this.state.users;
     
     return (
-      <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Name</TableCell>
-              <TableCell align="center">Email</TableCell>
-              <TableCell align="center">Go to</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map(row => (
-              <TableRow key={row.id}>
-                <TableCell>
-                  {row.full_name}
-                </TableCell>
-                <TableCell>{row.email}</TableCell>
-                <TableCell>
-                  <Button color='secondary' className={classes.button} to={`/user/${row.id}`} component={Link}>
-                    <LabelImportant color='secondary' className={classes.icon}/>
-                  </Button>
-                </TableCell>
+      <Container>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Email</TableCell>
+                <TableCell align="center">Go to</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {users.map(row => (
+                <TableRow key={row.id}>
+                  <TableCell>
+                    {row.full_name}
+                  </TableCell>
+                  <TableCell>{row.email}</TableCell>
+                  <TableCell>
+                    <Button color='secondary' className={classes.button} to={`/user/${row.id}`} component={Link}>
+                      <LabelImportant color='secondary' className={classes.icon}/>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Container>
     )
 
   }

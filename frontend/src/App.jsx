@@ -12,7 +12,7 @@ import { ProjectView } from './project/ProjectPage';
 import { Users } from './pages/users';
 import { Home } from './pages/home';
 import { UserView } from './pages/user';
-import { ModelPage } from './model/ModelPage';
+import ModelPage from './model/ModelPage';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
 import NavBar from './components/NavBar'
@@ -21,13 +21,18 @@ import { Auth } from './utils/connect';
 import { makeStyles } from '@material-ui/styles';
 import {SnackbarControler,SnackbarControlerIO} from './components/SnackbarControler';
 
-const styles = makeStyles(theme => ({
-      container: {
-         maxWidth: "940px",
-         marginLeft: "auto",
-         marginRight: "auto"
-      },
-    }));
+const styles = theme => ({
+   app: {
+      minHeight:"100vh",
+      width:"100vw",
+      display:"flex",
+      flexDirection:"column",
+   },
+   full: {
+      flexGrow:1,
+      width:"100%"
+   },
+});
 
     
     
@@ -44,12 +49,12 @@ class App extends React.Component {
    render() {
       // @ts-ignore
       return (
-         <div id="app">
+         <div id="app" className={this.props.classes.app}>
             <SnackbarControler ctrl={this.alerts}/>
             <Router>
                <CssBaseline />
                <NavBar />
-               <div id="main" className={this.props.classes.container}>
+               <div id="main" className={this.props.classes.full}>
                   <Route path="/login" component={Login} />
                   <Route path="/register" component={Register} />
                   <Route path="/account" component={Account} />
@@ -60,11 +65,19 @@ class App extends React.Component {
                      component={ProjectView}
                   />
                   <Route
+                     path="/project/:projectId"
+                     component={ProjectView}
+                  />
+                  <Route
                      path="/users/:userId"
                      component={UserView}
                   />
                   <Route
-                     path="/models/:userId"
+                     path="/models/:modelId"
+                     component={ModelPage}
+                  />
+                  <Route
+                     path="/model/:modelId"
                      component={ModelPage}
                   />
                   <Route exact path="/" component={Projects} />

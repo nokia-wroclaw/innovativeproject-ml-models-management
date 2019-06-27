@@ -12,6 +12,7 @@ export const send = async (req)=>{
 	attachToken(req);
 	return extract(fetch(req));
 }
+
 export const get = async (uri)=>{
  	const req = new Request(apiHost+uri);
 	attachToken(req);
@@ -24,6 +25,7 @@ export const post = async (uri,payload)=>{
 	req.headers.set('Content-Type', 'application/json')
 	return extract(fetch(req));
 }
+
 export const extract = async (response)=>{
 	const resp = await response;
 	let payload = await resp.json();

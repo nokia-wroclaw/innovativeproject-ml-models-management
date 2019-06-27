@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, Typography } from '@material-ui/core'; 
+import { Button, Typography, Container } from '@material-ui/core'; 
 import { createStyles } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Project as ProjectFetch } from "../utils/connect" 
@@ -87,33 +87,35 @@ class ProjectComponent extends React.Component {
 		if (this.state.status === "OK") {
 			const project = this.state;
 			return (
-				<div>
-					<div className={classes.cover}>
-						<Typography className={classes.coverItem} variant={"h3"}>{state.name}</Typography>
-						<Typography className={classes.coverItem} variant={"h5"}>{state.description}</Typography>
-						<div className={classes.row}>
-							<Button variant="outlined" size="small" color="primary" className={classes.button} href={state.repoUrl}>
-								Code Repo
-							</Button>
-							<Button variant="outlined" size="small" color="primary" className={classes.button}>
-								Issue Tracker
-							</Button>
-							<Button variant="outlined" size="small" color="primary" className={classes.button}>
-								Live Demo
-							</Button>
+				<Container>
+					<div>
+						<div className={classes.cover}>
+							<Typography className={classes.coverItem} variant={"h3"}>{state.name}</Typography>
+							<Typography className={classes.coverItem} variant={"h5"}>{state.description}</Typography>
+							<div className={classes.row}>
+								<Button variant="outlined" size="small" color="primary" className={classes.button} href={state.repoUrl}>
+									Code Repo
+								</Button>
+								<Button variant="outlined" size="small" color="primary" className={classes.button}>
+									Issue Tracker
+								</Button>
+								<Button variant="outlined" size="small" color="primary" className={classes.button}>
+									Live Demo
+								</Button>
+							</div>
 						</div>
-					</div>
-					<ModelsSearchComponent 
-						projectId={project.id}
-						projectGit={project.repoUrl}
-						allHyperParameters={project.allHyperParameters}
-						allMetrics={project.allMetrics}
-						allNames={project.allModelNames}
-						allTags={project.allModelTags}
-						allParameters={project.allParameters}
-						allBranches={project.allBranches}
-					/>
-				</div> 
+						<ModelsSearchComponent 
+							projectId={project.id}
+							projectGit={project.repoUrl}
+							allHyperParameters={project.allHyperParameters}
+							allMetrics={project.allMetrics}
+							allNames={project.allModelNames}
+							allTags={project.allModelTags}
+							allParameters={project.allParameters}
+							allBranches={project.allBranches}
+						/>
+					</div> 
+				</Container>
 			) 
 		}
 		else if (this.state.status === "loading") return (
